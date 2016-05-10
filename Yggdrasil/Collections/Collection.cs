@@ -17,6 +17,11 @@ namespace Yggdrasil.Collections
 		protected Dictionary<TKey, TValue> _entries;
 
 		/// <summary>
+		/// Returns number of entries in collection.
+		/// </summary>
+		public int Count { get { lock (_entries) return _entries.Count; } }
+
+		/// <summary>
 		/// Creates new collection.
 		/// </summary>
 		public Collection()
@@ -66,7 +71,7 @@ namespace Yggdrasil.Collections
 		}
 
 		/// <summary>
-		/// Clears collection
+		/// Clears collection.
 		/// </summary>
 		public void Clear()
 		{

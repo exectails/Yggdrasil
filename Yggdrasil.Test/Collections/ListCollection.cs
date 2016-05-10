@@ -16,14 +16,17 @@ namespace Yggdrasil.Test.Collections
 			for (int i = 0; i < 5; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < 6; ++i)
 				col.Add(2, 2200 + i);
 
 			var l1 = col.Get(1);
 			var l2 = col.Get(2);
 
+			Assert.Equal(2, col.Count);
+			Assert.Equal(5, l1.Count);
+			Assert.Equal(6, l2.Count);
 			Assert.Equal(new int[] { 1000, 1001, 1002, 1003, 1004 }, l1.ToArray());
-			Assert.Equal(new int[] { 2200, 2201, 2202, 2203, 2204 }, l2.ToArray());
+			Assert.Equal(new int[] { 2200, 2201, 2202, 2203, 2204, 2205 }, l2.ToArray());
 		}
 
 		[Fact]
@@ -92,6 +95,26 @@ namespace Yggdrasil.Test.Collections
 			Assert.Equal(true, col.ContainsKey(2));
 			Assert.Equal(false, col.ContainsKey(3));
 			Assert.Equal(false, col.ContainsKey(4));
+		}
+
+		[Fact]
+		public void Counting()
+		{
+			var col = new ListCollection<int, int>();
+
+			for (int i = 0; i < 11; ++i)
+				col.Add(1, 1000 + i);
+
+			for (int i = 0; i < 22; ++i)
+				col.Add(2, 2000 + i);
+
+			for (int i = 0; i < 33; ++i)
+				col.Add(3, 3000 + i);
+
+			Assert.Equal(11, col.CountValues(1));
+			Assert.Equal(22, col.CountValues(2));
+			Assert.Equal(33, col.CountValues(3));
+			Assert.Equal(0, col.CountValues(4));
 		}
 	}
 }

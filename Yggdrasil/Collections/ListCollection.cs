@@ -16,11 +16,34 @@ namespace Yggdrasil.Collections
 		protected Dictionary<TKey, List<TValue>> _entries;
 
 		/// <summary>
+		/// Returns number of lists in collection.
+		/// </summary>
+		public int Count { get { lock (_entries) return _entries.Count; } }
+
+		/// <summary>
 		/// Creates new collection.
 		/// </summary>
 		public ListCollection()
 		{
 			_entries = new Dictionary<TKey, List<TValue>>();
+		}
+
+		/// <summary>
+		/// Returns the number of values in the list with the given key.
+		/// Returns 0 if list doesn't exist.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public int CountValues(TKey key)
+		{
+			lock (_entries)
+			{
+				List<TValue> list;
+				if (!_entries.TryGetValue(key, out list))
+					return 0;
+
+				return list.Count;
+			}
 		}
 
 		/// <summary>

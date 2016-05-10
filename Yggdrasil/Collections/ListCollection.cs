@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Yggdrasil.Collections
 {
@@ -85,7 +86,10 @@ namespace Yggdrasil.Collections
 			List<TValue> result;
 
 			lock (_entries)
-				_entries.TryGetValue(key, out result);
+			{
+				if (_entries.TryGetValue(key, out result))
+					result = result.ToList();
+			}
 
 			return result;
 		}

@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil", "Yggdrasil\Yggdrasil.csproj", "{4BB8DF19-7D20-429A-AF5F-5D1232538E08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Test", "Yggdrasil.Test\Yggdrasil.Test.csproj", "{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4BB8DF19-7D20-429A-AF5F-5D1232538E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BB8DF19-7D20-429A-AF5F-5D1232538E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BB8DF19-7D20-429A-AF5F-5D1232538E08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

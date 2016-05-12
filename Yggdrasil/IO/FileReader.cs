@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Yggdrasil.Util
+namespace Yggdrasil.IO
 {
 	/// <summary>
 	/// General use class to read files line for line.

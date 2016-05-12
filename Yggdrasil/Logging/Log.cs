@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 
-namespace Yggdrasil.Util
+namespace Yggdrasil.Logging
 {
 	/// <summary>
 	/// All log levels. Also used as bitmask, for hiding.

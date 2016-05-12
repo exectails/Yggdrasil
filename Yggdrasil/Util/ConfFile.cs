@@ -4,8 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Yggdrasil.IO;
+using Yggdrasil.Logging;
 
-namespace Yggdrasil.Util.Configuration
+namespace Yggdrasil.Util
 {
 	/// <summary>
 	/// Configuration options manager.

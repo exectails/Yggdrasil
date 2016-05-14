@@ -33,8 +33,15 @@ namespace Yggdrasil.IO
 		private string _relativePath;
 		private StreamReader _streamReader;
 
+		/// <summary>
+		/// Returns the line the reader is currently on.
+		/// </summary>
 		public int CurrentLine { get; protected set; }
 
+		/// <summary>
+		/// Creates new reader for given file.
+		/// </summary>
+		/// <param name="filePath"></param>
 		public FileReader(string filePath)
 		{
 			if (!File.Exists(filePath))
@@ -46,6 +53,10 @@ namespace Yggdrasil.IO
 			_streamReader = new StreamReader(filePath);
 		}
 
+		/// <summary>
+		/// Returns enumerator for the lines in the open file.
+		/// </summary>
+		/// <returns></returns>
 		public IEnumerator<FileReaderLine> GetEnumerator()
 		{
 			string line;
@@ -101,17 +112,27 @@ namespace Yggdrasil.IO
 			}
 		}
 
+		/// <summary>
+		/// Returns enumerator for the lines in the open file.
+		/// </summary>
+		/// <returns></returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Closes internal stream reader.
+		/// </summary>
 		public void Dispose()
 		{
 			_streamReader.Close();
 		}
 	}
 
+	/// <summary>
+	/// Represents a line read from a file by the FileReader.
+	/// </summary>
 	public class FileReaderLine
 	{
 		/// <summary>

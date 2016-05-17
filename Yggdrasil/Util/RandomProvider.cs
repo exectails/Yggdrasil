@@ -29,20 +29,4 @@ namespace Yggdrasil.Util
 			return randomWrapper.Value;
 		}
 	}
-
-	/// <summary>
-	/// Extensions for Random.
-	/// </summary>
-	public static class RandomExtension
-	{
-		/// <summary>
-		/// Returns random long.
-		/// </summary>
-		/// <param name="rnd"></param>
-		/// <returns></returns>
-		public static long NextInt64(this Random rnd)
-		{
-			return (((long)rnd.Next() << 8 * 4 - 1) + rnd.Next());
-		}
-	}
 }

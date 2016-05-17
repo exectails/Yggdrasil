@@ -92,5 +92,15 @@ namespace Yggdrasil.Util
 
 			return values[rnd.Next(values.Length)];
 		}
+
+		/// <summary>
+		/// Returns random long.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <returns></returns>
+		public static long NextInt64(this Random rnd)
+		{
+			return (((long)rnd.Next() << 8 * 4 - 1) + rnd.Next());
+		}
 	}
 }

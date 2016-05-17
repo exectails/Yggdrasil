@@ -49,6 +49,7 @@
     <Compile Include="Logging\LogTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Hashing\BCryptTests.cs" />
+    <Compile Include="Util\Math2Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj">

@@ -208,31 +208,6 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns the option as a DateTime, or the default value, if the
-		/// option doesn't exist.
-		/// </summary>
-		/// <remarks>
-		/// For acceptable value formatting, see <see href="http://msdn.microsoft.com/en-us/library/system.datetime.parse(v=vs.110).aspx">MSDN</see>.
-		/// </remarks>
-		/// <param name="option"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		public DateTime GetDateTime(string option, DateTime defaultValue = default(DateTime))
-		{
-			string value;
-			if (!_options.TryGetValue(option, out value))
-				return defaultValue;
-
-			DateTime ret;
-			if (DateTime.TryParse(value, out ret))
-				return ret;
-
-			Log.Warning("Invalid value for '{0}', defaulting to '{1}'", option, defaultValue);
-			return defaultValue;
-
-		}
-
-		/// <summary>
 		/// Returns the option as a TimeSpan, or the default value, if the
 		/// option doesn't exist.
 		/// </summary>

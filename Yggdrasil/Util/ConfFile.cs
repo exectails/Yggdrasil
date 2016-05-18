@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Yggdrasil.IO;
 using Yggdrasil.Logging;
@@ -198,7 +199,7 @@ namespace Yggdrasil.Util
 				return defaultValue;
 
 			float ret;
-			if (float.TryParse(value, out ret))
+			if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out ret))
 				return ret;
 
 			Log.Warning("Invalid value for '{0}', defaulting to '{1}'", option, defaultValue);

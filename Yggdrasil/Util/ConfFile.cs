@@ -20,7 +20,7 @@ namespace Yggdrasil.Util
 	{
 		protected readonly Dictionary<string, string> _options;
 
-		protected ConfFile()
+		public ConfFile()
 		{
 			_options = new Dictionary<string, string>();
 		}
@@ -76,7 +76,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected bool GetBool(string option, bool defaultValue = false)
+		public bool GetBool(string option, bool defaultValue = false)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -94,7 +94,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected byte GetByte(string option, byte defaultValue = 0)
+		public byte GetByte(string option, byte defaultValue = 0)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -115,7 +115,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected short GetShort(string option, short defaultValue = 0)
+		public short GetShort(string option, short defaultValue = 0)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -136,7 +136,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected int GetInt(string option, int defaultValue = 0)
+		public int GetInt(string option, int defaultValue = 0)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -157,7 +157,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected long GetLong(string option, long defaultValue = 0)
+		public long GetLong(string option, long defaultValue = 0)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -178,7 +178,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected string GetString(string option, string defaultValue = "")
+		public string GetString(string option, string defaultValue = "")
 		{
 			string value;
 			return !_options.TryGetValue(option, out value) ? defaultValue : value;
@@ -191,7 +191,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected float GetFloat(string option, float defaultValue = 0)
+		public float GetFloat(string option, float defaultValue = 0)
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -216,7 +216,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected DateTime GetDateTime(string option, DateTime defaultValue = default(DateTime))
+		public DateTime GetDateTime(string option, DateTime defaultValue = default(DateTime))
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -243,7 +243,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected TimeSpan GetTimeSpan(string option, TimeSpan defaultValue = default(TimeSpan))
+		public TimeSpan GetTimeSpan(string option, TimeSpan defaultValue = default(TimeSpan))
 		{
 			string value;
 			if (!_options.TryGetValue(option, out value))
@@ -265,7 +265,7 @@ namespace Yggdrasil.Util
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		protected T GetEnum<T>(string option, T defaultValue = default(T)) where T : struct
+		public T GetEnum<T>(string option, T defaultValue = default(T)) where T : struct
 		{
 			if (!typeof(T).IsEnum)
 				throw new NotSupportedException("Type " + typeof(T) + " is not an enum.");

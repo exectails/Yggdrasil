@@ -3,6 +3,11 @@ Yggdrasil
 
 Future base library for the Aura Project's server programs. *Work in progress.*
 
+TODO
+------------------------------
+- Add more unit tests
+- Add network classes
+
 Links
 ------------------------------
 * Forums: http://aura-project.org/

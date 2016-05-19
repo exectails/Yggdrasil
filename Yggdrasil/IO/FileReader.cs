@@ -15,6 +15,11 @@ namespace Yggdrasil.IO
 	/// Ignores empty lines and lines prefixed with '!', ';', '#', '//', or '--'.
 	/// Supports including of files via 'include {file}' and 'require {file}'.
 	/// Require raises an exception if the file couldn't be found.
+	/// 
+	/// Paths to included files may not be absolute. If a path starts with
+	/// a slash, the path is relative to the working directory.
+	/// This simplifies including files from other sub-folders of the
+	/// application.
 	/// </remarks>
 	/// <example>
 	/// <code>

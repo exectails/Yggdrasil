@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
@@ -10,13 +11,29 @@ namespace Yggdrasil.Test.IO
 {
 	public class FileReaderTests
 	{
+		private static int _tmp;
+
+		/// <summary>
+		/// Creates a temp file to be used by a test and returns
+		/// its relative path.
+		/// </summary>
+		/// <returns></returns>
+		private static string GetTempFileName()
+		{
+			var result = "tmp" + _tmp++;
+
+			File.WriteAllText(result, "");
+
+			return result;
+		}
+
 		/// <summary>
 		/// Tests simple lines, comments, and empty lines.
 		/// </summary>
 		[Fact]
 		public void Reading()
 		{
-			var tmpFile = Path.GetTempFileName();
+			var tmpFile = GetTempFileName();
 			File.WriteAllText(tmpFile, @"
 line1
 line2
@@ -58,8 +75,8 @@ line3
 		[Fact]
 		public void Including()
 		{
-			var tmpFile1 = Path.GetTempFileName();
-			var tmpFile2 = Path.GetTempFileName();
+			var tmpFile1 = GetTempFileName();
+			var tmpFile2 = GetTempFileName();
 
 			File.WriteAllText(tmpFile1, @"
 line1
@@ -91,7 +108,7 @@ line3
 		[Fact]
 		public void IncludingNonExistent()
 		{
-			var tmpFile1 = Path.GetTempFileName();
+			var tmpFile1 = GetTempFileName();
 
 			File.WriteAllText(tmpFile1, @"
 line1
@@ -117,8 +134,8 @@ include ""_shouldntexistunlesswereveryveryverylucky_""
 		[Fact]
 		public void Require()
 		{
-			var tmpFile1 = Path.GetTempFileName();
-			var tmpFile2 = Path.GetTempFileName();
+			var tmpFile1 = GetTempFileName();
+			var tmpFile2 = GetTempFileName();
 
 			File.WriteAllText(tmpFile1, @"
 line1
@@ -169,8 +186,8 @@ line5
 		[Fact]
 		public void Divert()
 		{
-			var tmpFile1 = Path.GetTempFileName();
-			var tmpFile2 = Path.GetTempFileName();
+			var tmpFile1 = GetTempFileName();
+			var tmpFile2 = GetTempFileName();
 
 			File.WriteAllText(tmpFile1, @"
 line1
@@ -194,66 +211,46 @@ line2
 		}
 
 		/// <summary>
-		/// Tests including a file from the same folder by its name.
-		/// </summary>
-		[Fact]
-		public void RelativeIncludingSameFolder()
-		{
-			var tmpFile1 = Path.GetTempFileName();
-			var tmpFile2 = Path.GetTempFileName();
-			var name2 = Path.GetFileName(tmpFile2);
-
-			File.WriteAllText(tmpFile1, @"
-line1
-include """ + name2 + @"""
-line3
-");
-
-			File.WriteAllText(tmpFile2, @"
-line2
-");
-
-			using (var fr = new FileReader(tmpFile1))
-			{
-				var lines = new List<string>();
-
-				foreach (var line in fr)
-					lines.Add(line.Value);
-
-				Assert.Equal(new string[] { "line1", "line2", "line3" }, lines);
-			}
-		}
-
-		/// <summary>
 		/// Tests including from sub-folders by their relative path.
 		/// </summary>
 		[Fact]
-		public void RelativeIncluding()
+		public void IncludingFromSubfolders()
 		{
-			var tmpFolder1 = Path.Combine(Path.GetTempPath(), "FileReaderTmp1");
-			var tmpFolder2 = Path.Combine(Path.GetTempPath(), "FileReaderTmp1", "FileReaderTmp2");
+			var tmpFolder1 = "FileReaderTmp1";
+			var tmpFolder2 = "FileReaderTmp2";
+			var tmpFolder1_2 = Path.Combine(tmpFolder1, tmpFolder2);
 
-			if (!Directory.Exists(tmpFolder2))
-				Directory.CreateDirectory(tmpFolder2);
+			if (!Directory.Exists(tmpFolder1_2))
+				Directory.CreateDirectory(tmpFolder1_2);
 
-			var tmpFile1 = Path.GetTempFileName();
+			var tmpFile1 = GetTempFileName();
 			var tmpFile2 = Path.Combine(tmpFolder1, "temp2");
 			var tmpFile3 = Path.Combine(tmpFolder2, "temp3");
+			var tmpFile4 = GetTempFileName();
+			var tmpFile1Full = Path.GetFullPath(tmpFile1);
+			var tmpFile2Full = Path.GetFullPath(tmpFile2);
+			var tmpFile3Full = Path.GetFullPath(Path.Combine(tmpFolder1_2, "temp3"));
+			var tmpFile4Full = Path.GetFullPath(tmpFile4);
 
-			File.WriteAllText(tmpFile1, @"
+			File.WriteAllText(tmpFile1Full, @"
 line1
-include ""FileReaderTmp1/temp2""
+include """ + tmpFile2 + @"""
 line5
 ");
 
-			File.WriteAllText(tmpFile2, @"
+			File.WriteAllText(tmpFile2Full, @"
 line2
-include ""FileReaderTmp2/temp3""
+require """ + tmpFile3 + @"""
 line4
 ");
 
-			File.WriteAllText(tmpFile3, @"
+			File.WriteAllText(tmpFile3Full, @"
+include ""/" + tmpFile4 + @"""
 line3
+");
+
+			File.WriteAllText(tmpFile4Full, @"
+lineXY
 ");
 
 			using (var fr = new FileReader(tmpFile1))
@@ -265,11 +262,12 @@ line3
 				{
 					switch (i)
 					{
-						case 0: Assert.Equal(tmpFile1, line.File); break;
-						case 1: Assert.Equal(tmpFile2, line.File); break;
-						case 2: Assert.Equal(tmpFile3, line.File); break;
-						case 3: Assert.Equal(tmpFile2, line.File); break;
-						case 4: Assert.Equal(tmpFile1, line.File); break;
+						case 0: Assert.Equal(tmpFile1Full, line.File); break;
+						case 1: Assert.Equal(tmpFile2Full, line.File); break;
+						case 2: Assert.Equal(tmpFile4Full, line.File); break;
+						case 3: Assert.Equal(tmpFile3Full, line.File); break;
+						case 4: Assert.Equal(tmpFile2Full, line.File); break;
+						case 5: Assert.Equal(tmpFile1Full, line.File); break;
 					}
 
 					lines.Add(line.Value);
@@ -277,7 +275,7 @@ line3
 					i++;
 				}
 
-				Assert.Equal(new string[] { "line1", "line2", "line3", "line4", "line5" }, lines);
+				Assert.Equal(new string[] { "line1", "line2", "lineXY", "line3", "line4", "line5" }, lines);
 			}
 		}
 	}

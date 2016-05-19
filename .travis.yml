@@ -1,0 +1,12 @@
+language: csharp
+mono: 3.8.0
+solution: Yggdrasil.sln
+branches:
+  only:
+    - master
+install:
+  - nuget restore Yggdrasil.sln
+  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release Yggdrasil.sln
+  - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./Yggdrasil.Test/bin/Release/Yggdrasil.Test.dll

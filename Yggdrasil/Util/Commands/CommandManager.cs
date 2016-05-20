@@ -30,7 +30,7 @@ namespace Yggdrasil.Util.Commands
 		/// Adds command to list of command handlers.
 		/// </summary>
 		/// <param name="command"></param>
-		protected void Add(TCommand command)
+		public void Add(TCommand command)
 		{
 			_commands[command.Name] = command;
 		}

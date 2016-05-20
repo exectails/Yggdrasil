@@ -40,6 +40,7 @@ namespace Yggdrasil.Util.Commands
 		/// </summary>
 		/// <remarks>
 		/// Matches words and multiple words in quotation.
+		/// Trims spaces before and after any parameter.
 		/// </remarks>
 		/// <example>
 		/// arg0 arg1 arg2 -- 3 args: "arg0", "arg1", and "arg2"

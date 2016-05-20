@@ -15,6 +15,10 @@ namespace Yggdrasil.Util.Commands
 	/// </summary>
 	public class ConsoleCommands : CommandManager<ConsoleCommand, ConsoleCommandFunc>
 	{
+		/// <summary>
+		/// Creates new instance of ConsoleCommands and adds the help, exit,
+		/// and status commands.
+		/// </summary>
 		public ConsoleCommands()
 		{
 			_commands = new Dictionary<string, ConsoleCommand>();
@@ -93,6 +97,12 @@ namespace Yggdrasil.Util.Commands
 			}
 		}
 
+		/// <summary>
+		/// Handles help command, listing all available console commands.
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		protected virtual CommandResult HandleHelp(string command, IList<string> args)
 		{
 			var maxLength = _commands.Values.Max(a => a.Name.Length);
@@ -104,6 +114,13 @@ namespace Yggdrasil.Util.Commands
 			return CommandResult.Okay;
 		}
 
+		/// <summary>
+		/// Handles status command, displaying information about
+		/// the application, like current memory usage.
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		protected virtual CommandResult HandleStatus(string command, IList<string> args)
 		{
 			Log.Status("Memory Usage: {0:N0} KB", Math.Round(GC.GetTotalMemory(false) / 1024f));
@@ -111,6 +128,12 @@ namespace Yggdrasil.Util.Commands
 			return CommandResult.Okay;
 		}
 
+		/// <summary>
+		/// Handles exist command, closing the application immediately.
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		protected virtual CommandResult HandleExit(string command, IList<string> args)
 		{
 			CliUtil.Exit(0, false);
@@ -119,6 +142,9 @@ namespace Yggdrasil.Util.Commands
 		}
 	}
 
+	/// <summary>
+	/// Represents a command for the ConsoleCommands class.
+	/// </summary>
 	public class ConsoleCommand : Command<ConsoleCommandFunc>
 	{
 		public ConsoleCommand(string name, string usage, string description, ConsoleCommandFunc func)
@@ -127,7 +153,16 @@ namespace Yggdrasil.Util.Commands
 		}
 	}
 
+	/// <summary>
+	/// Represents a command handler for the ConsoleCommands class.
+	/// </summary>
+	/// <param name="command"></param>
+	/// <param name="args"></param>
+	/// <returns></returns>
 	public delegate CommandResult ConsoleCommandFunc(string command, IList<string> args);
 
+	/// <summary>
+	/// Command results for the Console Commands.
+	/// </summary>
 	public enum CommandResult { Okay, Fail, InvalidArgument, Break }
 }

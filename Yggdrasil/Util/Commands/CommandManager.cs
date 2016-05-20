@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace Yggdrasil.Util.Commands
 {
 	/// <summary>
-	/// Generalized command manager
+	/// Generalized command manager.
 	/// </summary>
 	/// <typeparam name="TCommand"></typeparam>
 	/// <typeparam name="TFunc"></typeparam>
@@ -18,6 +18,9 @@ namespace Yggdrasil.Util.Commands
 	{
 		protected Dictionary<string, TCommand> _commands;
 
+		/// <summary>
+		/// Initializes manager.
+		/// </summary>
 		protected CommandManager()
 		{
 			_commands = new Dictionary<string, TCommand>();
@@ -65,7 +68,7 @@ namespace Yggdrasil.Util.Commands
 		}
 
 		/// <summary>
-		/// Returns command or null, if the command doesn't exist.
+		/// Returns command or null if the command doesn't exist.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>

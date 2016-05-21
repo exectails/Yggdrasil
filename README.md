@@ -1,11 +1,13 @@
 Yggdrasil
 ==============================
 
-Future base library for the Aura Project's server programs. *Work in progress.*
+Future base library for the Aura Project's game servers. *Work in progress.*
+
+This basically moves current Shared classes to a dedicated library.
 
 TODO
 ------------------------------
-- Add more unit tests
+- ~~Add more unit tests~~
 - Add network classes
 
 Links

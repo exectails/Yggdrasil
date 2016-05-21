@@ -21,7 +21,7 @@ namespace Yggdrasil.Util
 		/// <param name="credits">Credits for header footer.</param>
 		public static void WriteHeader(string consoleTitlePrefix, string consoleTitle, IList<string> logo, ConsoleColor logoColor, IList<string> credits)
 		{
-			Console.Title = consoleTitlePrefix + consoleTitle;
+			Console.Title = consoleTitlePrefix + " : " + consoleTitle;
 
 			Console.ForegroundColor = logoColor;
 			WriteLinesCentered(logo);

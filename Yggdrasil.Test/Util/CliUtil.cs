@@ -1,0 +1,117 @@
+﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// For more information, see license file in the main folder
+
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using Xunit;
+using Yggdrasil.Util;
+
+namespace Yggdrasil.Test.Util
+{
+	public class CliUtilTests
+	{
+		private readonly static string[] Logo = new string[]
+		{
+			@"_____.___.                 .___                    .__.__   ",
+			@"\__  |   | ____   ____   __| _/___________    _____|__|  |  ",
+			@" /   |   |/ ___\ / ___\ / __ |\_  __ \__  \  /  ___/  |  |  ",
+			@" \____   / /_/  > /_/  > /_/ | |  | \// __ \_\___ \|  |  |__",
+			@" / ______\___  /\___  /\____ | |__|  (____  /____  >__|____/",
+			@" \/     /_____//_____/      \/            \/     \/         ",
+		};
+
+		private readonly static string[] Credits = new string[]
+		{
+			@"by the Aura development team",
+			@"test line",
+		};
+
+		[Fact]
+		public void WriteHeader()
+		{
+			var sw = new StringWriter();
+			var cout = Console.Out;
+			Console.SetOut(sw);
+
+			var consoleWidth = Console.WindowWidth;
+			var foreColor = Console.ForegroundColor;
+			var backColor = Console.BackgroundColor;
+
+			Console.WindowWidth = 80;
+			CliUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+
+			Assert.Equal(foreColor, Console.ForegroundColor);
+			Assert.Equal(backColor, Console.BackgroundColor);
+			Assert.Equal("Yggdrasil : Tests", Console.Title);
+
+			var output = sw.ToString();
+			Assert.Equal(string.Join(sw.NewLine, new string[]{
+@"          _____.___.                 .___                    .__.__   ",
+@"          \__  |   | ____   ____   __| _/___________    _____|__|  |  ",
+@"           /   |   |/ ___\ / ___\ / __ |\_  __ \__  \  /  ___/  |  |  ",
+@"           \____   / /_/  > /_/  > /_/ | |  | \// __ \_\___ \|  |  |__",
+@"           / ______\___  /\___  /\____ | |__|  (____  /____  >__|____/",
+@"           \/     /_____//_____/      \/            \/     \/         ",
+@"",
+@"                          by the Aura development team",
+@"                          test line",
+@"________________________________________________________________________________",
+@""}), output);
+
+			Console.WindowWidth = consoleWidth;
+			Console.SetOut(cout);
+		}
+
+		[Fact]
+		public void WriteSeperator()
+		{
+			var cout = Console.Out;
+
+			var sw1 = new StringWriter();
+			Console.SetOut(sw1);
+
+			CliUtil.WriteSeperator();
+
+			var width1 = Console.WindowWidth;
+			var output1 = sw1.ToString();
+
+			Assert.Equal(width1 + sw1.NewLine.Length, output1.Length);
+			Assert.True(Regex.IsMatch(output1, "^_+" + sw1.NewLine + "$"));
+
+			var sw2 = new StringWriter();
+			Console.SetOut(sw2);
+			Console.WindowWidth = 90;
+
+			CliUtil.WriteSeperator();
+
+			var width2 = Console.WindowWidth;
+			var output2 = sw2.ToString();
+
+			Assert.Equal(width2 + sw2.NewLine.Length, output2.Length);
+			Assert.True(Regex.IsMatch(output2, "^_+" + sw2.NewLine + "$"));
+
+			Console.WindowWidth = width1;
+			Console.SetOut(cout);
+		}
+
+		[Fact]
+		public void LoadingTitle()
+		{
+			var sw = new StringWriter();
+			var cout = Console.Out;
+			Console.SetOut(sw);
+
+			CliUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+			Assert.Equal("Yggdrasil : Tests", Console.Title);
+
+			CliUtil.LoadingTitle();
+			Assert.Equal("* Yggdrasil : Tests", Console.Title);
+
+			CliUtil.RunningTitle();
+			Assert.Equal("Yggdrasil : Tests", Console.Title);
+
+			Console.SetOut(cout);
+		}
+	}
+}

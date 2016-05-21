@@ -30,15 +30,19 @@ namespace Yggdrasil.Test.Util
 		[Fact]
 		public void WriteHeader()
 		{
+			if (Console.WindowWidth != 80)
+			{
+				Console.WriteLine("Skipping test WriteHeader, incompatible console width.");
+				return;
+			}
+
 			var sw = new StringWriter();
 			var cout = Console.Out;
 			Console.SetOut(sw);
 
-			var consoleWidth = Console.WindowWidth;
 			var foreColor = Console.ForegroundColor;
 			var backColor = Console.BackgroundColor;
 
-			Console.WindowWidth = 80;
 			CliUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
 
 			Assert.Equal(foreColor, Console.ForegroundColor);
@@ -59,7 +63,6 @@ namespace Yggdrasil.Test.Util
 @"________________________________________________________________________________",
 @""}), output);
 
-			Console.WindowWidth = consoleWidth;
 			Console.SetOut(cout);
 		}
 
@@ -79,19 +82,33 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(width1 + sw1.NewLine.Length, output1.Length);
 			Assert.True(Regex.IsMatch(output1, "^_+" + sw1.NewLine + "$"));
 
-			var sw2 = new StringWriter();
-			Console.SetOut(sw2);
-			Console.WindowWidth = 90;
+			var widthSettingSupported = false;
+			try
+			{
+				Console.WindowWidth = 90;
+				widthSettingSupported = true;
+			}
+			catch (NotSupportedException)
+			{
+				Console.WriteLine("Skipping part of test WriteSeperator, setting of console width not supported.");
+			}
 
-			CliUtil.WriteSeperator();
+			if (widthSettingSupported)
+			{
+				var sw2 = new StringWriter();
+				Console.SetOut(sw2);
 
-			var width2 = Console.WindowWidth;
-			var output2 = sw2.ToString();
+				CliUtil.WriteSeperator();
 
-			Assert.Equal(width2 + sw2.NewLine.Length, output2.Length);
-			Assert.True(Regex.IsMatch(output2, "^_+" + sw2.NewLine + "$"));
+				var width2 = Console.WindowWidth;
+				var output2 = sw2.ToString();
 
-			Console.WindowWidth = width1;
+				Assert.Equal(width2 + sw2.NewLine.Length, output2.Length);
+				Assert.True(Regex.IsMatch(output2, "^_+" + sw2.NewLine + "$"));
+
+				Console.WindowWidth = width1;
+			}
+
 			Console.SetOut(cout);
 		}
 

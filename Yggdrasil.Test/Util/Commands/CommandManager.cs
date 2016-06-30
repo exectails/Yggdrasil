@@ -13,12 +13,12 @@ namespace Yggdrasil.Test.Util.Commands
 		[Fact]
 		public void AddingAndGetting()
 		{
-			var mgr = new TestCommandManager();
-			mgr.Add(new TestCommand("test1", "-", "One test command.", Handle1));
-			mgr.Add(new TestCommand("test2", "/", "Two test commands.", Handle2));
+			var mgr1 = new TestCommandManager();
+			mgr1.Add(new TestCommand("test1", "-", "One test command.", Handle1));
+			mgr1.Add(new TestCommand("test2", "/", "Two test commands.", Handle2));
 
-			var cmd1 = mgr.GetCommand("test1");
-			var cmd2 = mgr.GetCommand("test2");
+			var cmd1 = mgr1.GetCommand("test1");
+			var cmd2 = mgr1.GetCommand("test2");
 
 			Assert.Equal("test1", cmd1.Name);
 			Assert.Equal("-", cmd1.Usage);
@@ -29,25 +29,13 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Equal("/", cmd2.Usage);
 			Assert.Equal("Two test commands.", cmd2.Description);
 			Assert.Equal(202, cmd2.Func());
-		}
 
-		[Fact]
-		public void Parsing()
-		{
-			var mgr = new TestCommandManager2();
-			mgr.Add(new TestCommand2("test1", "<p1> <p2> <p3>", "", Handle3));
+			var mgr2 = new TestCommandManager2();
+			mgr2.Add(new TestCommand2("test3", "<p1> <p2> <p3>", "", Handle3));
 
-			var args1 = mgr.Parse("test1 lorem ipsum dolor");
-			Assert.Equal(new string[] { "test1", "lorem", "ipsum", "dolor" }, (IEnumerable<string>)args1);
-
-			var args2 = mgr.Parse("test1 lorem ipsum \"dolor sit amet\"");
-			Assert.Equal(new string[] { "test1", "lorem", "ipsum", "dolor sit amet" }, (IEnumerable<string>)args2);
-
-			var args3 = mgr.Parse("  test1 lorem    ipsum             dolor");
-			Assert.Equal(new string[] { "test1", "lorem", "ipsum", "dolor" }, (IEnumerable<string>)args3);
-
-			var args4 = mgr.Parse("  test1 lorem    ipsum      \"       dolor\"");
-			Assert.Equal(new string[] { "test1", "lorem", "ipsum", "dolor" }, (IEnumerable<string>)args4);
+			var cmd3 = mgr2.GetCommand("test3");
+			var args = new Arguments("test3 9182 foo foo:bar");
+			Assert.Equal(4, cmd3.Func(args));
 		}
 
 		private int Handle1()
@@ -60,9 +48,14 @@ namespace Yggdrasil.Test.Util.Commands
 			return 202;
 		}
 
-		private int Handle3(string[] args)
+		private int Handle3(Arguments args)
 		{
-			return args.Length;
+			Assert.Equal("test3", args.Get(0));
+			Assert.Equal("9182", args.Get(1));
+			Assert.Equal("foo", args.Get(2));
+			Assert.Equal("bar", args.Get("foo"));
+
+			return args.Count;
 		}
 
 		// ------------------------------------------------------------------
@@ -85,10 +78,6 @@ namespace Yggdrasil.Test.Util.Commands
 
 		private class TestCommandManager2 : CommandManager<TestCommand2, TestCommandHandler2>
 		{
-			public IList<string> Parse(string input)
-			{
-				return this.ParseLine(input);
-			}
 		}
 
 		private class TestCommand2 : Command<TestCommandHandler2>
@@ -99,6 +88,6 @@ namespace Yggdrasil.Test.Util.Commands
 			}
 		}
 
-		private delegate int TestCommandHandler2(params string[] args);
+		private delegate int TestCommandHandler2(Arguments args);
 	}
 }

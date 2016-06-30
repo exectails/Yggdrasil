@@ -70,14 +70,14 @@ namespace Yggdrasil.Util.Commands
 			{
 				var line = Console.ReadLine();
 
-				var args = this.ParseLine(line);
+				var args = new Arguments(line);
 				if (args.Count == 0)
 					continue;
 
-				var command = this.GetCommand(args[0]);
+				var command = this.GetCommand(args.Get(0));
 				if (command == null)
 				{
-					Log.Info("Unknown command '{0}'", args[0]);
+					Log.Info("Unknown command '{0}'", args.Get(0));
 					continue;
 				}
 
@@ -103,7 +103,7 @@ namespace Yggdrasil.Util.Commands
 		/// <param name="command"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		protected virtual CommandResult HandleHelp(string command, IList<string> args)
+		protected virtual CommandResult HandleHelp(string command, Arguments args)
 		{
 			var maxLength = _commands.Values.Max(a => a.Name.Length);
 
@@ -121,7 +121,7 @@ namespace Yggdrasil.Util.Commands
 		/// <param name="command"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		protected virtual CommandResult HandleStatus(string command, IList<string> args)
+		protected virtual CommandResult HandleStatus(string command, Arguments args)
 		{
 			Log.Status("Memory Usage: {0:N0} KB", Math.Round(GC.GetTotalMemory(false) / 1024f));
 
@@ -134,7 +134,7 @@ namespace Yggdrasil.Util.Commands
 		/// <param name="command"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		protected virtual CommandResult HandleExit(string command, IList<string> args)
+		protected virtual CommandResult HandleExit(string command, Arguments args)
 		{
 			CliUtil.Exit(0, false);
 
@@ -159,7 +159,7 @@ namespace Yggdrasil.Util.Commands
 	/// <param name="command"></param>
 	/// <param name="args"></param>
 	/// <returns></returns>
-	public delegate CommandResult ConsoleCommandFunc(string command, IList<string> args);
+	public delegate CommandResult ConsoleCommandFunc(string command, Arguments args);
 
 	/// <summary>
 	/// Command results for the Console Commands.

@@ -15,7 +15,7 @@ namespace Yggdrasil.Test.Collections
 		[Fact]
 		public void IntKeying()
 		{
-			Assert.Throws(typeof(NotSupportedException), () => { var dict1 = new OrderedDictionary<int, int>(); });
+			Assert.Throws(typeof(NotSupportedException), () => { new OrderedDictionary<int, int>(); });
 		}
 
 		[Fact]

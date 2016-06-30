@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Yggdrasil.Util;
 
 namespace Yggdrasil.Extensions
@@ -17,7 +18,26 @@ namespace Yggdrasil.Extensions
 		/// <returns></returns>
 		public static T Random<T>(this IList<T> list)
 		{
-			return list[RandomProvider.Get().Next(list.Count)];
+			var rnd = RandomProvider.Get();
+			var max = list.Count;
+			var i = rnd.Next(max);
+
+			return list[i];
+		}
+
+		/// <summary>
+		/// Returns a random item from the given list.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list">The list.</param>
+		/// <returns></returns>
+		public static T Random<T>(this IEnumerable<T> list)
+		{
+			var rnd = RandomProvider.Get();
+			var max = list.Count();
+			var i = rnd.Next(max);
+
+			return list.ElementAt(i);
 		}
 
 		/// <summary>

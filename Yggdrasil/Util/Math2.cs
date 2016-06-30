@@ -70,5 +70,71 @@ namespace Yggdrasil.Util
 		{
 			return (val >= min && val <= max);
 		}
+
+		/// <summary>
+		/// Multiplies initial value with multiplier, returns either the
+		/// result or Min/MaxValue if the multiplication caused an overflow.
+		/// </summary>
+		/// <param name="initialValue"></param>
+		/// <param name="multiplier"></param>
+		/// <returns></returns>
+		public static short MultiplyChecked(short initialValue, double multiplier)
+		{
+			try
+			{
+				checked { return (short)(initialValue * multiplier); }
+			}
+			catch
+			{
+				if (initialValue >= 0)
+					return short.MaxValue;
+				else
+					return short.MinValue;
+			}
+		}
+
+		/// <summary>
+		/// Multiplies initial value with multiplier, returns either the
+		/// result or Min/MaxValue if the multiplication caused an overflow.
+		/// </summary>
+		/// <param name="initialValue"></param>
+		/// <param name="multiplier"></param>
+		/// <returns></returns>
+		public static int MultiplyChecked(int initialValue, double multiplier)
+		{
+			try
+			{
+				checked { return (int)(initialValue * multiplier); }
+			}
+			catch
+			{
+				if (initialValue >= 0)
+					return int.MaxValue;
+				else
+					return int.MinValue;
+			}
+		}
+
+		/// <summary>
+		/// Multiplies initial value with multiplier, returns either the
+		/// result or Min/MaxValue if the multiplication caused an overflow.
+		/// </summary>
+		/// <param name="initialValue"></param>
+		/// <param name="multiplier"></param>
+		/// <returns></returns>
+		public static long MultiplyChecked(long initialValue, double multiplier)
+		{
+			try
+			{
+				checked { return (long)(initialValue * multiplier); }
+			}
+			catch
+			{
+				if (initialValue >= 0)
+					return long.MaxValue;
+				else
+					return long.MinValue;
+			}
+		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Yggdrasil.Util.Commands
 		/// </summary>
 		/// <remarks>
 		/// Recommended syntax:
-		/// - &lt;parameter&gt>      Mandatory parameter.
+		/// - &lt;parameter&gt;      Mandatory parameter.
 		/// - [parameter]            Optional parameter.
 		/// - parameter1|parameter2  Interchangeable parameters.
 		/// </remarks>

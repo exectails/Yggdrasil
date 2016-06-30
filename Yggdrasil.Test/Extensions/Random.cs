@@ -15,9 +15,17 @@ namespace Yggdrasil.Test.Extensions
 		public void RandomElementFromIList()
 		{
 			var list = (IList<int>)new List<int>() { 11, 23, 34, 42 };
+			var results = new HashSet<int>();
 
 			for (int i = 0; i < 1000000; ++i)
-				Assert.Contains(list.Random(), list);
+			{
+				var n = list.Random();
+				results.Add(n);
+
+				Assert.Contains(n, list);
+			}
+
+			Assert.Equal(list, results.OrderBy(a => a));
 		}
 
 		[Fact]
@@ -26,9 +34,17 @@ namespace Yggdrasil.Test.Extensions
 			var list1 = new List<int>() { 11, 23, 34, 42 };
 			var list2 = new List<int>() { 11, 23, 34 };
 			var enumerable = list1.Where(a => a <= 34);
+			var results = new HashSet<int>();
 
 			for (int i = 0; i < 1000000; ++i)
-				Assert.Contains(enumerable.Random(), list2);
+			{
+				var n = enumerable.Random();
+				results.Add(n);
+
+				Assert.Contains(n, list2);
+			}
+
+			Assert.Equal(list2, results.OrderBy(a => a));
 		}
 
 		[Fact]
@@ -45,9 +61,17 @@ namespace Yggdrasil.Test.Extensions
 		{
 			var list = new int[] { 101, 203, 305, 407 };
 			var rnd = RandomProvider.Get();
+			var results = new HashSet<int>();
 
 			for (int i = 0; i < 1000000; ++i)
-				Assert.Contains(rnd.Rnd(list), list);
+			{
+				var n = rnd.Rnd(list);
+				results.Add(n);
+
+				Assert.Contains(n, list);
+			}
+
+			Assert.Equal(list, results.OrderBy(a => a));
 		}
 	}
 }

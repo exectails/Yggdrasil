@@ -109,7 +109,7 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns whether the application runs with admin rights or not.
+		/// Returns whether or not the application runs with admin rights.
 		/// </summary>
 		public static bool CheckAdmin()
 		{

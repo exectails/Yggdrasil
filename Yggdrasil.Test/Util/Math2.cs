@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 using Xunit;
 using Yggdrasil.Util;
 
@@ -74,6 +75,32 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(-4000000000L, Math2.MultiplyChecked(-2000000000L, 2));
 			Assert.Equal(long.MinValue, Math2.MultiplyChecked(-5000000000000000000, 2));
 			Assert.Equal(long.MinValue, Math2.MultiplyChecked(-4500000000000000000, 3));
+		}
+
+		[Fact]
+		public void DegreeToRadian()
+		{
+			Assert.Equal(0, Math2.DegreeToRadian(0));
+			Assert.Equal((float)Math.PI / 4f, Math2.DegreeToRadian(45));
+			Assert.Equal(-(float)Math.PI / 4f, Math2.DegreeToRadian(-45));
+			Assert.Equal((float)Math.PI / 2f, Math2.DegreeToRadian(90));
+			Assert.Equal((float)Math.PI, Math2.DegreeToRadian(180));
+			Assert.Equal((float)Math.PI * 1.5f, Math2.DegreeToRadian(270));
+			Assert.Equal((float)Math.PI * 2f, Math2.DegreeToRadian(360));
+			Assert.Equal(-(float)Math.PI * 2f, Math2.DegreeToRadian(-360));
+		}
+
+		[Fact]
+		public void RadianToDegree()
+		{
+			Assert.Equal(0, Math2.RadianToDegree(0));
+			Assert.Equal(45, Math2.RadianToDegree((float)Math.PI / 4f));
+			Assert.Equal(-45, Math2.RadianToDegree(-(float)Math.PI / 4f));
+			Assert.Equal(90, Math2.RadianToDegree((float)Math.PI / 2f));
+			Assert.Equal(180, Math2.RadianToDegree((float)Math.PI));
+			Assert.Equal(270, Math2.RadianToDegree((float)Math.PI * 1.5f));
+			Assert.Equal(360, Math2.RadianToDegree((float)Math.PI * 2f));
+			Assert.Equal(-360, Math2.RadianToDegree(-(float)Math.PI * 2f));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 namespace Yggdrasil.Util
 {
 	/// <summary>
@@ -135,6 +136,26 @@ namespace Yggdrasil.Util
 				else
 					return long.MinValue;
 			}
+		}
+
+		/// <summary>
+		/// Returns the given degree in radians.
+		/// </summary>
+		/// <param name="degree"></param>
+		/// <returns></returns>
+		public static float DegreeToRadian(double degree)
+		{
+			return (float)(Math.PI / 180f * degree);
+		}
+
+		/// <summary>
+		/// Returns the given radian in degree.
+		/// </summary>
+		/// <param name="degree"></param>
+		/// <returns></returns>
+		public static float RadianToDegree(double radian)
+		{
+			return (float)(radian * (180f / Math.PI));
 		}
 	}
 }

@@ -52,6 +52,7 @@
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\VariableManager.cs" />
     <Compile Include="Security\Hashing\BCrypt.cs" />
     <Compile Include="Util\CliUtil.cs" />
     <Compile Include="Util\Commands\Arguments.cs" />

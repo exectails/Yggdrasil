@@ -14,8 +14,7 @@ namespace Yggdrasil.Test.Logging
 		[Fact]
 		public void LogToConsole()
 		{
-			Log.Hide = 0;
-			Log.LogFile = null;
+			var filter = LogLevel.None;
 
 			var sw = new StringWriter();
 			var cout = Console.Out;
@@ -38,21 +37,14 @@ namespace Yggdrasil.Test.Logging
 			test += "[Debug] - test 4" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
-			Log.Status("test 5");
-			test += "[Status] - test 5" + sw.NewLine;
+			filter = LogLevel.Debug;
+			Log.SetFilter(filter);
+
+			Log.Debug("test 5");
 			Assert.Equal(test, sw.ToString());
 
-			Log.Unimplemented("test 6");
-			test += "[Unimplemented] - test 6" + sw.NewLine;
-			Assert.Equal(test, sw.ToString());
-
-			Log.Hide = LogLevel.Debug;
-			Log.Debug("test 7");
-			Assert.Equal(test, sw.ToString());
-
-			var ex = new Exception("test 8");
-			Log.Exception(ex);
-			test += "[Exception] - " + ex.ToString() + sw.NewLine;
+			Log.Status("test 6");
+			test += "[Status] - test 6" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
 			Console.SetOut(cout);
@@ -63,11 +55,8 @@ namespace Yggdrasil.Test.Logging
 		{
 			var tmpFile = Path.GetTempFileName();
 
-			Log.Hide = 0;
-			Log.LogFile = tmpFile;
-
+			var filter = LogLevel.None;
 			var cout = Console.Out;
-			//Console.SetOut(new StringWriter());
 
 			var dPre = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} ";
 			var test = dPre + @"\[Info\] - test 1" + Environment.NewLine;
@@ -87,22 +76,15 @@ namespace Yggdrasil.Test.Logging
 			test += dPre + @"\[Debug\] - test 4" + Environment.NewLine;
 			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
 
-			Log.Status("test 5");
-			test += dPre + @"\[Status\] - test 5" + Environment.NewLine;
+			filter = LogLevel.Debug;
+			Log.SetFilter(filter);
+
+			Log.Debug("test 5");
+			test += dPre + @"\[Debug\] - test 5" + Environment.NewLine;
 			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
 
-			Log.Unimplemented("test 6");
-			test += dPre + @"\[Unimplemented\] - test 6" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
-
-			Log.Hide |= LogLevel.Debug;
-			Log.Debug("test 7");
-			test += dPre + @"\[Debug\] - test 7" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
-
-			var ex = new Exception("test 8");
-			Log.Exception(ex);
-			test += dPre + @"\[Exception\] - " + ex.ToString() + Environment.NewLine;
+			Log.Status("test 6");
+			test += dPre + @"\[Status\] - test 6" + Environment.NewLine;
 			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
 
 			Console.SetOut(cout);

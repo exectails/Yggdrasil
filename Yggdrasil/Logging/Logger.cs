@@ -10,11 +10,10 @@ namespace Yggdrasil.Logging
 {
 	public sealed class Logger
 	{
+		private Regex _codeRegex = new Regex(@"\^[a-z]+[0-9]*;", RegexOptions.Compiled);
+
 		private static Dictionary<string, Logger> _loggers;
-
 		private List<LoggerTarget> _targets;
-
-		private Regex codeRegex = new Regex(@"\^[a-z]+[0-9]*;", RegexOptions.Compiled);
 
 		/// <summary>
 		/// Name of the logger.
@@ -95,6 +94,10 @@ namespace Yggdrasil.Logging
 			return this;
 		}
 
+		/// <summary>
+		/// Returns list of all targets.
+		/// </summary>
+		/// <returns></returns>
 		public LoggerTarget[] GetTargets()
 		{
 			lock (_targets)
@@ -213,7 +216,7 @@ namespace Yggdrasil.Logging
 						continue;
 
 					var messageRaw = string.Format(target.GetFormat(level), level, message);
-					var messageClean = codeRegex.Replace(messageRaw, "");
+					var messageClean = _codeRegex.Replace(messageRaw, "");
 
 					target.Write(level, message, messageRaw, messageClean);
 				}

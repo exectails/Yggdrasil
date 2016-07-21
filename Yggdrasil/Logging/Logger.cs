@@ -39,12 +39,12 @@ namespace Yggdrasil.Logging
 		}
 
 		/// <summary>
-		/// Creates new logger.
+		/// Creates new logger, named after the entry assembly.
 		/// </summary>
 		/// <returns></returns>
 		public static Logger Get()
 		{
-			return Get(Assembly.GetCallingAssembly().GetName().Name);
+			return Get(Assembly.GetEntryAssembly().GetName().Name);
 		}
 
 		/// <summary>

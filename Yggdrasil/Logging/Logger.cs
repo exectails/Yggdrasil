@@ -44,7 +44,11 @@ namespace Yggdrasil.Logging
 		/// <returns></returns>
 		public static Logger Get()
 		{
-			return Get(Assembly.GetEntryAssembly().GetName().Name);
+			var asm = Assembly.GetEntryAssembly();
+			if (asm == null)
+				asm = Assembly.GetCallingAssembly();
+
+			return Get(asm.GetName().Name);
 		}
 
 		/// <summary>

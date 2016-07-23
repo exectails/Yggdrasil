@@ -24,12 +24,12 @@ namespace Yggdrasil.Logging.Targets
 
 				if (File.Exists(this.FilePath))
 					File.Delete(this.FilePath);
+
+				if (!Directory.Exists(this.FolderPath))
+					Directory.CreateDirectory(this.FolderPath);
 			}
 
-			if (!Directory.Exists(this.FolderPath))
-				Directory.CreateDirectory(this.FolderPath);
-
-			messageClean = DateTime.Now + " " + messageClean;
+			messageClean = string.Format("{0:yyyy-MM-dd HH:mm} {1}", DateTime.Now, messageClean);
 
 			File.AppendAllText(this.FilePath, messageClean);
 		}

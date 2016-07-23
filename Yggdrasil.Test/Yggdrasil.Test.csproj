@@ -50,7 +50,7 @@
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />
     <Compile Include="IO\FileReader.cs" />
-    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\VariableManager.cs" />
     <Compile Include="Security\Hashing\BCrypt.cs" />

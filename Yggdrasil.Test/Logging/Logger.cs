@@ -9,45 +9,44 @@ using Yggdrasil.Logging;
 
 namespace Yggdrasil.Test.Logging
 {
-	public class LogTests
+	public class LoggerTests
 	{
 		[Fact]
-		public void LogToConsole()
+		public void LogToStringWriter()
 		{
-			var filter = LogLevel.None;
+			var logger = Logger.Get();
 
-			var sw = new StringWriter();
-			var cout = Console.Out;
-			Console.SetOut(sw);
+			var target = new StringWriterTarget();
+			target.Filter = 0;
+			logger.AddTarget(target);
 
-			var test = "[Info] - test 1" + sw.NewLine;
+			var sw = target.SW;
+			var test = "";
 
-			Log.Info("test 1");
+			logger.Info("test 1");
+			test += "[Info] - test 1" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
-			Log.Warning("test 2");
+			logger.Warning("test 2");
 			test += "[Warning] - test 2" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
-			Log.Error("test 3");
+			logger.Error("test 3");
 			test += "[Error] - test 3" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
-			Log.Debug("test 4");
+			logger.Debug("test 4");
 			test += "[Debug] - test 4" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
 
-			filter = LogLevel.Debug;
-			Log.SetFilter(filter);
+			target.Filter = LogLevel.Debug;
 
-			Log.Debug("test 5");
+			logger.Debug("test 5");
 			Assert.Equal(test, sw.ToString());
 
-			Log.Status("test 6");
+			logger.Status("test 6");
 			test += "[Status] - test 6" + sw.NewLine;
 			Assert.Equal(test, sw.ToString());
-
-			Console.SetOut(cout);
 		}
 
 		[Fact]
@@ -89,5 +88,21 @@ namespace Yggdrasil.Test.Logging
 
 			Console.SetOut(cout);
 		}
+
+		private class StringWriterTarget : LoggerTarget
+		{
+			public StringWriter SW = new StringWriter();
+
+			public override void Write(LogLevel level, string message, string messageRaw, string messageClean)
+			{
+				this.SW.Write(messageClean);
+			}
+
+			public override string GetFormat(LogLevel level)
+			{
+				return "[{0}] - {1}";
+			}
+		}
+
 	}
 }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Xunit;
 using Yggdrasil.Logging;
+using Yggdrasil.Logging.Targets;
 
 namespace Yggdrasil.Test.Logging
 {
@@ -52,41 +53,39 @@ namespace Yggdrasil.Test.Logging
 		[Fact]
 		public void LogToFile()
 		{
-			var tmpFile = Path.GetTempFileName();
+			var logger = Logger.Get();
 
-			var filter = LogLevel.None;
-			var cout = Console.Out;
+			var target = new FileTarget("logs");
+			target.Filter = 0;
+			logger.AddTarget(target);
 
+			var test = "";
 			var dPre = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} ";
-			var test = dPre + @"\[Info\] - test 1" + Environment.NewLine;
 
-			Log.Info("test 1");
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
+			logger.Info("test 1");
+			test += dPre + @"\[Info\] - test 1" + Environment.NewLine;
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 
-			Log.Warning("test 2");
+			logger.Warning("test 2");
 			test += dPre + @"\[Warning\] - test 2" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 
-			Log.Error("test 3");
+			logger.Error("test 3");
 			test += dPre + @"\[Error\] - test 3" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 
-			Log.Debug("test 4");
+			logger.Debug("test 4");
 			test += dPre + @"\[Debug\] - test 4" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 
-			filter = LogLevel.Debug;
-			Log.SetFilter(filter);
+			target.Filter = LogLevel.Debug;
 
-			Log.Debug("test 5");
-			test += dPre + @"\[Debug\] - test 5" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
+			logger.Debug("test 5");
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 
-			Log.Status("test 6");
+			logger.Status("test 6");
 			test += dPre + @"\[Status\] - test 6" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(tmpFile), test));
-
-			Console.SetOut(cout);
+			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
 		}
 
 		private class StringWriterTarget : LoggerTarget

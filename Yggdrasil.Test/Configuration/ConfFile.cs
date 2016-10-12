@@ -31,7 +31,6 @@ namespace Yggdrasil.Test.Configuration
 				test6: no
 
 				test7: 2010-12-28 18:58:59
-				test8: 1.02:03:04.005
 
 				test9: Bar
 
@@ -107,9 +106,6 @@ namespace Yggdrasil.Test.Configuration
 
 			Assert.Equal(new DateTime(2010, 12, 28, 18, 58, 59), conf.GetDateTime("test7"));
 			Assert.Equal(DateTime.Now.Date, conf.GetDateTime("test7.1", DateTime.Now.Date));
-
-			Assert.Equal(new TimeSpan(1, 2, 3, 4, 5), conf.GetTimeSpan("test8"));
-			Assert.Equal(TimeSpan.FromMinutes(5), conf.GetTimeSpan("test8.1", TimeSpan.FromMinutes(5)));
 
 			Assert.Equal(TestEnum.Bar, conf.GetEnum<TestEnum>("test9"));
 			Assert.Equal(TestEnum.Foo, conf.GetEnum<TestEnum>("test9.1", TestEnum.Foo));

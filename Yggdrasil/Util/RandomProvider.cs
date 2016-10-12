@@ -7,18 +7,14 @@ using System.Threading;
 namespace Yggdrasil.Util
 {
 	/// <summary>
-	/// Thread-safe provider for "Random" instances. Use whenever no custom
-	/// seed is required.
+	/// Thread-safe provider for "Random" instances.
 	/// </summary>
 	public static class RandomProvider
 	{
 		private static readonly Random _seed = new Random();
 
-		private static ThreadLocal<Random> randomWrapper = new ThreadLocal<Random>(() =>
-		{
-			lock (_seed)
-				return new Random(_seed.Next());
-		});
+		[ThreadStatic]
+		private static Random _random;
 
 		/// <summary>
 		/// Returns an instance of Random for the calling thread.
@@ -26,7 +22,14 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public static Random Get()
 		{
-			return randomWrapper.Value;
+			if (_random != null)
+				return _random;
+
+			int seed;
+			lock (_seed)
+				seed = _seed.Next();
+
+			return (_random = new Random(seed));
 		}
 	}
 }

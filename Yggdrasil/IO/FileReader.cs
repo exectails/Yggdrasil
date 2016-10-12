@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Yggdrasil.Extensions;
 
 namespace Yggdrasil.IO
 {
@@ -73,7 +74,7 @@ namespace Yggdrasil.IO
 
 				line = line.Trim();
 
-				if (string.IsNullOrWhiteSpace(line))
+				if (line.IsNullOrWhiteSpace())
 					continue;
 
 				// Ignore very short or commented lines

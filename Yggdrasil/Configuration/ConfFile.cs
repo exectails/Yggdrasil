@@ -255,34 +255,6 @@ namespace Yggdrasil.Configuration
 		}
 
 		/// <summary>
-		/// Returns the option as a TimeSpan, or the default value if the option
-		/// doesn't exist or is invalid.
-		/// </summary>
-		/// <remarks>
-		/// Value must be formatted as [-]{ d | [d.]hh:mm[:ss[.fff]] }
-		/// 
-		/// For more details, see <see href="http://msdn.microsoft.com/en-us/library/se73z7b9(v=vs.110).aspx">MSDN</see>.
-		/// </remarks>
-		/// <param name="option"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		public TimeSpan GetTimeSpan(string option, TimeSpan defaultValue = default(TimeSpan))
-		{
-			string value;
-			lock (_options)
-			{
-				if (!_options.TryGetValue(option, out value))
-					return defaultValue;
-			}
-
-			TimeSpan ret;
-			if (TimeSpan.TryParse(value, CultureInfo.InvariantCulture, out ret))
-				return ret;
-
-			return defaultValue;
-		}
-
-		/// <summary>
 		/// Returns the option as an enum, or the default value if the option
 		/// doesn't exist or is invalid.
 		/// </summary>
@@ -292,7 +264,9 @@ namespace Yggdrasil.Configuration
 		/// <returns></returns>
 		public T GetEnum<T>(string option, T defaultValue = default(T)) where T : struct
 		{
-			if (!typeof(T).IsEnum)
+			var type = typeof(T);
+
+			if (!type.IsEnum)
 				throw new NotSupportedException("Type " + typeof(T) + " is not an enum.");
 
 			string value;
@@ -302,10 +276,8 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			T ret;
-
-			if (Enum.TryParse<T>(value, true, out ret))
-				return ret;
+			if (Enum.IsDefined(type, value))
+				return (T)Enum.Parse(type, value, true);
 
 			return defaultValue;
 		}

@@ -15,5 +15,19 @@ namespace Yggdrasil.Test.Extensions
 			Assert.Equal(1, "test2".LevenshteinDistance("test3"));
 			Assert.Equal(4, "test4".LevenshteinDistance("test4 asd"));
 		}
+
+		[Fact]
+		public void IsNullOrWhiteSpace()
+		{
+			Assert.Equal(true, ((string)null).IsNullOrWhiteSpace());
+			Assert.Equal(true, "".IsNullOrWhiteSpace());
+			Assert.Equal(true, " ".IsNullOrWhiteSpace());
+			Assert.Equal(true, "\t".IsNullOrWhiteSpace());
+			Assert.Equal(true, "\n".IsNullOrWhiteSpace());
+			Assert.Equal(true, "\r".IsNullOrWhiteSpace());
+			Assert.Equal(true, "    ".IsNullOrWhiteSpace());
+			Assert.Equal(false, "  a  ".IsNullOrWhiteSpace());
+			Assert.Equal(false, "abc".IsNullOrWhiteSpace());
+		}
 	}
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Yggdrasil.Collections
@@ -241,7 +240,10 @@ namespace Yggdrasil.Collections
 		{
 			bool wasInDictionary = fDictionary.Remove(key);
 			bool wasInKeys = fKeys.Remove(key);
-			Contract.Assume(wasInDictionary == wasInKeys);
+
+			if (wasInDictionary != wasInKeys)
+				throw new Exception("Element was only removed from one of the lists.");
+
 			return wasInDictionary;
 		}
 
@@ -292,15 +294,6 @@ namespace Yggdrasil.Collections
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return Enumerate().GetEnumerator();
-		}
-
-		/// <summary>
-		/// Conditions that should be true at the end of every public method.
-		/// </summary>
-		[ContractInvariantMethod]
-		private void ObjectInvariant()
-		{
-			Contract.Invariant(fDictionary.Count == fKeys.Count, "Unordered dictionary and ordered key list should be the same length.");
 		}
 	}
 }

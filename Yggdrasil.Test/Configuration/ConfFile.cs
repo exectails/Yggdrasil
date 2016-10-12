@@ -33,6 +33,7 @@ namespace Yggdrasil.Test.Configuration
 				test7: 2010-12-28 18:58:59
 
 				test9: Bar
+				test10: BarFoo
 
 				require {0}
 				include {1}
@@ -109,6 +110,8 @@ namespace Yggdrasil.Test.Configuration
 
 			Assert.Equal(TestEnum.Bar, conf.GetEnum<TestEnum>("test9"));
 			Assert.Equal(TestEnum.Foo, conf.GetEnum<TestEnum>("test9.1", TestEnum.Foo));
+			Assert.Equal((TestEnum)0, conf.GetEnum<TestEnum>("test10"));
+			Assert.Throws<NotSupportedException>(() => conf.GetEnum<long>("test10"));
 
 			Assert.Equal("Ygg-dra-sil!", conf.GetString("test10"));
 			Assert.Equal("foobar", conf.GetString("test10.1", "foobar"));

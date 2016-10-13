@@ -12,7 +12,7 @@ namespace Yggdrasil.Network
 	public class LengthPrefixFramer : IMessageFramer
 	{
 		private byte[] _lengthBuffer, _messageBuffer;
-		private int _bytesReceived, _messageSize;
+		private int _bytesReceived;
 
 		/// <summary>
 		/// Maximum size of messages.
@@ -90,17 +90,17 @@ namespace Yggdrasil.Network
 
 					if (_bytesReceived == _lengthBuffer.Length)
 					{
-						_messageSize = 0;
-						_messageSize |= (int)(_lengthBuffer[0] << (8 * 0));
-						_messageSize |= (int)(_lengthBuffer[1] << (8 * 1));
-						_messageSize |= (int)(_lengthBuffer[2] << (8 * 2));
-						_messageSize |= (int)(_lengthBuffer[3] << (8 * 3));
-						_messageSize -= sizeof(int);
+						var messageSize = 0;
+						messageSize |= (int)(_lengthBuffer[0] << (8 * 0));
+						messageSize |= (int)(_lengthBuffer[1] << (8 * 1));
+						messageSize |= (int)(_lengthBuffer[2] << (8 * 2));
+						messageSize |= (int)(_lengthBuffer[3] << (8 * 3));
+						messageSize -= sizeof(int);
 
-						if (_messageSize < 0 || _messageSize > this.MaxMessageSize)
-							throw new InvalidMessageSizeException("Invalid size (" + _messageSize + ").");
+						if (messageSize < 0 || messageSize > this.MaxMessageSize)
+							throw new InvalidMessageSizeException("Invalid size (" + messageSize + ").");
 
-						_messageBuffer = new byte[_messageSize];
+						_messageBuffer = new byte[messageSize];
 						_bytesReceived = 0;
 					}
 				}

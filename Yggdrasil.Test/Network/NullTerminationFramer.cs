@@ -150,7 +150,6 @@ namespace Yggdrasil.Test.Network
 				if (take < 0)
 					continue;
 
-				Console.WriteLine(i);
 				var data = dataList.Skip(i).Take(take).ToArray();
 				if (i < 18)
 				{

@@ -139,10 +139,10 @@ namespace Yggdrasil.Network
 		/// <param name="ar"></param>
 		private void OnAccept(IAsyncResult ar)
 		{
-			var connectionSocket = _socket.EndAccept(ar);
-
 			try
 			{
+				var connectionSocket = _socket.EndAccept(ar);
+
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
 				connection.BeginReceive();

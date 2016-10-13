@@ -51,6 +51,8 @@
     <Compile Include="Extensions\String.cs" />
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Network\LengthPrefixFramer.cs" />
+    <Compile Include="Network\NullTerminationFramer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Hashing\BCrypt.cs" />
     <Compile Include="Util\CliUtil.cs" />

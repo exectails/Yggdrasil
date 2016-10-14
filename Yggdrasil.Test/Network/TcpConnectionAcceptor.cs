@@ -21,6 +21,7 @@ namespace Yggdrasil.Test.Network
 			acceptor.Listen();
 			Assert.Equal("0.0.0.0:" + acceptor.LocalEndPoint.Port, acceptor.Address);
 			//acceptor.Stop();
+			// TODO: Stop throws under Mono, disposed object in BeginAccept.
 
 			acceptor = new TcpConnectionAcceptor<TestConnection>(19489);
 			acceptor.Listen();
@@ -38,94 +39,105 @@ namespace Yggdrasil.Test.Network
 			//acceptor.Stop();
 		}
 
-		//[Fact]
-		//public void AcceptingConnections()
-		//{
-		//	var connections = new List<TestConnection>();
-		//	var exceptions = new List<Exception>();
+		[Fact]
+		public void AcceptingConnections()
+		{
+			var connections = new List<TestConnection>();
+			var exceptions = new List<Exception>();
 
-		//	var acceptor = new TcpConnectionAcceptor<TestConnection>();
-		//	acceptor.ConnectionAccepted += (conn => connections.Add(conn));
-		//	acceptor.AcceptionException += (ex => exceptions.Add(ex));
-		//	acceptor.Listen();
+			var acceptor = new TcpConnectionAcceptor<TestConnection>();
+			acceptor.ConnectionAccepted += (conn => connections.Add(conn));
+			acceptor.AcceptionException += (ex => exceptions.Add(ex));
+			acceptor.Listen();
 
-		//	var socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		//	var socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			var socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			var socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		//	socket1.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
-		//	socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
+			socket1.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
+			socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 
-		//	// Wait a moment for the events to fire.
-		//	Thread.Sleep(5);
+			// Wait a moment for the events to fire.
+			Thread.Sleep(5);
 
-		//	Assert.Equal(true, socket1.Connected);
-		//	Assert.Equal(true, socket2.Connected);
+			Assert.Equal(true, socket1.Connected);
+			Assert.Equal(true, socket2.Connected);
 
-		//	if (exceptions.Count != 0)
-		//		throw exceptions[0];
+			if (exceptions.Count != 0)
+				throw exceptions[0];
 
-		//	Assert.Equal(2, connections.Count);
-		//}
+			Assert.Equal(2, connections.Count);
 
-		//[Fact]
-		//public void DataExchange()
-		//{
-		//	var connections = new List<TestConnection>();
-		//	var exceptions = new List<Exception>();
+			foreach (var conn in connections)
+				conn.Close();
 
-		//	var acceptor = new TcpConnectionAcceptor<TestConnection>();
-		//	acceptor.ConnectionAccepted += (conn => connections.Add(conn));
-		//	acceptor.AcceptionException += (ex => exceptions.Add(ex));
-		//	acceptor.Listen();
+			//acceptor.Stop();
+		}
 
-		//	var socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		//	var socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		[Fact]
+		public void DataExchange()
+		{
+			var connections = new List<TestConnection>();
+			var exceptions = new List<Exception>();
 
-		//	socket1.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
-		//	socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
+			var acceptor = new TcpConnectionAcceptor<TestConnection>();
+			acceptor.ConnectionAccepted += (conn => connections.Add(conn));
+			acceptor.AcceptionException += (ex => exceptions.Add(ex));
+			acceptor.Listen();
 
-		//	Thread.Sleep(5);
+			var socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			var socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		//	var message1 = new byte[] { 1, 3, 5, 7 };
-		//	var message2 = new byte[] { 8, 52, 45, 6 };
-		//	var message3 = Encoding.UTF8.GetBytes("~foobar~");
+			socket1.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
+			socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 
-		//	// Test receiving messages
-		//	var framer = new LengthPrefixFramer(50);
-		//	socket1.Send(framer.Frame(message1));
-		//	socket1.Send(framer.Frame(message2));
-		//	socket2.Send(framer.Frame(message3));
+			Thread.Sleep(5);
 
-		//	Thread.Sleep(5);
+			var message1 = new byte[] { 1, 3, 5, 7 };
+			var message2 = new byte[] { 8, 52, 45, 6 };
+			var message3 = Encoding.UTF8.GetBytes("~foobar~");
 
-		//	Assert.Equal(2, connections[0].Messages.Count);
-		//	Assert.Equal(1, connections[1].Messages.Count);
+			// Test receiving messages
+			var framer = new LengthPrefixFramer(50);
+			socket1.Send(framer.Frame(message1));
+			socket1.Send(framer.Frame(message2));
+			socket2.Send(framer.Frame(message3));
 
-		//	Assert.Equal(message1, connections[0].Messages[0]);
-		//	Assert.Equal(message2, connections[0].Messages[1]);
-		//	Assert.Equal(message3, connections[1].Messages[0]);
+			Thread.Sleep(5);
 
-		//	// Test receiving invalid message
-		//	Exception receiveException = null;
-		//	connections[0].ReceiveException += (ex => receiveException = ex);
-		//	socket1.Send(new byte[] { 0xFF, 0, 0, 0 });
+			Assert.Equal(2, connections[0].Messages.Count);
+			Assert.Equal(1, connections[1].Messages.Count);
 
-		//	Thread.Sleep(5);
+			Assert.Equal(message1, connections[0].Messages[0]);
+			Assert.Equal(message2, connections[0].Messages[1]);
+			Assert.Equal(message3, connections[1].Messages[0]);
 
-		//	Assert.NotEqual(null, receiveException);
-		//	Assert.IsType<InvalidMessageSizeException>(receiveException);
+			// Test receiving invalid message
+			Exception receiveException = null;
+			connections[0].ReceiveException += (ex => receiveException = ex);
+			socket1.Send(new byte[] { 0xFF, 0, 0, 0 });
 
-		//	// Test sending message
-		//	var message4 = new byte[] { 9, 8, 7, 6 };
-		//	connections[1].Send(message4);
+			Thread.Sleep(5);
 
-		//	var buffer = new byte[10];
-		//	var len = socket2.Receive(buffer);
-		//	Console.WriteLine(BitConverter.ToString(buffer));
+			Assert.NotEqual(null, receiveException);
+			Assert.IsType<InvalidMessageSizeException>(receiveException);
 
-		//	Assert.Equal(8, len);
-		//	Assert.Equal(new byte[] { 8, 0, 0, 0, 9, 8, 7, 6, 0, 0 }, buffer);
-		//}
+			// Test sending message
+			var message4 = new byte[] { 9, 8, 7, 6 };
+			connections[1].Send(message4);
+
+			var buffer = new byte[10];
+			var len = socket2.Receive(buffer);
+			Console.WriteLine(BitConverter.ToString(buffer));
+
+			Assert.Equal(8, len);
+			Assert.Equal(new byte[] { 8, 0, 0, 0, 9, 8, 7, 6, 0, 0 }, buffer);
+
+			// Close everything
+			foreach (var conn in connections)
+				conn.Close();
+
+			//acceptor.Stop();
+		}
 	}
 
 	public class TestConnection : TcpConnection

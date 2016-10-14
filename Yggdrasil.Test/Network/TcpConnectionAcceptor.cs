@@ -20,22 +20,22 @@ namespace Yggdrasil.Test.Network
 			var acceptor = new TcpConnectionAcceptor<TestConnection>();
 			acceptor.Listen();
 			Assert.Equal("0.0.0.0:" + acceptor.LocalEndPoint.Port, acceptor.Address);
-			acceptor.Stop();
+			//acceptor.Stop();
 
 			acceptor = new TcpConnectionAcceptor<TestConnection>(19489);
 			acceptor.Listen();
 			Assert.Equal("0.0.0.0:19489", acceptor.Address);
-			acceptor.Stop();
+			//acceptor.Stop();
 
 			acceptor = new TcpConnectionAcceptor<TestConnection>("127.0.0.1", 27385);
 			acceptor.Listen();
 			Assert.Equal("127.0.0.1:27385", acceptor.Address);
-			acceptor.Stop();
+			//acceptor.Stop();
 
 			acceptor = new TcpConnectionAcceptor<TestConnection>(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 39571));
 			acceptor.Listen();
 			Assert.Equal("127.0.0.1:39571", acceptor.Address);
-			acceptor.Stop();
+			//acceptor.Stop();
 		}
 
 		//[Fact]

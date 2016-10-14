@@ -5,11 +5,6 @@ Future base library for the Aura Project's game servers. *Work in progress.*
 
 This basically moves current Shared classes to a dedicated library.
 
-TODO
-------------------------------
-- ~~Add more unit tests~~
-- Add network classes
-
 Links
 ------------------------------
 * Forums: http://aura-project.org/

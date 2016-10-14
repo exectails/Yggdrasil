@@ -65,11 +65,6 @@ namespace Yggdrasil.Test.Network
 				throw exceptions[0];
 
 			Assert.Equal(2, connections.Count);
-
-			foreach (var conn in connections)
-				conn.Close();
-
-			acceptor.Stop();
 		}
 
 		[Fact]
@@ -130,12 +125,6 @@ namespace Yggdrasil.Test.Network
 
 			Assert.Equal(8, len);
 			Assert.Equal(new byte[] { 8, 0, 0, 0, 9, 8, 7, 6, 0, 0 }, buffer);
-
-			// Close everything
-			foreach (var conn in connections)
-				conn.Close();
-
-			acceptor.Stop();
 		}
 	}
 

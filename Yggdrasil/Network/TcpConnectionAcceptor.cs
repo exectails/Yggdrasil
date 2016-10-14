@@ -150,18 +150,19 @@ namespace Yggdrasil.Network
 				var ev = this.ConnectionAccepted;
 				if (ev != null)
 					ev(connection);
+
+				this.BeginAccept();
 			}
 			catch (ObjectDisposedException)
 			{
+				// Don't BeginAccept if disposed.
 			}
 			catch (Exception ex)
 			{
 				var ev = this.AcceptionException;
 				if (ev != null)
 					ev(ex);
-			}
-			finally
-			{
+
 				this.BeginAccept();
 			}
 		}

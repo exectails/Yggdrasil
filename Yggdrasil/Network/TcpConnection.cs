@@ -36,12 +36,12 @@ namespace Yggdrasil.Network
 		/// <summary>
 		/// Raised when an exception occurs while receiving data.
 		/// </summary>
-		public event Action<Exception> ReceiveException;
+		public event Action<TcpConnection, Exception> ReceiveException;
 
 		/// <summary>
 		/// Raised when connection was closed.
 		/// </summary>
-		public event Action<ConnectionCloseType> Closed;
+		public event Action<TcpConnection, ConnectionCloseType> Closed;
 
 		/// <summary>
 		/// Creates new instance.
@@ -93,7 +93,7 @@ namespace Yggdrasil.Network
 		{
 			var ev = this.Closed;
 			if (ev != null)
-				ev(type);
+				ev(this, type);
 		}
 
 		/// <summary>
@@ -155,7 +155,7 @@ namespace Yggdrasil.Network
 		{
 			var ev = this.ReceiveException;
 			if (ev != null)
-				ev(ex);
+				ev(this, ex);
 		}
 
 		/// <summary>

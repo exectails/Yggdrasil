@@ -112,7 +112,7 @@ namespace Yggdrasil.Test.Network
 
 			// Test receiving invalid message
 			Exception receiveException = null;
-			connections[0].ReceiveException += (ex => receiveException = ex);
+			connections[0].ReceiveException += ((conn, ex) => receiveException = ex);
 			socket1.Send(new byte[] { 0xFF, 0, 0, 0 });
 
 			Thread.Sleep(5);

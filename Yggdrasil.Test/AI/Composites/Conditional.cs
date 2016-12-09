@@ -15,25 +15,23 @@ namespace Yggdrasil.Test.AI.Composites
 			var state = new State();
 			var test = 0;
 
-			var sequence = new Sequence(
-				new Conditional((_) => test < 50)
-			);
+			var routine = new Conditional((_) => test < 50);
 
 			for (; test < 50; ++test)
 			{
-				Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+				Assert.Equal(RoutineStatus.Success, routine.Act(state));
 				state.Reset();
 			}
 
 			test++;
-			Assert.Equal(RoutineStatus.Failure, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Failure, routine.Act(state));
 			state.Reset();
 
-			Assert.Equal(RoutineStatus.Failure, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Failure, routine.Act(state));
 			state.Reset();
 
 			test = 1;
-			Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Success, routine.Act(state));
 			state.Reset();
 		}
 	}

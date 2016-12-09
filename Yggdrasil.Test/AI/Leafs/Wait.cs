@@ -18,15 +18,13 @@ namespace Yggdrasil.Test.AI.Leafs
 			var state = new State();
 			var waitTime = 2000;
 
-			var sequence = new Sequence(
-				new Wait(TimeSpan.FromMilliseconds(waitTime))
-			);
+			var routine = new Wait(TimeSpan.FromMilliseconds(waitTime));
 
-			Assert.Equal(RoutineStatus.Running, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Running, routine.Act(state));
 			Thread.Sleep(1000);
-			Assert.Equal(RoutineStatus.Running, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Running, routine.Act(state));
 			Thread.Sleep(1100);
-			Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+			Assert.Equal(RoutineStatus.Success, routine.Act(state));
 		}
 	}
 }

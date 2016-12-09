@@ -18,25 +18,23 @@ namespace Yggdrasil.Test.AI.Leafs
 			var state = new State();
 			var test = 0;
 
-			var sequence = new Sequence(
-				new Repeater(2, new Execute(_ => test++))
-			);
+			var routine = new Repeater(2, new Execute(_ => test++));
 
 			for (int i = 1; i <= 100; ++i)
 			{
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Success, routine.Act(state));
 				Assert.Equal(i * 2, test);
 				state.Reset();
 			}
 
 			for (int i = 1; i <= 100; ++i)
 			{
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Success, routine.Act(state));
 				state.Reset();
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Success, routine.Act(state));
 				Assert.Equal(200 + i * 4, test);
 				state.Reset();
 			}
@@ -48,7 +46,7 @@ namespace Yggdrasil.Test.AI.Leafs
 			var state = new State();
 			var test = 0;
 
-			var sequence = new Repeater(
+			var routine = new Repeater(
 				new Sequence(
 					new Execute(_ => test++),
 					new Wait(TimeSpan.FromTicks(0)),
@@ -58,12 +56,12 @@ namespace Yggdrasil.Test.AI.Leafs
 
 			for (int i = 1; i <= 1234; ++i)
 			{
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
-				Assert.Equal(RoutineStatus.Running, sequence.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
+				Assert.Equal(RoutineStatus.Running, routine.Act(state));
 				Assert.Equal(i * 4, test);
 			}
 		}

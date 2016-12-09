@@ -16,9 +16,7 @@ namespace Yggdrasil.Test.AI.Leafs
 			var state = new State();
 			var test = 0;
 
-			var sequence = new Sequence(
-				new Execute(_ => test++)
-			);
+			var sequence = new Execute(_ => test++);
 
 			for (int i = 1; i <= 100; ++i)
 			{

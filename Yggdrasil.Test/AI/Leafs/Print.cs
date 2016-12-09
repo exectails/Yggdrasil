@@ -19,9 +19,7 @@ namespace Yggdrasil.Test.AI.Leafs
 			var state = new State();
 			var test = "foobar";
 
-			var sequence = new Sequence(
-				new Print(test)
-			);
+			var routine = new Print(test);
 
 			var result = "";
 
@@ -34,7 +32,7 @@ namespace Yggdrasil.Test.AI.Leafs
 
 					for (int i = 0; i < 10; ++i)
 					{
-						Assert.Equal(RoutineStatus.Success, sequence.Act(state));
+						Assert.Equal(RoutineStatus.Success, routine.Act(state));
 						state.Reset();
 
 						result += test + Environment.NewLine;

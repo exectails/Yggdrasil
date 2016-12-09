@@ -42,6 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\Composites\Selector.cs" />
     <Compile Include="AI\Composites\Sequence.cs" />
     <Compile Include="AI\Composites\Conditional.cs" />
     <Compile Include="AI\Decorators\Succeeder.cs" />

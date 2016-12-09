@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\Composites\Sequence.cs" />
+    <Compile Include="AI\Leafs\Wait.cs" />
     <Compile Include="Collections\Collection.cs" />
     <Compile Include="Collections\ListCollection.cs" />
     <Compile Include="Collections\OrderedDictionary.cs" />

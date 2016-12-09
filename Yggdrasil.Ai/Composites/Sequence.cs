@@ -43,6 +43,9 @@ namespace Yggrasil.Ai.Composites
 			var routineState = state.GetRoutineState<SequenceRoutineState>(this.Id);
 			routineState.SetRoutineIds(_routines);
 
+			if (routineState.Index == _routineCount)
+				return RoutineStatus.Success;
+
 			var result = _routines[routineState.Index].Act(state);
 			if (result == RoutineStatus.Success)
 			{

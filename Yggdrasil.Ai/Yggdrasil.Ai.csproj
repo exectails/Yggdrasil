@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Composites\Conditional.cs" />
     <Compile Include="Composites\Sequence.cs" />
+    <Compile Include="Decorators\Succeeder.cs" />
     <Compile Include="Decorators\Inverter.cs" />
     <Compile Include="Decorators\Repeater.cs" />
     <Compile Include="Leafs\Execute.cs" />

@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AI\Composites\Sequence.cs" />
     <Compile Include="AI\Composites\Conditional.cs" />
+    <Compile Include="AI\Decorators\Succeeder.cs" />
     <Compile Include="AI\Decorators\Repeater.cs" />
     <Compile Include="AI\Decorators\Inverter.cs" />
     <Compile Include="AI\Leafs\Print.cs" />

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil", "Yggdrasil\Yggd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Test", "Yggdrasil.Test\Yggdrasil.Test.csproj", "{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Ai", "Yggdrasil.Ai\Yggdrasil.Ai.csproj", "{EEFDA46B-1503-4381-B1F5-40805549A925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEFDA46B-1503-4381-B1F5-40805549A925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEFDA46B-1503-4381-B1F5-40805549A925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEFDA46B-1503-4381-B1F5-40805549A925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEFDA46B-1503-4381-B1F5-40805549A925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

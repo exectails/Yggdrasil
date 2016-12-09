@@ -88,7 +88,7 @@ namespace Yggdrasil.Test.AI.Composites
 			Assert.Equal(11, this.TestInc);
 			Assert.Equal(RoutineStatus.Failure, sequence.Act(state));
 			Assert.Equal(RoutineStatus.Failure, sequence.Act(state));
-			Assert.Equal(13, this.TestInc);
+			Assert.Equal(11, this.TestInc);
 		}
 	}
 

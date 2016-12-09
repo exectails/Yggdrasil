@@ -46,6 +46,9 @@ namespace Yggrasil.Ai.Composites
 			var routineState = state.GetRoutineState<SequenceRoutineState>(this.Id);
 			routineState.SetRoutineIds(_routines);
 
+			if (routineState.Failed)
+				return RoutineStatus.Failure;
+
 			if (routineState.Index == _routineCount)
 				return RoutineStatus.Success;
 
@@ -57,6 +60,7 @@ namespace Yggrasil.Ai.Composites
 			}
 			else if (result == RoutineStatus.Failure)
 			{
+				routineState.Failed = true;
 				return RoutineStatus.Failure;
 			}
 
@@ -76,6 +80,11 @@ namespace Yggrasil.Ai.Composites
 		/// Routine that is currently run.
 		/// </summary>
 		public int Index;
+
+		/// <summary>
+		/// Set to true once a routine failed and the sequence is over.
+		/// </summary>
+		public bool Failed;
 
 		/// <summary>
 		/// Returns true if routine ids were set.
@@ -105,6 +114,7 @@ namespace Yggrasil.Ai.Composites
 				throw new InvalidOperationException("Unable to reset Sequence, call SetRoutineIds after creation.");
 
 			this.Index = 0;
+			this.Failed = false;
 
 			foreach (var id in _routineIds)
 				state.Reset(id);

@@ -5,7 +5,7 @@ using Xunit;
 using Yggrasil.Ai;
 using Yggrasil.Ai.Composites;
 
-namespace Yggdrasil.Test.AI
+namespace Yggdrasil.Test.AI.Composites
 {
 	public class SequenceTests
 	{

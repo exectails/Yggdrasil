@@ -29,6 +29,7 @@ namespace Yggdrasil.Test.AI.Leafs
 			{
 				using (var sw = new StreamWriter(stream))
 				{
+					var cout = Console.Out;
 					Console.SetOut(sw);
 
 					for (int i = 0; i < 10; ++i)
@@ -38,6 +39,8 @@ namespace Yggdrasil.Test.AI.Leafs
 
 						result += test + Environment.NewLine;
 					}
+
+					Console.SetOut(cout);
 				}
 
 				Assert.Equal(result, Encoding.UTF8.GetString(stream.ToArray()));

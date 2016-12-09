@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
+
 namespace Yggrasil.Ai.Decorators
 {
 	/// <summary>
-	/// Repeats the given routine for the given amount of times.
+	/// Repeats the given routine for the given amount of times or
+	/// indefinitely.
 	/// </summary>
 	public class Repeater : Routine
 	{
@@ -19,12 +22,25 @@ namespace Yggrasil.Ai.Decorators
 		public readonly Routine Routine;
 
 		/// <summary>
-		/// Creates new instance of Repeater routine.
+		/// Creates new instance of Repeater routine that runs forever.
+		/// </summary>
+		/// <param name="routine"></param>
+		public Repeater(Routine routine)
+			: this(-1, routine)
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance of Repeater routine that runs the given
+		/// amount of times.
 		/// </summary>
 		/// <param name="repeats"></param>
 		/// <param name="routine"></param>
 		public Repeater(int repeats, Routine routine)
 		{
+			if (routine == null)
+				throw new ArgumentNullException("routine");
+
 			this.Repeats = repeats;
 			this.Routine = routine;
 		}
@@ -36,20 +52,29 @@ namespace Yggrasil.Ai.Decorators
 		/// <returns></returns>
 		public override RoutineStatus Act(State state)
 		{
-			if (this.Repeats <= 0 || this.Routine == null)
+			if (this.Repeats == 0)
 				return RoutineStatus.Success;
 
 			var result = this.Routine.Act(state);
-			if (result != RoutineStatus.Success)
+			if (result == RoutineStatus.Running)
 				return result;
 
 			state.Reset(this.Routine.Id);
 
-			var routineState = state.GetRoutineState<RepeaterRoutineState>(this.Id);
-			if (++routineState.I < this.Repeats)
-				return RoutineStatus.Running;
+			var isLimited = (this.Repeats != -1);
 
-			return RoutineStatus.Success;
+			if (isLimited)
+			{
+				var routineState = state.GetRoutineState<RepeaterRoutineState>(this.Id);
+				if (++routineState.I < this.Repeats)
+					return RoutineStatus.Running;
+
+				return RoutineStatus.Success;
+			}
+			else
+			{
+				return RoutineStatus.Running;
+			}
 		}
 	}
 

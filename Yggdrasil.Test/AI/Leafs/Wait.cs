@@ -13,7 +13,7 @@ namespace Yggdrasil.Test.AI.Leafs
 	public class WaitTests
 	{
 		[Fact]
-		public void Wait()
+		public void Wait_2000()
 		{
 			var state = new State();
 			var waitTime = 2000;
@@ -24,6 +24,19 @@ namespace Yggdrasil.Test.AI.Leafs
 			Thread.Sleep(1000);
 			Assert.Equal(RoutineStatus.Running, routine.Act(state));
 			Thread.Sleep(1100);
+			Assert.Equal(RoutineStatus.Success, routine.Act(state));
+		}
+
+		[Fact]
+		public void Wait_0()
+		{
+			var state = new State();
+			var waitTime = 0;
+
+			var routine = new Wait(TimeSpan.FromMilliseconds(waitTime));
+
+			Assert.Equal(RoutineStatus.Success, routine.Act(state));
+			Thread.Sleep(1000);
 			Assert.Equal(RoutineStatus.Success, routine.Act(state));
 		}
 	}

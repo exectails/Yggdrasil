@@ -26,6 +26,9 @@ namespace Yggrasil.Ai.Composites
 		/// <param name="routines"></param>
 		public Sequence(params Routine[] routines)
 		{
+			if (routines == null)
+				throw new ArgumentNullException("routines");
+
 			_routines = routines;
 			_routineCount = routines.Length;
 		}

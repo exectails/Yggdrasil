@@ -83,7 +83,8 @@ namespace Yggdrasil.Util
 
 		/// <summary>
 		/// Removes asterisks and spaces that were prepended to the window
-		/// title, to indicate that application is fully loaded and ready now.
+		/// title, to indicate that the application is fully loaded and ready
+		/// now.
 		/// </summary>
 		public static void RunningTitle()
 		{
@@ -93,7 +94,7 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Closes the application with the given exit code. If wait is true,
 		/// and the application is running in a visible console, it waits for
-		/// a Return press before exiting.
+		/// Return to be pressed before exiting.
 		/// </summary>
 		/// <param name="exitCode"></param>
 		/// <param name="wait"></param>
@@ -109,7 +110,7 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns whether or not the application runs with admin rights.
+		/// Returns whether the application runs with admin rights.
 		/// </summary>
 		public static bool CheckAdmin()
 		{

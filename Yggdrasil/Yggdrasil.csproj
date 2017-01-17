@@ -59,7 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Hashing\BCrypt.cs" />
     <Compile Include="Structures\Quadtree.cs" />
-    <Compile Include="Util\CliUtil.cs" />
+    <Compile Include="Util\ConsoleUtil.cs" />
     <Compile Include="Collections\Collection.cs" />
     <Compile Include="Util\Commands\Arguments.cs" />
     <Compile Include="Util\Commands\Command.cs" />

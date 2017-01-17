@@ -57,7 +57,7 @@ namespace Yggdrasil.Util.Commands
 		public void Wait()
 		{
 			// Just wait if not running in a console
-			if (!CliUtil.IsUserInteractive)
+			if (!ConsoleUtil.IsUserInteractive)
 			{
 				var reset = new ManualResetEvent(false);
 				reset.WaitOne();
@@ -136,7 +136,7 @@ namespace Yggdrasil.Util.Commands
 		/// <returns></returns>
 		protected virtual CommandResult HandleExit(string command, Arguments args)
 		{
-			CliUtil.Exit(0, false);
+			ConsoleUtil.Exit(0, false);
 
 			return CommandResult.Okay;
 		}

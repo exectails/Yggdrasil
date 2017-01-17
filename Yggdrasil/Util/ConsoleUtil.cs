@@ -9,7 +9,7 @@ using Yggdrasil.Logging;
 
 namespace Yggdrasil.Util
 {
-	public class CliUtil
+	public class ConsoleUtil
 	{
 		/// <summary>
 		/// Writes logo and credits to Console.

@@ -9,7 +9,7 @@ using Yggdrasil.Util;
 
 namespace Yggdrasil.Test.Util
 {
-	public class CliUtilTests
+	public class ConsoleUtilTests
 	{
 		private readonly static string[] Logo = new string[]
 		{
@@ -43,7 +43,7 @@ namespace Yggdrasil.Test.Util
 			var foreColor = Console.ForegroundColor;
 			var backColor = Console.BackgroundColor;
 
-			CliUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
 
 			Assert.Equal(foreColor, Console.ForegroundColor);
 			Assert.Equal(backColor, Console.BackgroundColor);
@@ -76,7 +76,7 @@ namespace Yggdrasil.Test.Util
 			var sw1 = new StringWriter();
 			Console.SetOut(sw1);
 
-			CliUtil.WriteSeperator();
+			ConsoleUtil.WriteSeperator();
 
 			var width1 = Console.WindowWidth;
 			var output1 = sw1.ToString();
@@ -100,7 +100,7 @@ namespace Yggdrasil.Test.Util
 				var sw2 = new StringWriter();
 				Console.SetOut(sw2);
 
-				CliUtil.WriteSeperator();
+				ConsoleUtil.WriteSeperator();
 
 				var width2 = Console.WindowWidth;
 				var output2 = sw2.ToString();
@@ -121,13 +121,13 @@ namespace Yggdrasil.Test.Util
 			var cout = Console.Out;
 			Console.SetOut(sw);
 
-			CliUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
 			Assert.Equal("Yggdrasil : Tests", Console.Title);
 
-			CliUtil.LoadingTitle();
+			ConsoleUtil.LoadingTitle();
 			Assert.Equal("* Yggdrasil : Tests", Console.Title);
 
-			CliUtil.RunningTitle();
+			ConsoleUtil.RunningTitle();
 			Assert.Equal("Yggdrasil : Tests", Console.Title);
 
 			Console.SetOut(cout);

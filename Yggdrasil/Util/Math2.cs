@@ -217,7 +217,7 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Returns the given radian in degree.
 		/// </summary>
-		/// <param name="degree"></param>
+		/// <param name="radian"></param>
 		/// <returns></returns>
 		public static float RadianToDegree(double radian)
 		{

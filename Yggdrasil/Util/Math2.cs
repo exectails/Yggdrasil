@@ -139,6 +139,72 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// if the addition caused an overflow.
+		/// </summary>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		/// <returns></returns>
+		public static short AddChecked(short value1, short value2)
+		{
+			try
+			{
+				checked { return (short)(value1 + value2); }
+			}
+			catch
+			{
+				if (value2 >= 0)
+					return short.MaxValue;
+				else
+					return short.MinValue;
+			}
+		}
+
+		/// <summary>
+		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// if the addition caused an overflow.
+		/// </summary>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		/// <returns></returns>
+		public static int AddChecked(int value1, int value2)
+		{
+			try
+			{
+				checked { return (value1 + value2); }
+			}
+			catch
+			{
+				if (value2 >= 0)
+					return int.MaxValue;
+				else
+					return int.MinValue;
+			}
+		}
+
+		/// <summary>
+		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// if the addition caused an overflow.
+		/// </summary>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		/// <returns></returns>
+		public static long AddChecked(long value1, long value2)
+		{
+			try
+			{
+				checked { return (value1 + value2); }
+			}
+			catch
+			{
+				if (value2 >= 0)
+					return long.MaxValue;
+				else
+					return long.MinValue;
+			}
+		}
+
+		/// <summary>
 		/// Returns the given degree in radians.
 		/// </summary>
 		/// <param name="degree"></param>

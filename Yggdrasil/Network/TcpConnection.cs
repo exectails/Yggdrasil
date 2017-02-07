@@ -123,7 +123,7 @@ namespace Yggdrasil.Network
 				if (length == 0)
 				{
 					this.Status = ConnectionStatus.Closed;
-					this.OnClosed(ConnectionCloseType.Disconnect);
+					this.OnClosed(ConnectionCloseType.Disconnected);
 
 					return;
 				}
@@ -185,7 +185,7 @@ namespace Yggdrasil.Network
 	public enum ConnectionCloseType
 	{
 		Closed,
-		Disconnect,
+		Disconnected,
 		Lost,
 	}
 }

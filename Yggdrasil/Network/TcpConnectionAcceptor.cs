@@ -145,11 +145,12 @@ namespace Yggdrasil.Network
 
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
-				connection.BeginReceive();
 
 				var ev = this.ConnectionAccepted;
 				if (ev != null)
 					ev(connection);
+
+				connection.BeginReceive();
 
 				this.BeginAccept();
 			}

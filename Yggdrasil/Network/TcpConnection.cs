@@ -20,7 +20,7 @@ namespace Yggdrasil.Network
 		public ConnectionStatus Status { get; private set; }
 
 		/// <summary>
-		/// Remove host address.
+		/// Remote host address.
 		/// </summary>
 		public string Address
 		{

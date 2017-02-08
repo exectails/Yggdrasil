@@ -153,7 +153,7 @@ namespace Yggdrasil.Network
 			}
 
 			if (!success)
-				this.Status = ClientStatus.NotConected;
+				this.Status = ClientStatus.NotConnected;
 			else
 				this.Status = ClientStatus.Connected;
 		}
@@ -163,10 +163,10 @@ namespace Yggdrasil.Network
 		/// </summary>
 		public void Disconnect()
 		{
-			if (this.Status == ClientStatus.NotConected)
+			if (this.Status == ClientStatus.NotConnected)
 				return;
 
-			this.Status = ClientStatus.NotConected;
+			this.Status = ClientStatus.NotConnected;
 
 			try { _socket.Shutdown(SocketShutdown.Both); }
 			catch { }
@@ -208,7 +208,7 @@ namespace Yggdrasil.Network
 
 				if (length == 0)
 				{
-					this.Status = ClientStatus.NotConected;
+					this.Status = ClientStatus.NotConnected;
 					this.OnDisconnect(ConnectionCloseType.Disconnected);
 
 					return;
@@ -226,7 +226,7 @@ namespace Yggdrasil.Network
 				this.LastError = string.Format("{0}", ex.SocketErrorCode, ex.Message);
 				this.LastException = ex;
 
-				this.Status = ClientStatus.NotConected;
+				this.Status = ClientStatus.NotConnected;
 				this.OnDisconnect(ConnectionCloseType.Lost);
 			}
 			catch (Exception ex)
@@ -273,7 +273,7 @@ namespace Yggdrasil.Network
 		/// <summary>
 		/// Client is not connected.
 		/// </summary>
-		NotConected,
+		NotConnected,
 
 		/// <summary>
 		/// Client is connecting asynchronously.

@@ -221,13 +221,19 @@ namespace Yggdrasil.Network
 			catch (ObjectDisposedException)
 			{
 			}
-			catch (SocketException)
+			catch (SocketException ex)
 			{
+				this.LastError = string.Format("{0}", ex.SocketErrorCode, ex.Message);
+				this.LastException = ex;
+
 				this.Status = ClientStatus.NotConected;
 				this.OnDisconnect(ConnectionCloseType.Lost);
 			}
 			catch (Exception ex)
 			{
+				this.LastError = ex.Message;
+				this.LastException = ex;
+
 				this.OnReceiveException(ex);
 				this.Disconnect();
 			}

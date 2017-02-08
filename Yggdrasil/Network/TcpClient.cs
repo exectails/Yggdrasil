@@ -17,7 +17,7 @@ namespace Yggdrasil.Network
 		/// <summary>
 		/// Current status of the connection.
 		/// </summary>
-		public ConnectionStatus Status { get; private set; }
+		public ClientStatus Status { get; private set; }
 
 		/// <summary>
 		/// Address of the local end point.
@@ -88,7 +88,7 @@ namespace Yggdrasil.Network
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			_socket.Connect(remoteEndPoint);
 
-			this.Status = ConnectionStatus.Open;
+			this.Status = ClientStatus.Connected;
 			this.BeginReceive();
 		}
 
@@ -97,10 +97,10 @@ namespace Yggdrasil.Network
 		/// </summary>
 		public void Disconnect()
 		{
-			if (this.Status == ConnectionStatus.Closed)
+			if (this.Status == ClientStatus.NotConected)
 				return;
 
-			this.Status = ConnectionStatus.Closed;
+			this.Status = ClientStatus.NotConected;
 
 			try { _socket.Shutdown(SocketShutdown.Both); }
 			catch { }
@@ -142,7 +142,7 @@ namespace Yggdrasil.Network
 
 				if (length == 0)
 				{
-					this.Status = ConnectionStatus.Closed;
+					this.Status = ClientStatus.NotConected;
 					this.OnDisconnect(ConnectionCloseType.Disconnected);
 
 					return;
@@ -157,7 +157,7 @@ namespace Yggdrasil.Network
 			}
 			catch (SocketException)
 			{
-				this.Status = ConnectionStatus.Closed;
+				this.Status = ClientStatus.NotConected;
 				this.OnDisconnect(ConnectionCloseType.Lost);
 			}
 			catch (Exception ex)
@@ -191,8 +191,21 @@ namespace Yggdrasil.Network
 		/// <param name="data"></param>
 		public virtual void Send(byte[] data)
 		{
-			if (this.Status == ConnectionStatus.Open)
+			if (this.Status == ClientStatus.Connected)
 				_socket.Send(data);
 		}
+	}
+
+	public enum ClientStatus
+	{
+		/// <summary>
+		/// Client is not connected.
+		/// </summary>
+		NotConected,
+
+		/// <summary>
+		/// Cliet is connected.
+		/// </summary>
+		Connected,
 	}
 }

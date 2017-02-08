@@ -58,6 +58,16 @@ namespace Yggdrasil.Network
 		public event Action<TcpClient, ConnectionCloseType> Disconnected;
 
 		/// <summary>
+		/// Last error received while working asynchronously.
+		/// </summary>
+		public string LastError { get; private set; }
+
+		/// <summary>
+		/// Last exception received while working asynchronously.
+		/// </summary>
+		public Exception LastException { get; private set; }
+
+		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		public TcpClient()
@@ -90,6 +100,62 @@ namespace Yggdrasil.Network
 
 			this.Status = ClientStatus.Connected;
 			this.BeginReceive();
+		}
+
+		/// <summary>
+		/// Connects to host without blocking the thread.
+		/// </summary>
+		/// <param name="host"></param>
+		/// <param name="port"></param>
+		public void ConnectAsync(string host, int port)
+		{
+			var remoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
+			this.ConnectAsync(remoteEndPoint);
+		}
+
+		/// <summary>
+		/// Connects to host without blocking the thread.
+		/// </summary>
+		/// <param name="remoteEndPoint"></param>
+		public void ConnectAsync(IPEndPoint remoteEndPoint)
+		{
+			if (_socket != null)
+				throw new InvalidOperationException("Create a new TcpClient to establish a new connection.");
+
+			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			_socket.BeginConnect(remoteEndPoint, OnConnect, null);
+
+			this.Status = ClientStatus.Connecting;
+		}
+
+		/// <summary>
+		/// Called when connection was established or failed to be.
+		/// </summary>
+		/// <param name="result"></param>
+		private void OnConnect(IAsyncResult result)
+		{
+			var success = false;
+
+			try
+			{
+				_socket.EndConnect(result);
+				success = true;
+			}
+			catch (SocketException ex)
+			{
+				this.LastError = string.Format("{0}", ex.SocketErrorCode, ex.Message);
+				this.LastException = ex;
+			}
+			catch (Exception ex)
+			{
+				this.LastError = ex.Message;
+				this.LastException = ex;
+			}
+
+			if (!success)
+				this.Status = ClientStatus.NotConected;
+			else
+				this.Status = ClientStatus.Connected;
 		}
 
 		/// <summary>
@@ -202,6 +268,11 @@ namespace Yggdrasil.Network
 		/// Client is not connected.
 		/// </summary>
 		NotConected,
+
+		/// <summary>
+		/// Client is connecting asynchronously.
+		/// </summary>
+		Connecting,
 
 		/// <summary>
 		/// Cliet is connected.

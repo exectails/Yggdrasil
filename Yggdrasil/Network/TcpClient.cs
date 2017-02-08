@@ -139,6 +139,7 @@ namespace Yggdrasil.Network
 			try
 			{
 				_socket.EndConnect(result);
+				this.BeginReceive();
 				success = true;
 			}
 			catch (SocketException ex)

@@ -49,6 +49,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\Targets\ConsoleTarget.cs" />
     <Compile Include="Logging\Targets\FileTarget.cs" />
+    <Compile Include="Util\BufferReaderWriter.cs" />
     <Compile Include="Network\TcpClient.cs" />
     <Compile Include="Network\TcpConnection.cs" />
     <Compile Include="Network\MessageFramer.cs" />

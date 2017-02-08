@@ -22,16 +22,7 @@ namespace Yggdrasil.Network
 		/// <summary>
 		/// Remote host address.
 		/// </summary>
-		public string Address
-		{
-			get
-			{
-				if (_socket == null)
-					throw new InvalidOperationException("Connection hasn't been initialized yet.");
-
-				return ((IPEndPoint)_socket.RemoteEndPoint).ToString();
-			}
-		}
+		public string Address { get; private set; }
 
 		/// <summary>
 		/// Raised when an exception occurs while receiving data.
@@ -64,7 +55,9 @@ namespace Yggdrasil.Network
 				throw new InvalidOperationException("Connection has already been initialized.");
 
 			_socket = socket;
+
 			this.Status = ConnectionStatus.Open;
+			this.Address = ((IPEndPoint)_socket.RemoteEndPoint).ToString();
 		}
 
 		/// <summary>

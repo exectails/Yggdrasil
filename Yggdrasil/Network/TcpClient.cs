@@ -22,30 +22,12 @@ namespace Yggdrasil.Network
 		/// <summary>
 		/// Address of the local end point.
 		/// </summary>
-		public string LocalAddress
-		{
-			get
-			{
-				if (_socket == null)
-					throw new InvalidOperationException("Client isn't connected yet.");
-
-				return ((IPEndPoint)_socket.LocalEndPoint).ToString();
-			}
-		}
+		public string LocalAddress { get; private set; }
 
 		/// <summary>
 		/// Address of the remote end point.
 		/// </summary>
-		public string RemoteAddress
-		{
-			get
-			{
-				if (_socket == null)
-					throw new InvalidOperationException("Client isn't connected yet.");
-
-				return ((IPEndPoint)_socket.RemoteEndPoint).ToString();
-			}
-		}
+		public string RemoteAddress { get; private set; }
 
 		/// <summary>
 		/// Raised when an exception occurs while receiving data.
@@ -99,6 +81,8 @@ namespace Yggdrasil.Network
 			_socket.Connect(remoteEndPoint);
 
 			this.Status = ClientStatus.Connected;
+			this.LocalAddress = ((IPEndPoint)_socket.LocalEndPoint).ToString();
+			this.RemoteAddress = ((IPEndPoint)_socket.RemoteEndPoint).ToString();
 			this.BeginReceive();
 		}
 
@@ -139,7 +123,11 @@ namespace Yggdrasil.Network
 			try
 			{
 				_socket.EndConnect(result);
+
+				this.LocalAddress = ((IPEndPoint)_socket.LocalEndPoint).ToString();
+				this.RemoteAddress = ((IPEndPoint)_socket.RemoteEndPoint).ToString();
 				this.BeginReceive();
+
 				success = true;
 			}
 			catch (SocketException ex)

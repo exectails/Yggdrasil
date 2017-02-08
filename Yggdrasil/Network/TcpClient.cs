@@ -93,7 +93,7 @@ namespace Yggdrasil.Network
 		public void Connect(IPEndPoint remoteEndPoint)
 		{
 			if (_socket != null)
-				throw new InvalidOperationException("Create a new TcpClient to establish a new connection.");
+				this.Disconnect();
 
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			_socket.Connect(remoteEndPoint);
@@ -120,7 +120,7 @@ namespace Yggdrasil.Network
 		public void ConnectAsync(IPEndPoint remoteEndPoint)
 		{
 			if (_socket != null)
-				throw new InvalidOperationException("Create a new TcpClient to establish a new connection.");
+				this.Disconnect();
 
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			_socket.BeginConnect(remoteEndPoint, OnConnect, null);
@@ -193,18 +193,25 @@ namespace Yggdrasil.Network
 		/// </summary>
 		private void BeginReceive()
 		{
-			_socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, this.OnReceive, null);
+			_socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, this.OnReceive, _socket);
 		}
 
 		/// <summary>
 		/// Called on incoming data.
 		/// </summary>
-		/// <param name="ar"></param>
-		private void OnReceive(IAsyncResult ar)
+		/// <param name="result"></param>
+		private void OnReceive(IAsyncResult result)
 		{
 			try
 			{
-				var length = _socket.EndReceive(ar);
+				// As a new socket is created for each new connection,
+				// the one that was used for the BeginReceive is passed
+				// via the result. If the socket is one that was
+				// disconnected ObjectDisposedException will be thrown,
+				// which is the end of that socket.
+
+				var socket = (Socket)result.AsyncState;
+				var length = socket.EndReceive(result);
 
 				if (length == 0)
 				{

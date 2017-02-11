@@ -157,6 +157,20 @@ namespace Yggdrasil.Util
 			}
 		}
 
+		/// <summary>
+		/// Updates index and length, so it coresponds with the actual
+		/// length of the data, based on the current index.
+		/// </summary>
+		/// <param name="mod"></param>
+		private void UpdatePtrLength(int mod)
+		{
+			var diff = (_ptr + mod) - _length;
+			if (diff > 0)
+				_length += diff;
+
+			_ptr += mod;
+		}
+
 		// Reading
 		// ------------------------------------------------------------------
 
@@ -280,8 +294,8 @@ namespace Yggdrasil.Util
 		{
 			this.EnsureSpace(sizeof(byte));
 
-			_buffer[_ptr++] = value;
-			_length += sizeof(byte);
+			_buffer[_ptr] = value;
+			this.UpdatePtrLength(sizeof(byte));
 		}
 
 		/// <summary>
@@ -295,8 +309,8 @@ namespace Yggdrasil.Util
 			value = IPAddress.HostToNetworkOrder(value);
 
 			for (int i = 0; i < sizeof(short); ++i)
-				_buffer[_ptr++] = (byte)((value >> (i * 8)) & 0xFF);
-			_length += sizeof(short);
+				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
+			this.UpdatePtrLength(sizeof(short));
 		}
 
 		/// <summary>
@@ -310,8 +324,8 @@ namespace Yggdrasil.Util
 			value = IPAddress.HostToNetworkOrder(value);
 
 			for (int i = 0; i < sizeof(int); ++i)
-				_buffer[_ptr++] = (byte)((value >> (i * 8)) & 0xFF);
-			_length += sizeof(int);
+				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
+			this.UpdatePtrLength(sizeof(int));
 		}
 
 		/// <summary>
@@ -325,8 +339,8 @@ namespace Yggdrasil.Util
 			value = IPAddress.HostToNetworkOrder(value);
 
 			for (int i = 0; i < sizeof(long); ++i)
-				_buffer[_ptr++] = (byte)((value >> (i * 8)) & 0xFF);
-			_length += sizeof(long);
+				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
+			this.UpdatePtrLength(sizeof(long));
 		}
 
 		/// <summary>
@@ -364,8 +378,7 @@ namespace Yggdrasil.Util
 			this.EnsureSpace(length);
 
 			Buffer.BlockCopy(value, 0, _buffer, _ptr, length);
-			_ptr += length;
-			_length += length;
+			this.UpdatePtrLength(length);
 		}
 	}
 }

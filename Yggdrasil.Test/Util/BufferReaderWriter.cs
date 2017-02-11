@@ -130,5 +130,34 @@ namespace Yggdrasil.Test.Util
 			buffer.WriteInt(0);
 			Assert.Equal(260, buffer.Capacity);
 		}
+
+		[Fact]
+		public void LengthExtension()
+		{
+			var buffer = new BufferReaderWriter(100);
+
+			buffer.WriteInt(0x01020304);
+			Assert.Equal(4, buffer.Length);
+
+			buffer.Seek(2, SeekOrigin.Begin);
+			buffer.WriteByte(1);
+			Assert.Equal(4, buffer.Length);
+			Assert.Equal(new byte[] { 1, 2, 1, 4 }, buffer.Copy());
+
+			buffer.Seek(3, SeekOrigin.Begin);
+			buffer.WriteShort(0x0104);
+			Assert.Equal(5, buffer.Length);
+			Assert.Equal(new byte[] { 1, 2, 1, 1, 4 }, buffer.Copy());
+
+			buffer.Seek(5, SeekOrigin.Begin);
+			buffer.Write(new byte[] { 0x05, 0x06, 0x07 });
+			Assert.Equal(8, buffer.Length);
+			Assert.Equal(new byte[] { 1, 2, 1, 1, 4, 5, 6, 7 }, buffer.Copy());
+
+			buffer.Seek(10, SeekOrigin.Begin);
+			buffer.WriteByte(1);
+			Assert.Equal(11, buffer.Length);
+			Assert.Equal(new byte[] { 1, 2, 1, 1, 4, 5, 6, 7, 0, 0, 1 }, buffer.Copy());
+		}
 	}
 }

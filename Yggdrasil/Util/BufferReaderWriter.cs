@@ -36,6 +36,11 @@ namespace Yggdrasil.Util
 		public int Capacity { get { return _buffer.Length; } }
 
 		/// <summary>
+		/// Returns the length of the actual data.
+		/// </summary>
+		public int Length { get { return _length; } }
+
+		/// <summary>
 		/// Creates new buffer with default size.
 		/// </summary>
 		public BufferReaderWriter()
@@ -154,6 +159,15 @@ namespace Yggdrasil.Util
 
 		// Reading
 		// ------------------------------------------------------------------
+
+		/// <summary>
+		/// Returns the current byte without increasing the index.
+		/// </summary>
+		/// <returns></returns>
+		public byte Peek()
+		{
+			return _buffer[_ptr];
+		}
 
 		/// <summary>
 		/// Returns the next byte in the buffer.

@@ -159,5 +159,21 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(11, buffer.Length);
 			Assert.Equal(new byte[] { 1, 2, 1, 1, 4, 5, 6, 7, 0, 0, 1 }, buffer.Copy());
 		}
+
+		[Fact]
+		public void FixedLength()
+		{
+			var buffer = new BufferReaderWriter(new byte[10], 0, 0, false);
+
+			buffer.WriteInt(0x01020304);
+			buffer.WriteInt(0x01020304);
+			Assert.DoesNotThrow(() => buffer.WriteInt(0x01020304));
+
+			buffer = new BufferReaderWriter(new byte[10], 0, 0, true);
+
+			buffer.WriteInt(0x01020304);
+			buffer.WriteInt(0x01020304);
+			Assert.Throws<InvalidOperationException>(() => buffer.WriteInt(0x01020304));
+		}
 	}
 }

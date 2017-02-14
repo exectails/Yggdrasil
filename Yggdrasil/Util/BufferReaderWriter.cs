@@ -24,6 +24,7 @@ namespace Yggdrasil.Util
 
 		private byte[] _buffer;
 		private int _ptr, _length;
+		private bool _fixedLength;
 
 		/// <summary>
 		/// Returns the buffer's current position.
@@ -53,8 +54,8 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="length"></param>
 		public BufferReaderWriter(int length)
+			: this(new byte[length])
 		{
-			_buffer = new byte[length];
 		}
 
 		/// <summary>
@@ -62,7 +63,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="buffer"></param>
 		public BufferReaderWriter(byte[] buffer)
-			: this(buffer, 0, buffer.Length)
+			: this(buffer, 0, buffer.Length, false)
 		{
 		}
 
@@ -73,11 +74,12 @@ namespace Yggdrasil.Util
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="length"></param>
-		public BufferReaderWriter(byte[] buffer, int index, int length)
+		public BufferReaderWriter(byte[] buffer, int index, int length, bool fixedLength)
 		{
 			_buffer = buffer;
 			_ptr = index;
 			_length = length;
+			_fixedLength = fixedLength;
 		}
 
 		// General
@@ -92,6 +94,9 @@ namespace Yggdrasil.Util
 		{
 			if (_ptr + needed <= _buffer.Length)
 				return;
+
+			if (_fixedLength)
+				throw new InvalidOperationException("Buffer can't be extended, as its length is fixed.");
 
 			var add = Math.Max(needed, AddSize);
 			Array.Resize(ref _buffer, _buffer.Length + add);

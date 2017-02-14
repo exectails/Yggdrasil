@@ -54,7 +54,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="length"></param>
 		public BufferReaderWriter(int length)
-			: this(new byte[length])
+			: this(new byte[length], 0, 0, false)
 		{
 		}
 

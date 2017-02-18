@@ -102,11 +102,12 @@ namespace Yggdrasil.Collections
 		}
 
 		/// <summary>
-		/// Returns value for key or default for value (e.g. null for string).
+		/// Returns value for key, or the default value of the value type
+		/// if the key doesn't exist (e.g. null for string).
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public TValue Get(TKey key)
+		public TValue GetValueOrDefault(TKey key)
 		{
 			TValue result;
 

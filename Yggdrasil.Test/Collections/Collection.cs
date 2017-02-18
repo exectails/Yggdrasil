@@ -20,10 +20,10 @@ namespace Yggdrasil.Test.Collections
 			Assert.Equal(true, col.Add(4, 4000));
 
 			Assert.Equal(4, col.Count);
-			Assert.Equal(1000, col.Get(1));
-			Assert.Equal(2000, col.Get(2));
-			Assert.Equal(3000, col.Get(3));
-			Assert.Equal(4000, col.Get(4));
+			Assert.Equal(1000, col.GetValueOrDefault(1));
+			Assert.Equal(2000, col.GetValueOrDefault(2));
+			Assert.Equal(3000, col.GetValueOrDefault(3));
+			Assert.Equal(4000, col.GetValueOrDefault(4));
 		}
 
 		[Fact]
@@ -38,10 +38,10 @@ namespace Yggdrasil.Test.Collections
 			col.Set(4, 4000);
 
 			Assert.Equal(4, col.Count);
-			Assert.Equal(1000, col.Get(1));
-			Assert.Equal(2000, col.Get(2));
-			Assert.Equal(3333, col.Get(3));
-			Assert.Equal(4000, col.Get(4));
+			Assert.Equal(1000, col.GetValueOrDefault(1));
+			Assert.Equal(2000, col.GetValueOrDefault(2));
+			Assert.Equal(3333, col.GetValueOrDefault(3));
+			Assert.Equal(4000, col.GetValueOrDefault(4));
 		}
 
 		[Fact]
@@ -58,8 +58,8 @@ namespace Yggdrasil.Test.Collections
 			col.Remove(3);
 
 			Assert.Equal(2, col.Count);
-			Assert.Equal(1000, col.Get(1));
-			Assert.Equal(4000, col.Get(4));
+			Assert.Equal(1000, col.GetValueOrDefault(1));
+			Assert.Equal(4000, col.GetValueOrDefault(4));
 		}
 
 		[Fact]
@@ -75,10 +75,10 @@ namespace Yggdrasil.Test.Collections
 			col.Clear();
 
 			Assert.Equal(0, col.Count);
-			Assert.Equal(0, col.Get(1));
-			Assert.Equal(0, col.Get(2));
-			Assert.Equal(0, col.Get(3));
-			Assert.Equal(0, col.Get(4));
+			Assert.Equal(0, col.GetValueOrDefault(1));
+			Assert.Equal(0, col.GetValueOrDefault(2));
+			Assert.Equal(0, col.GetValueOrDefault(3));
+			Assert.Equal(0, col.GetValueOrDefault(4));
 		}
 
 		[Fact]

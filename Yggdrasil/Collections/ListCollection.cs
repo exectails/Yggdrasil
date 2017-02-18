@@ -100,7 +100,8 @@ namespace Yggdrasil.Collections
 		}
 
 		/// <summary>
-		/// Returns value for key or default for value (e.g. null for string).
+		/// Returns copy of list for key, or an empty list if the key
+		/// doesn't exist.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>

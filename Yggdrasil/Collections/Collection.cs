@@ -122,10 +122,10 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
-		public IEnumerable<KeyValuePair<TKey, TValue>> Get(Func<KeyValuePair<TKey, TValue>, bool> predicate)
+		public Dictionary<TKey, TValue> Get(Func<KeyValuePair<TKey, TValue>, bool> predicate)
 		{
 			lock (_entries)
-				return _entries.Where(predicate);
+				return _entries.Where(predicate).ToDictionary(a => a.Key, a => a.Value);
 		}
 	}
 }

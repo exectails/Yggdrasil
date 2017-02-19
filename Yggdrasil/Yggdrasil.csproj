@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,6 +50,7 @@
     <Compile Include="Logging\LoggerTarget.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\Targets\ConsoleTarget.cs" />
+    <Compile Include="Logging\Targets\SmtpTarget.cs" />
     <Compile Include="Logging\Targets\FileTarget.cs" />
     <Compile Include="Util\BufferReaderWriter.cs" />
     <Compile Include="Network\TcpClient.cs" />

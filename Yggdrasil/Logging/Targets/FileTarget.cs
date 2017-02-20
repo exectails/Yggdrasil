@@ -6,16 +6,38 @@ using System.IO;
 
 namespace Yggdrasil.Logging.Targets
 {
+	/// <summary>
+	/// Logger target logging to a text file.
+	/// </summary>
 	public class FileTarget : LoggerTarget
 	{
+		/// <summary>
+		/// The folder the log file is in.
+		/// </summary>
 		public string FolderPath { get; private set; }
+
+		/// <summary>
+		/// The path to the log file.
+		/// </summary>
 		public string FilePath { get; private set; }
 
+		/// <summary>
+		/// Creates new instance, with the file going into the given folder.
+		/// </summary>
+		/// <param name="folderPath"></param>
 		public FileTarget(string folderPath = "")
 		{
 			this.FolderPath = folderPath;
 		}
 
+		/// <summary>
+		/// Writes clean message to the log file, prepending it with the
+		/// time and date the message was written at.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <param name="message"></param>
+		/// <param name="messageRaw"></param>
+		/// <param name="messageClean"></param>
 		public override void Write(LogLevel level, string message, string messageRaw, string messageClean)
 		{
 			if (this.FilePath == null)
@@ -34,6 +56,11 @@ namespace Yggdrasil.Logging.Targets
 			File.AppendAllText(this.FilePath, messageClean);
 		}
 
+		/// <summary>
+		/// Returns the format for the raw log message.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <returns></returns>
 		public override string GetFormat(LogLevel level)
 		{
 			return "[{0}] - {1}";

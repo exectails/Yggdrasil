@@ -6,11 +6,25 @@ using System.IO;
 
 namespace Yggdrasil.Logging.Targets
 {
+	/// <summary>
+	/// Logger target logging to the Console standard output.
+	/// </summary>
+	/// <remarks>
+	/// Recognizes codes c[0-9]*, b[0-9]*, and r, for color, background
+	/// color, and resetting the colors respectively.
+	/// </remarks>
 	public class ConsoleTarget : LoggerTarget
 	{
 		private ConsoleColor DefaultForeground = Console.ForegroundColor;
 		private ConsoleColor DefaultBackground = Console.BackgroundColor;
 
+		/// <summary>
+		/// Writes message to Console standard output.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <param name="message"></param>
+		/// <param name="messageRaw"></param>
+		/// <param name="messageClean"></param>
 		public override void Write(LogLevel level, string message, string messageRaw, string messageClean)
 		{
 			// A little faster than writing every single char
@@ -53,6 +67,11 @@ namespace Yggdrasil.Logging.Targets
 			}
 		}
 
+		/// <summary>
+		/// Returns color coded formats, based on log level.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <returns></returns>
 		public override string GetFormat(LogLevel level)
 		{
 			switch (level)

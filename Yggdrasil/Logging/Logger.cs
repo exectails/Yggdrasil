@@ -8,6 +8,21 @@ using System.Text.RegularExpressions;
 
 namespace Yggdrasil.Logging
 {
+	/// <summary>
+	/// Logging class with support for codes that are passed down to the
+	/// log targets.
+	/// </summary>
+	/// <remarks>
+	/// Codes have the format "^[a-z]+[0-9]*;", with targets getting the raw
+	/// message passed to the logger, incl. codes, and a clean one, without
+	/// them. It's up to the loggers to decide what to do with them,
+	/// and there's no rules as to what codes there can be, or what the
+	/// target will do with them.
+	/// 
+	/// For example, the ConsoleTarget will recognize c[0-9]*, b[0-9]*,
+	/// and r, for color, background color, and resetting the colors
+	/// respectively.
+	/// </remarks>
 	public sealed class Logger
 	{
 		private Regex _codeRegex = new Regex(@"\^[a-z]+[0-9]*;", RegexOptions.Compiled);

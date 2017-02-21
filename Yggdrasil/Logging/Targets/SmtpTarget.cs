@@ -24,6 +24,11 @@ namespace Yggdrasil.Logging.Targets
 		public string To { get; private set; }
 
 		/// <summary>
+		/// The eMail address to reply to.
+		/// </summary>
+		public string ReplyTo { get; private set; }
+
+		/// <summary>
 		/// The subject of the eMail.
 		/// </summary>
 		public string Subject { get; private set; }
@@ -58,16 +63,18 @@ namespace Yggdrasil.Logging.Targets
 		/// </summary>
 		/// <param name="from">The from eMail address.</param>
 		/// <param name="to">The to eMail address.</param>
+		/// <param name="replyTo">The eMail address to reply to.</param>
 		/// <param name="subject">The subject of the eMail.</param>
 		/// <param name="smtpHost">The SMTP host to use.</param>
 		/// <param name="smtpPort">The SMTP server's port.</param>
 		/// <param name="username">The username to log into the SMTP server with.</param>
 		/// <param name="password">The password to log into the SMTP server with.</param>
 		/// <param name="ssl">Whether SSL is enabled or not.</param>
-		public SmtpTarget(string from, string to, string subject, string smtpHost, int smtpPort, string username, string password, bool ssl)
+		public SmtpTarget(string from, string to, string replyTo, string subject, string smtpHost, int smtpPort, string username, string password, bool ssl)
 		{
 			this.From = from;
 			this.To = to;
+			this.ReplyTo = replyTo;
 			this.Subject = subject;
 			this.SmtpHost = smtpHost;
 			this.SmtpPort = smtpPort;
@@ -106,7 +113,7 @@ namespace Yggdrasil.Logging.Targets
 			{
 				mail.Body = message;
 				mail.BodyEncoding = Encoding.UTF8;
-				mail.ReplyTo = new MailAddress(this.From);
+				mail.ReplyTo = new MailAddress(this.ReplyTo);
 				mail.Subject = this.Subject;
 				mail.SubjectEncoding = Encoding.UTF8;
 				mail.Priority = MailPriority.Normal;

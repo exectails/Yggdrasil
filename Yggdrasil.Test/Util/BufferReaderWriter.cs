@@ -175,5 +175,92 @@ namespace Yggdrasil.Test.Util
 			buffer.WriteInt(0x01020304);
 			Assert.Throws<InvalidOperationException>(() => buffer.WriteInt(0x01020304));
 		}
+
+		[Fact]
+		public void VarInt()
+		{
+			var buffer = new BufferReaderWriter(new byte[10], 0, 0, false);
+
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00000000);
+				Assert.Equal(new byte[] { 0x00 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x00, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x0000007F);
+				Assert.Equal(new byte[] { 0x7F }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x7F, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00000080);
+				Assert.Equal(new byte[] { 0x80, 0x01 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x80, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00002000);
+				Assert.Equal(new byte[] { 0x80, 0x40 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x2000, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00003FFF);
+				Assert.Equal(new byte[] { 0xFF, 0x7F }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x3FFF, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00004000);
+				Assert.Equal(new byte[] { 0x80, 0x80, 0x01 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x4000, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x001FFFFF);
+				Assert.Equal(new byte[] { 0xFF, 0xFF, 0x7F }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x1FFFFF, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x00200000);
+				Assert.Equal(new byte[] { 0x80, 0x80, 0x80, 0x01 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x200000, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x08000000);
+				Assert.Equal(new byte[] { 0x80, 0x80, 0x80, 0x40 }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0x8000000, buffer.ReadVarInt());
+			}
+			{
+				buffer.Seek(0, SeekOrigin.Begin);
+				buffer.WriteVarInt(0x0FFFFFFF);
+				Assert.Equal(new byte[] { 0xFF, 0xFF, 0xFF, 0x7F }, buffer.Copy());
+
+				buffer.Seek(0, SeekOrigin.Begin);
+				Assert.Equal(0xFFFFFFF, buffer.ReadVarInt());
+			}
+		}
 	}
 }

@@ -291,9 +291,6 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Reads variable-length integer from buffer.
 		/// </summary>
-		/// <remarks>
-		/// https://en.wikipedia.org/wiki/Variable-length_quantity
-		/// </remarks>
 		/// <returns></returns>
 		public long ReadVarInt()
 		{
@@ -412,9 +409,6 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Writes variable-length integer to buffer.
 		/// </summary>
-		/// <remarks>
-		/// https://en.wikipedia.org/wiki/Variable-length_quantity
-		/// </remarks>
 		/// <returns></returns>
 		public void WriteVarInt(long value)
 		{

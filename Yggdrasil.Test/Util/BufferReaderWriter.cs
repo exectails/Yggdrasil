@@ -262,5 +262,27 @@ namespace Yggdrasil.Test.Util
 				Assert.Equal(0xFFFFFFF, buffer.ReadVarInt());
 			}
 		}
+
+		[Fact]
+		public void CopyTo()
+		{
+			var buffer = new BufferReaderWriter(new byte[10], 0, 0, false);
+			buffer.WriteByte(1);
+			buffer.Seek(0, SeekOrigin.End);
+			buffer.WriteByte(2);
+
+			var arr = new byte[10];
+			buffer.CopyTo(arr, 0);
+			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+
+			Assert.Throws<InvalidOperationException>(() => buffer.CopyTo(arr, -1));
+
+			arr = new byte[9];
+			Assert.Throws<InvalidOperationException>(() => buffer.CopyTo(arr, 0));
+
+			arr = new byte[12];
+			buffer.CopyTo(arr, 2);
+			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+		}
 	}
 }

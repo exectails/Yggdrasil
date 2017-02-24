@@ -131,6 +131,23 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Copies the buffer's data into the given array, at the offset.
+		/// </summary>
+		/// <param name="destination"></param>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		public void CopyTo(byte[] destination, int offset)
+		{
+			if (offset < 0)
+				throw new InvalidOperationException("Offset must be a positive number.");
+
+			if (destination.Length < _length + offset)
+				throw new InvalidOperationException("Destination is not long enough.");
+
+			Buffer.BlockCopy(_buffer, 0, destination, offset, _length);
+		}
+
+		/// <summary>
 		/// Sets current index based on the given parameters.
 		/// </summary>
 		/// <param name="index">Modifier.</param>

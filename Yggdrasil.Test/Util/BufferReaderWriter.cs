@@ -284,5 +284,30 @@ namespace Yggdrasil.Test.Util
 			buffer.CopyTo(arr, 2);
 			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
 		}
+
+		[Fact]
+		public void ReadTo()
+		{
+			var buffer = new BufferReaderWriter(new byte[10], 0, 0, false);
+			buffer.WriteByte(1);
+			buffer.Seek(0, SeekOrigin.End);
+			buffer.WriteByte(2);
+			buffer.Seek(0, SeekOrigin.Begin);
+
+			var arr = new byte[10];
+			buffer.ReadTo(arr, 0, 10);
+			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+
+			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, -1, 0));
+			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, 0, -1));
+
+			arr = new byte[9];
+			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, 0, 10));
+
+			arr = new byte[12];
+			buffer.Seek(0, SeekOrigin.Begin);
+			buffer.ReadTo(arr, 2, 10);
+			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+		}
 	}
 }

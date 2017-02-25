@@ -306,6 +306,29 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Reads the specified number of bytes and writes them into
+		/// the buffer, at the given offset.
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <param name="length"></param>
+		public void ReadTo(byte[] buffer, int offset, int length)
+		{
+			if (offset < 0)
+				throw new InvalidOperationException("Offset must be a positive number.");
+
+			if (length < 0)
+				throw new InvalidOperationException("Length must be a positive number.");
+
+			if (buffer.Length < length + offset)
+				throw new InvalidOperationException("Destination is not long enough.");
+
+			this.AssertEnoughBytes(length);
+
+			Buffer.BlockCopy(_buffer, _ptr, buffer, offset, length);
+			_ptr += length;
+		}
+
+		/// <summary>
 		/// Reads variable-length integer from buffer.
 		/// </summary>
 		/// <returns></returns>

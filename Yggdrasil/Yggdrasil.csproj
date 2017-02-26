@@ -71,6 +71,7 @@
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Util\Math2.cs" />
     <Compile Include="Collections\OrderedDictionary.cs" />
+    <Compile Include="Util\MT19937.cs" />
     <Compile Include="Util\RandomProvider.cs" />
   </ItemGroup>
   <ItemGroup />

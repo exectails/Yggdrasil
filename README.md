@@ -7,9 +7,7 @@ This basically moves current Shared classes to a dedicated library.
 
 Links
 ------------------------------
-* Forums: http://aura-project.org/
-* GitHub: https://github.com/aura-project
-* Gitter chat: https://gitter.im/aura-project/aura
+* GitHub: https://github.com/aura-project/Yggdrasil
 
 Build Status
 ------------------------------

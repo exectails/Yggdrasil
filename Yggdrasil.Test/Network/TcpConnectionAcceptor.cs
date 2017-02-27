@@ -14,6 +14,12 @@ namespace Yggdrasil.Test.Network
 {
 	public class TcpConnectionAcceptorTests
 	{
+		public void Wait(int ms)
+		{
+			var end = DateTime.Now.AddMilliseconds(ms);
+			while (DateTime.Now < end) ;
+		}
+
 		[Fact]
 		public void Listen()
 		{
@@ -56,7 +62,7 @@ namespace Yggdrasil.Test.Network
 			socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 
 			// Wait a moment for the events to fire.
-			Thread.Sleep(5);
+			Wait(50);
 
 			Assert.Equal(true, socket1.Connected);
 			Assert.Equal(true, socket2.Connected);
@@ -89,7 +95,7 @@ namespace Yggdrasil.Test.Network
 			socket1.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 			socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 
-			Thread.Sleep(5);
+			Wait(50);
 
 			var message1 = new byte[] { 1, 3, 5, 7 };
 			var message2 = new byte[] { 8, 52, 45, 6 };
@@ -101,7 +107,7 @@ namespace Yggdrasil.Test.Network
 			socket1.Send(framer.Frame(message2));
 			socket2.Send(framer.Frame(message3));
 
-			Thread.Sleep(5);
+			Wait(50);
 
 			Assert.Equal(2, connections[0].Messages.Count);
 			Assert.Equal(1, connections[1].Messages.Count);
@@ -115,7 +121,7 @@ namespace Yggdrasil.Test.Network
 			connections[0].ReceiveException += ((conn, ex) => receiveException = ex);
 			socket1.Send(new byte[] { 0xFF, 0, 0, 0 });
 
-			Thread.Sleep(5);
+			Wait(50);
 
 			Assert.NotEqual(null, receiveException);
 			Assert.IsType<InvalidMessageSizeException>(receiveException);

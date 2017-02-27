@@ -124,5 +124,17 @@ namespace Yggdrasil.Util
 		{
 			return min + (int)(this.Round() / (double)uint.MaxValue * (max - min));
 		}
+
+		/// <summary>
+		/// Returns a random long integer.
+		/// </summary>
+		/// <returns></returns>
+		public long NextInt64()
+		{
+			var n1 = (long)this.Next();
+			var n2 = (long)this.Next();
+
+			return (n1 << (8 * sizeof(int))) + n2;
+		}
 	}
 }

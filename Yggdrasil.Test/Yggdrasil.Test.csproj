@@ -64,6 +64,7 @@
     <Compile Include="Network\NullTerminationFramer.cs" />
     <Compile Include="Network\TcpConnectionAcceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Hashing\MD5.cs" />
     <Compile Include="Security\Hashing\BCrypt.cs" />
     <Compile Include="Util\BufferReaderWriter.cs" />
     <Compile Include="Util\ConsoleUtil.cs" />

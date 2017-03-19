@@ -126,11 +126,20 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Logs information.
 		/// </summary>
+		/// <param name="value"></param>
+		public void Info(string value)
+		{
+			this.WriteLine(LogLevel.Info, value);
+		}
+
+		/// <summary>
+		/// Logs information.
+		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public void Info(string format, params object[] args)
 		{
-			this.WriteLine(LogLevel.Info, string.Format(format, args));
+			this.Info(string.Format(format, args));
 		}
 
 		/// <summary>
@@ -145,11 +154,20 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Logs warning.
 		/// </summary>
+		/// <param name="value"></param>
+		public void Warning(string value)
+		{
+			this.WriteLine(LogLevel.Warning, value);
+		}
+
+		/// <summary>
+		/// Logs warning.
+		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public void Warning(string format, params object[] args)
 		{
-			this.WriteLine(LogLevel.Warning, string.Format(format, args));
+			this.Warning(string.Format(format, args));
 		}
 
 		/// <summary>
@@ -164,11 +182,20 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Logs error.
 		/// </summary>
+		/// <param name="value"></param>
+		public void Error(string value)
+		{
+			WriteLine(LogLevel.Error, value);
+		}
+
+		/// <summary>
+		/// Logs error.
+		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public void Error(string format, params object[] args)
 		{
-			WriteLine(LogLevel.Error, string.Format(format, args));
+			this.Error(string.Format(format, args));
 		}
 
 		/// <summary>
@@ -183,11 +210,20 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Logs status message.
 		/// </summary>
+		/// <param name="value"></param>
+		public void Status(string value)
+		{
+			this.WriteLine(LogLevel.Status, value);
+		}
+
+		/// <summary>
+		/// Logs status message.
+		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public void Status(string format, params object[] args)
 		{
-			this.WriteLine(LogLevel.Status, string.Format(format, args));
+			this.Status(string.Format(format, args));
 		}
 
 		/// <summary>
@@ -202,11 +238,20 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Logs debug message.
 		/// </summary>
+		/// <param name="value"></param>
+		public void Debug(string value)
+		{
+			this.WriteLine(LogLevel.Debug, value);
+		}
+
+		/// <summary>
+		/// Logs debug message.
+		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public void Debug(string format, params object[] args)
 		{
-			this.WriteLine(LogLevel.Debug, string.Format(format, args));
+			this.Debug(string.Format(format, args));
 		}
 
 		/// <summary>

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Collections\ListCollection.cs" />
     <Compile Include="Configuration\ConfFile.cs" />
+    <Compile Include="Extensions\Dictionary.cs" />
     <Compile Include="Extensions\GenericLists.cs" />
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />

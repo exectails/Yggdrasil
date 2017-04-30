@@ -126,6 +126,21 @@ namespace Yggdrasil.Util.Commands
 		}
 
 		/// <summary>
+		/// Returns the argument with the given name. Returns given default
+		/// if parameter wasn't found.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public string Get(string name, string defaultValue)
+		{
+			if (!this.Contains(name))
+				return defaultValue;
+
+			return _named[name];
+		}
+
+		/// <summary>
 		/// Returns all arguments, starting with the indexed ones in order,
 		/// followed by the named ones, with no order guaranteed.
 		/// </summary>

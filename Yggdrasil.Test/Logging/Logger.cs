@@ -60,7 +60,7 @@ namespace Yggdrasil.Test.Logging
 			logger.AddTarget(target);
 
 			var test = "";
-			var dPre = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} ";
+			var dPre = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3} ";
 
 			logger.Info("test 1");
 			test += dPre + @"\[Info\] - test 1" + Environment.NewLine;

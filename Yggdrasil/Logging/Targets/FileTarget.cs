@@ -51,7 +51,7 @@ namespace Yggdrasil.Logging.Targets
 					Directory.CreateDirectory(this.FolderPath);
 			}
 
-			messageClean = string.Format("{0:yyyy-MM-dd HH:mm} {1}", DateTime.Now, messageClean);
+			messageClean = string.Format("{0:yyyy-MM-dd HH:mm:ss.fff} {1}", DateTime.Now, messageClean);
 
 			File.AppendAllText(this.FilePath, messageClean);
 		}

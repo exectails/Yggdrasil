@@ -160,5 +160,35 @@ namespace Yggdrasil.Util.Commands
 
 			return result;
 		}
+
+		/// <summary>
+		/// Removes the argument at the given index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <exception cref="ArgumentException">
+		/// Thrown if index doesn't exist.
+		/// </exception>
+		public void Remove(int index)
+		{
+			if (!this.Contains(index))
+				throw new ArgumentException("Index '" + index + "' doesn't exist.");
+
+			_indexed.RemoveAt(index);
+		}
+
+		/// <summary>
+		/// Removes the argument with the given name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <exception cref="ArgumentException">
+		/// Thrown if argument doesn't exist.
+		/// </exception>
+		public void Remove(string name)
+		{
+			if (!this.Contains(name))
+				throw new ArgumentException("Argument with name '" + name + "' doesn't exist.");
+
+			_named.Remove(name);
+		}
 	}
 }

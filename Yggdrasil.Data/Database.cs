@@ -50,8 +50,16 @@ namespace Yggdrasil.Data
 	/// </summary>
 	/// <typeparam name="TIndex"></typeparam>
 	/// <typeparam name="TData"></typeparam>
-	public interface IDatabaseIndexed<TIndex, TData> : IDatabase<TData> where TData : class, new()
+	public interface IDatabaseIndexed<TIndex, TData> : IDatabase where TData : class, new()
 	{
+		/// <summary>
+		/// Searches for first entry that matches the given predicate
+		/// and returns it, or null if no matches were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		TData Find(Func<TData, bool> predicate);
+
 		/// <summary>
 		/// Returns the entry with the given index, or null if it
 		/// wasn't found.

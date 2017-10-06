@@ -54,12 +54,4 @@ namespace Yggdrasil.Data.CSV
 		{
 		}
 	}
-
-	/// <summary>
-	/// Indicates that the index used to read data from CSV Reader is
-	/// invalid.
-	/// </summary>
-	public class IndexOutOfRange : Exception
-	{
-	}
 }

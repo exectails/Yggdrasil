@@ -79,23 +79,21 @@ namespace Yggdrasil.Test.Data
 						Assert.Equal(0x34u, entry.ReadULong(4));
 						Assert.Equal(new[] { "5", "6", "7", "8" }, entry.ReadStringList(5));
 						Assert.Equal(new[] { 5, 6, 7, 8 }, entry.ReadIntList(5));
-
-						Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadInt(10));
 					}
 
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadByte(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadSByte(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadShort(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadUShort(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadInt(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadUInt(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadLong(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadULong(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadFloat(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadDouble(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadString(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadStringList(10));
-					Assert.Throws<ArgumentOutOfRangeException>(() => entry.ReadIntList(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadByte(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadSByte(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadShort(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadUShort(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadInt(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadUInt(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadLong(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadULong(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadFloat(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadDouble(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadString(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadStringList(10));
+					Assert.Throws<IndexOutOfRangeException>(() => entry.ReadIntList(10));
 				}
 
 				Assert.Equal(2, lineCount);

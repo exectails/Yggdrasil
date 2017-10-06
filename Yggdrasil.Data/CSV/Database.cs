@@ -85,7 +85,7 @@ namespace Yggdrasil.Data.CSV
 						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
 						continue;
 					}
-					catch (IndexOutOfRange ex)
+					catch (IndexOutOfRangeException ex)
 					{
 						var msg = string.Format("Invalid index used at {0}", ex.StackTrace);
 

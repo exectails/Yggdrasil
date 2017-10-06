@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationData.cs" />
     <Compile Include="CSV\Database.cs" />
     <Compile Include="CSV\CsvEntry.cs" />
     <Compile Include="CSV\CsvReader.cs" />

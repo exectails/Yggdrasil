@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSV\CsvDatabase.cs" />
+    <Compile Include="CSV\Database.cs" />
     <Compile Include="CSV\CsvEntry.cs" />
     <Compile Include="CSV\CsvReader.cs" />
     <Compile Include="CSV\Exceptions.cs" />

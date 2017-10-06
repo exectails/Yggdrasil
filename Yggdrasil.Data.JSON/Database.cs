@@ -12,7 +12,7 @@ namespace Yggdrasil.Data.JSON
 	/// A text-based database using JSON.
 	/// </summary>
 	/// <typeparam name="TData"></typeparam>
-	public abstract class JsonDatabase<TData> : Database<TData> where TData : class, new()
+	public abstract class DatabaseJson<TData> : Database<TData> where TData : class, new()
 	{
 		/// <summary>
 		/// Loads data from given file.
@@ -86,7 +86,7 @@ namespace Yggdrasil.Data.JSON
 	/// A text-based database using JSON.
 	/// </summary>
 	/// <typeparam name="TData"></typeparam>
-	public abstract class JsonDatabaseIndexed<TIndex, TData> : IndexedDatabase<TIndex, TData> where TData : class, new()
+	public abstract class DatabaseJsonIndexed<TIndex, TData> : IndexedDatabase<TIndex, TData> where TData : class, new()
 	{
 		/// <summary>
 		/// Loads data from given file.

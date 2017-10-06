@@ -11,14 +11,14 @@ namespace Yggdrasil.Data.CSV
 	/// A text-based database using CSV.
 	/// </summary>
 	/// <typeparam name="TData"></typeparam>
-	public abstract class CsvDatabase<TData> : Database<TData> where TData : class, new()
+	public abstract class DatabaseCsv<TData> : Database<TData> where TData : class, new()
 	{
 		private int _min;
 
 		/// <summary>
 		/// Initializes database.
 		/// </summary>
-		protected CsvDatabase()
+		protected DatabaseCsv()
 		{
 			var method = this.GetType().GetMethod("ReadEntry", BindingFlags.NonPublic | BindingFlags.Instance);
 			var attr = method.GetCustomAttributes(typeof(MinFieldCountAttribute), true);
@@ -100,14 +100,14 @@ namespace Yggdrasil.Data.CSV
 	/// A text-based database using CSV.
 	/// </summary>
 	/// <typeparam name="TData"></typeparam>
-	public abstract class CsvDatabaseIndexed<TIndex, TData> : IndexedDatabase<TIndex, TData> where TData : class, new()
+	public abstract class DatabaseCsvIndexed<TIndex, TData> : IndexedDatabase<TIndex, TData> where TData : class, new()
 	{
 		private int _min;
 
 		/// <summary>
 		/// Initializes database.
 		/// </summary>
-		protected CsvDatabaseIndexed()
+		protected DatabaseCsvIndexed()
 		{
 			var method = this.GetType().GetMethod("ReadEntry", BindingFlags.NonPublic | BindingFlags.Instance);
 			var attr = method.GetCustomAttributes(typeof(MinFieldCountAttribute), true);

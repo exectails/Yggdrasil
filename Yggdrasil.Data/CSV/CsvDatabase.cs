@@ -7,6 +7,10 @@ using System.Reflection;
 
 namespace Yggdrasil.Data.CSV
 {
+	/// <summary>
+	/// A text-based database using CSV.
+	/// </summary>
+	/// <typeparam name="TData"></typeparam>
 	public abstract class CsvDatabase<TData> : Database<TData> where TData : class, new()
 	{
 		private int _min;
@@ -23,7 +27,7 @@ namespace Yggdrasil.Data.CSV
 		}
 
 		/// <summary>
-		/// Loads data from given CSV file.
+		/// Loads data from given file.
 		/// </summary>
 		/// <param name="filePath"></param>
 		public override void LoadFile(string filePath)
@@ -78,16 +82,7 @@ namespace Yggdrasil.Data.CSV
 		}
 
 		/// <summary>
-		/// Not available for CSV databases.
-		/// </summary>
-		/// <param name="stream"></param>
-		public override void LoadStream(Stream stream)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Reads CSV entry and adds it to database.
+		/// Reads entry and adds information to database.
 		/// </summary>
 		/// <param name="entry"></param>
 		protected abstract void ReadEntry(CsvEntry entry);

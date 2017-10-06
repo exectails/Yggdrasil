@@ -26,13 +26,6 @@ namespace Yggdrasil.Data
 		void LoadFile(string filePath);
 
 		/// <summary>
-		/// Loads data from stream.
-		/// </summary>
-		/// <param name="stream"></param>
-		/// <param name="clear"></param>
-		void LoadStream(Stream stream);
-
-		/// <summary>
 		/// Returns warnings that occurred while loading data.
 		/// </summary>
 		/// <returns></returns>
@@ -108,17 +101,7 @@ namespace Yggdrasil.Data
 		/// Loads data from given file using a stream.
 		/// </summary>
 		/// <param name="filePath"></param>
-		public virtual void LoadFile(string filePath)
-		{
-			using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-				this.LoadStream(stream);
-		}
-
-		/// <summary>
-		/// Loads data from given stream.
-		/// </summary>
-		/// <param name="stream"></param>
-		public abstract void LoadStream(Stream stream);
+		public abstract void LoadFile(string filePath);
 
 		/// <summary>
 		/// Returns warnings that occured while loading data.
@@ -182,17 +165,7 @@ namespace Yggdrasil.Data
 		/// Loads data from given file using a stream.
 		/// </summary>
 		/// <param name="filePath"></param>
-		public virtual void LoadFile(string filePath)
-		{
-			using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-				this.LoadStream(stream);
-		}
-
-		/// <summary>
-		/// Loads data from given stream.
-		/// </summary>
-		/// <param name="stream"></param>
-		public abstract void LoadStream(Stream stream);
+		public abstract void LoadFile(string filePath);
 
 		/// <summary>
 		/// Returns warnings that occured while loading data.

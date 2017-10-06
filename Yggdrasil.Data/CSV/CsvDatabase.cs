@@ -32,10 +32,12 @@ namespace Yggdrasil.Data.CSV
 		/// <param name="filePath"></param>
 		public override void LoadFile(string filePath)
 		{
+			this.Warnings.Clear();
+
 			using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
 			{
 				var csv = new CsvReader(stream, filePath, ',');
-				var fileName = Path.GetFileName(filePath).Replace("\\", "/");
+				var fileName = filePath.Replace("\\", "/");
 
 				foreach (var entry in csv.Next())
 				{
@@ -70,12 +72,18 @@ namespace Yggdrasil.Data.CSV
 						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
 						continue;
 					}
-					catch (ArgumentOutOfRangeException ex)
+					catch (IndexOutOfRange ex)
 					{
-						var msg = string.Format("Invalid value index at {0}", ex.StackTrace);
+						var msg = string.Format("Invalid index used at {0}", ex.StackTrace);
 
 						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
 						continue;
+					}
+					catch (Exception ex)
+					{
+						var msg = string.Format("Exception: {0}\nEntry: \n{1}", ex, line);
+
+						throw new DatabaseErrorException(filePath, msg);
 					}
 				}
 			}

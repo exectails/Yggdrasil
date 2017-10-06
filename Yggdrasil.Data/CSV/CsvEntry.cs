@@ -89,7 +89,7 @@ namespace Yggdrasil.Data.CSV
 		public bool ReadBool(int index, bool def = false)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -109,7 +109,7 @@ namespace Yggdrasil.Data.CSV
 		public byte ReadByte(int index, byte def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -130,7 +130,7 @@ namespace Yggdrasil.Data.CSV
 		public sbyte ReadSByte(int index, sbyte def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -151,7 +151,7 @@ namespace Yggdrasil.Data.CSV
 		public short ReadShort(int index, short def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -172,7 +172,7 @@ namespace Yggdrasil.Data.CSV
 		public ushort ReadUShort(int index, ushort def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -193,7 +193,7 @@ namespace Yggdrasil.Data.CSV
 		public int ReadInt(int index, int def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -214,7 +214,7 @@ namespace Yggdrasil.Data.CSV
 		public uint ReadUInt(int index, uint def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -235,7 +235,7 @@ namespace Yggdrasil.Data.CSV
 		public long ReadLong(int index, long def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -256,7 +256,7 @@ namespace Yggdrasil.Data.CSV
 		public ulong ReadULong(int index, ulong def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -277,7 +277,7 @@ namespace Yggdrasil.Data.CSV
 		public float ReadFloat(int index, float def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -296,7 +296,7 @@ namespace Yggdrasil.Data.CSV
 		public double ReadDouble(int index, double def = 0)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -315,7 +315,7 @@ namespace Yggdrasil.Data.CSV
 		public string ReadString(int index, string def = null)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -335,7 +335,7 @@ namespace Yggdrasil.Data.CSV
 		public string[] ReadStringList(int index, string[] def = null)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 
@@ -355,7 +355,7 @@ namespace Yggdrasil.Data.CSV
 		public int[] ReadIntList(int index, int[] def = null)
 		{
 			if (index < 0 || index > this.Count - 1)
-				throw new ArgumentOutOfRangeException("Invalid index.");
+				throw new IndexOutOfRange();
 
 			this.LastIndex = index;
 

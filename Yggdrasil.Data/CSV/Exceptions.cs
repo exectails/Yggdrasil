@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
 
+using System;
+
 namespace Yggdrasil.Data.CSV
 {
 	/// <summary>
@@ -21,7 +23,7 @@ namespace Yggdrasil.Data.CSV
 		/// <param name="msg"></param>
 		/// <param name="args"></param>
 		public CsvDatabaseWarningException(string source, int line, string msg)
-			: base(msg, source)
+			: base(source, msg)
 		{
 			this.Line = line;
 		}
@@ -51,5 +53,13 @@ namespace Yggdrasil.Data.CSV
 			: base(null, 0, string.Format("Expected at least {0} fields, found {1}.", expectedAmount, amount))
 		{
 		}
+	}
+
+	/// <summary>
+	/// Indicates that the index used to read data from CSV Reader is
+	/// invalid.
+	/// </summary>
+	public class IndexOutOfRange : Exception
+	{
 	}
 }

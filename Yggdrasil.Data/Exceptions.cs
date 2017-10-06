@@ -14,19 +14,10 @@ namespace Yggdrasil.Data
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
-		/// <param name="msg"></param>
-		public DatabaseWarningException(string msg)
-			: base(msg)
-		{
-		}
-
-		/// <summary>
-		/// Creates new instance.
-		/// </summary>
-		/// <param name="msg"></param>
 		/// <param name="source"></param>
-		public DatabaseWarningException(string msg, string source)
-			: this(msg)
+		/// <param name="msg"></param>
+		public DatabaseWarningException(string source, string msg)
+			: base(msg)
 		{
 			this.Source = source;
 		}
@@ -50,19 +41,10 @@ namespace Yggdrasil.Data
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
-		/// <param name="msg"></param>
-		public DatabaseErrorException(string msg)
-			: base(msg)
-		{
-		}
-
-		/// <summary>
-		/// Creates new instance.
-		/// </summary>
-		/// <param name="msg"></param>
 		/// <param name="source"></param>
-		public DatabaseErrorException(string msg, string source)
-			: this(msg)
+		/// <param name="msg"></param>
+		public DatabaseErrorException(string source, string msg)
+			: base(msg)
 		{
 			this.Source = source;
 		}

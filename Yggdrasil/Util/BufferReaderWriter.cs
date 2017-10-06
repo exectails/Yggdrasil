@@ -226,7 +226,7 @@ namespace Yggdrasil.Util
 			this.AssertEnoughBytes(sizeof(short));
 
 			var result = 0;
-			for (int i = 0; i < sizeof(short); ++i)
+			for (var i = 0; i < sizeof(short); ++i)
 				result += ((short)_buffer[_ptr++] << (i * 8));
 
 			return IPAddress.NetworkToHostOrder((short)result);
@@ -241,7 +241,7 @@ namespace Yggdrasil.Util
 			this.AssertEnoughBytes(sizeof(int));
 
 			var result = 0;
-			for (int i = 0; i < sizeof(int); ++i)
+			for (var i = 0; i < sizeof(int); ++i)
 				result += ((int)_buffer[_ptr++] << (i * 8));
 
 			return IPAddress.NetworkToHostOrder(result);
@@ -256,7 +256,7 @@ namespace Yggdrasil.Util
 			this.AssertEnoughBytes(sizeof(long));
 
 			var result = 0L;
-			for (int i = 0; i < sizeof(long); ++i)
+			for (var i = 0; i < sizeof(long); ++i)
 				result += ((long)_buffer[_ptr++] << (i * 8));
 
 			return IPAddress.NetworkToHostOrder(result);
@@ -336,7 +336,7 @@ namespace Yggdrasil.Util
 		{
 			var result = 0L;
 
-			for (int i = 0; ; ++i)
+			for (var i = 0; ; ++i)
 			{
 				var val = this.ReadByte();
 				result |= (long)(val & 0x7F) << (7 * i);
@@ -373,7 +373,7 @@ namespace Yggdrasil.Util
 
 			value = IPAddress.HostToNetworkOrder(value);
 
-			for (int i = 0; i < sizeof(short); ++i)
+			for (var i = 0; i < sizeof(short); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
 			this.UpdatePtrLength(sizeof(short));
 		}
@@ -388,7 +388,7 @@ namespace Yggdrasil.Util
 
 			value = IPAddress.HostToNetworkOrder(value);
 
-			for (int i = 0; i < sizeof(int); ++i)
+			for (var i = 0; i < sizeof(int); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
 			this.UpdatePtrLength(sizeof(int));
 		}
@@ -403,7 +403,7 @@ namespace Yggdrasil.Util
 
 			value = IPAddress.HostToNetworkOrder(value);
 
-			for (int i = 0; i < sizeof(long); ++i)
+			for (var i = 0; i < sizeof(long); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
 			this.UpdatePtrLength(sizeof(long));
 		}

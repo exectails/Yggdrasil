@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Structures", "Ygg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data.JSON", "Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj", "{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

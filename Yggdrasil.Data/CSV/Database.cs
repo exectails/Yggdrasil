@@ -2,7 +2,9 @@
 // For more information, see licence.txt in the main folder
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Yggdrasil.Data.CSV
@@ -10,15 +12,16 @@ namespace Yggdrasil.Data.CSV
 	/// <summary>
 	/// A text-based database using CSV.
 	/// </summary>
-	/// <typeparam name="TData"></typeparam>
-	public abstract class DatabaseCsv<TData> : Database<TData> where TData : class, new()
+	public abstract class DatabaseCsvBase
 	{
 		private int _min;
 
+		protected List<DatabaseWarningException> Warnings = new List<DatabaseWarningException>();
+
 		/// <summary>
-		/// Initializes database.
+		/// Initializes instance.
 		/// </summary>
-		protected DatabaseCsv()
+		protected DatabaseCsvBase()
 		{
 			var method = this.GetType().GetMethod("ReadEntry", BindingFlags.NonPublic | BindingFlags.Instance);
 			var attr = method.GetCustomAttributes(typeof(MinFieldCountAttribute), true);
@@ -27,10 +30,20 @@ namespace Yggdrasil.Data.CSV
 		}
 
 		/// <summary>
+		/// Returns warnings that occured while loading data.
+		/// </summary>
+		/// <returns></returns>
+		public DatabaseWarningException[] GetWarnings()
+		{
+			lock (this.Warnings)
+				return this.Warnings.ToArray();
+		}
+
+		/// <summary>
 		/// Loads data from given file.
 		/// </summary>
 		/// <param name="filePath"></param>
-		public override void LoadFile(string filePath)
+		public void LoadFile(string filePath)
 		{
 			this.Warnings.Clear();
 
@@ -100,89 +113,79 @@ namespace Yggdrasil.Data.CSV
 	/// A text-based database using CSV.
 	/// </summary>
 	/// <typeparam name="TData"></typeparam>
-	public abstract class DatabaseCsvIndexed<TIndex, TData> : IndexedDatabase<TIndex, TData> where TData : class, new()
+	public abstract class DatabaseCsv<TData> : DatabaseCsvBase, IDatabase<TData> where TData : class, new()
 	{
-		private int _min;
+		protected List<TData> Entries = new List<TData>();
 
 		/// <summary>
-		/// Initializes database.
+		/// Searches for first entry that matches the given predicate
+		/// and returns it, or null if no matches were found.
 		/// </summary>
-		protected DatabaseCsvIndexed()
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData Find(Func<TData, bool> predicate)
 		{
-			var method = this.GetType().GetMethod("ReadEntry", BindingFlags.NonPublic | BindingFlags.Instance);
-			var attr = method.GetCustomAttributes(typeof(MinFieldCountAttribute), true);
-			if (attr.Length > 0)
-				_min = (attr[0] as MinFieldCountAttribute).Count;
+			TData result;
+			lock (this.Entries)
+				result = this.Entries.FirstOrDefault(predicate);
+			return result;
 		}
 
 		/// <summary>
-		/// Loads data from given file.
+		/// Removes all entries from database.
 		/// </summary>
-		/// <param name="filePath"></param>
-		public override void LoadFile(string filePath)
+		public virtual void Clear()
 		{
-			this.Warnings.Clear();
+			lock (this.Entries)
+				this.Entries.Clear();
+		}
+	}
 
-			using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-			{
-				var csv = new CsvReader(stream, filePath, ',');
-				var fileName = filePath.Replace("\\", "/");
+	/// <summary>
+	/// A text-based database using CSV.
+	/// </summary>
+	/// <typeparam name="TIndex"></typeparam>
+	/// <typeparam name="TData"></typeparam>
+	public abstract class DatabaseCsvIndexed<TIndex, TData> : DatabaseCsvBase, IDatabaseIndexed<TIndex, TData> where TData : class, new()
+	{
+		protected Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
 
-				foreach (var entry in csv.Next())
-				{
-					var line = entry.Line;
-
-					try
-					{
-						if (entry.Count < _min)
-							throw new FieldCountException(_min, entry.Count);
-
-						this.ReadEntry(entry);
-					}
-					catch (CsvDatabaseWarningException ex)
-					{
-						ex.Source = fileName;
-						ex.Line = line;
-
-						this.Warnings.Add(ex);
-						continue;
-					}
-					catch (OverflowException)
-					{
-						var msg = string.Format("Variable not fit for type (#{0}).", entry.LastIndex);
-
-						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
-						continue;
-					}
-					catch (FormatException)
-					{
-						var msg = string.Format("Invalid number format (#{0}).", entry.LastIndex);
-
-						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
-						continue;
-					}
-					catch (IndexOutOfRange ex)
-					{
-						var msg = string.Format("Invalid index used at {0}", ex.StackTrace);
-
-						this.Warnings.Add(new CsvDatabaseWarningException(fileName, line, msg));
-						continue;
-					}
-					catch (Exception ex)
-					{
-						var msg = string.Format("Exception: {0}\nEntry: \n{1}", ex, line);
-
-						throw new DatabaseErrorException(filePath, msg);
-					}
-				}
-			}
+		/// <summary>
+		/// Searches for first entry that matches the given predicate
+		/// and returns it, or null if no matches were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData Find(Func<TData, bool> predicate)
+		{
+			TData result;
+			lock (this.Entries)
+				result = this.Entries.Values.FirstOrDefault(predicate);
+			return result;
 		}
 
 		/// <summary>
-		/// Reads entry and adds information to database.
+		/// Returns the entry with the given index, or null if it
+		/// wasn't found.
 		/// </summary>
-		/// <param name="entry"></param>
-		protected abstract void ReadEntry(CsvEntry entry);
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public TData Find(TIndex index)
+		{
+			TData result;
+			lock (this.Entries)
+				this.Entries.TryGetValue(index, out result);
+			return result;
+		}
+
+		/// <summary>
+		/// Removes all entries from database.
+		/// </summary>
+		public virtual void Clear()
+		{
+			lock (this.Entries)
+				this.Entries.Clear();
+		}
 	}
 
 	/// <summary>

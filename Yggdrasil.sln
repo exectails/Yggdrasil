@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil", "Yggdrasil\Yggdrasil.csproj", "{4BB8DF19-7D20-429A-AF5F-5D1232538E08}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Ai", "Yggdrasil.Ai\Yggdrasil.Ai.csproj", "{EEFDA46B-1503-4381-B1F5-40805549A925}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Structures", "Yggdrasil.Structures\Yggdrasil.Structures.csproj", "{D82C3CEB-CE11-4340-AC10-9D95D9977203}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +35,15 @@ Global
 		{D82C3CEB-CE11-4340-AC10-9D95D9977203}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D82C3CEB-CE11-4340-AC10-9D95D9977203}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D82C3CEB-CE11-4340-AC10-9D95D9977203}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1F3E6E-C578-4C29-8A26-7B77434B5861}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35F4B29F-7157-4539-8BEC-1B8404CF6963}
 	EndGlobalSection
 EndGlobal

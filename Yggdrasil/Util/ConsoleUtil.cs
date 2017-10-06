@@ -121,6 +121,14 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Returns whether the application is running on Mono.
+		/// </summary>
+		public static bool CheckMono()
+		{
+			return (Type.GetType("Mono.Runtime") != null);
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether the current process is running
 		/// in user interactive mode.
 		/// </summary>

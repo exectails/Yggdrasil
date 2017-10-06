@@ -66,11 +66,13 @@ namespace Yggdrasil.Test.Util
 			Console.SetOut(cout);
 		}
 
-		// Currently failing on Travis for some reason o.o
-#if !__MonoCS__
 		[Fact]
 		public void WriteSeperator()
 		{
+			// Currently failing on Travis for some reason o.o
+			if (ConsoleUtil.CheckMono())
+				return;
+
 			var cout = Console.Out;
 
 			var sw1 = new StringWriter();
@@ -117,6 +119,10 @@ namespace Yggdrasil.Test.Util
 		[Fact]
 		public void LoadingTitle()
 		{
+			// Currently failing on Travis for some reason o.o
+			if (ConsoleUtil.CheckMono())
+				return;
+
 			var sw = new StringWriter();
 			var cout = Console.Out;
 			Console.SetOut(sw);
@@ -132,6 +138,5 @@ namespace Yggdrasil.Test.Util
 
 			Console.SetOut(cout);
 		}
-#endif
 	}
 }

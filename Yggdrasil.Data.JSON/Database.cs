@@ -125,6 +125,16 @@ namespace Yggdrasil.Data.JSON
 			lock (this.Entries)
 				this.Entries.Clear();
 		}
+
+		/// <summary>
+		/// Adds data to database.
+		/// </summary>
+		/// <param name="data"></param>
+		public void Add(TData data)
+		{
+			lock (this.Entries)
+				this.Entries.Add(data);
+		}
 	}
 
 	/// <summary>
@@ -171,6 +181,42 @@ namespace Yggdrasil.Data.JSON
 		{
 			lock (this.Entries)
 				this.Entries.Clear();
+		}
+
+		/// <summary>
+		/// Adds data to database, fails and returns false if index exists
+		/// already.
+		/// </summary>
+		/// <param name="data"></param>
+		public bool Add(TIndex index, TData data)
+		{
+			lock (this.Entries)
+			{
+				if (this.Entries.ContainsKey(index))
+					return false;
+
+				this.Entries.Add(index, data);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Adds data to database, replacing potentially existing values.
+		/// Returns whether data was replaced or not.
+		/// </summary>
+		/// <param name="data"></param>
+		public bool AddOrReplace(TIndex index, TData data)
+		{
+			var result = false;
+
+			lock (this.Entries)
+			{
+				result = this.Entries.ContainsKey(index);
+				this.Entries[index] = data;
+			}
+
+			return result;
 		}
 	}
 }

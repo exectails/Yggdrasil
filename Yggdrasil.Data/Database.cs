@@ -42,6 +42,13 @@ namespace Yggdrasil.Data
 		/// <param name="predicate"></param>
 		/// <returns></returns>
 		TData Find(Func<TData, bool> predicate);
+
+		/// <summary>
+		/// Adds data to database.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		void Add(TData data);
 	}
 
 	/// <summary>
@@ -67,5 +74,21 @@ namespace Yggdrasil.Data
 		/// <param name="index"></param>
 		/// <returns></returns>
 		TData Find(TIndex index);
+
+		/// <summary>
+		/// Adds data to database, fails and returns false if index exists
+		/// already.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		bool Add(TIndex index, TData data);
+
+		/// <summary>
+		/// Adds data to database, replacing potentially existing values.
+		/// Returns whether data was replaced or not.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		bool AddOrReplace(TIndex index, TData data);
 	}
 }

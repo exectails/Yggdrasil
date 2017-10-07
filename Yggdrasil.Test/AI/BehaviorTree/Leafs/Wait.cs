@@ -4,11 +4,11 @@
 using System;
 using System.Threading;
 using Xunit;
-using Yggrasil.Ai;
-using Yggrasil.Ai.Composites;
-using Yggrasil.Ai.Leafs;
+using Yggrasil.Ai.BehaviorTree;
+using Yggrasil.Ai.BehaviorTree.Composites;
+using Yggrasil.Ai.BehaviorTree.Leafs;
 
-namespace Yggdrasil.Test.AI.Leafs
+namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
 {
 	public class WaitTests
 	{

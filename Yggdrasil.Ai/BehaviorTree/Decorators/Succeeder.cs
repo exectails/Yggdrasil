@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-namespace Yggrasil.Ai.Decorators
+namespace Yggrasil.Ai.BehaviorTree.Decorators
 {
 	/// <summary>
-	/// Acts on given routine and inverts its Success|Failure result.
+	/// Acts on given routine and never returns Failure.
 	/// </summary>
-	public class Inverter : Routine
+	public class Succeeder : Routine
 	{
 		/// <summary>
 		/// Routine to be run and inverted.
@@ -14,10 +14,10 @@ namespace Yggrasil.Ai.Decorators
 		public readonly Routine Routine;
 
 		/// <summary>
-		/// Creates new instance of Inverter routine.
+		/// Creates new instance of Succeeder routine.
 		/// </summary>
 		/// <param name="routine"></param>
-		public Inverter(Routine routine)
+		public Succeeder(Routine routine)
 		{
 			this.Routine = routine;
 		}
@@ -36,7 +36,7 @@ namespace Yggrasil.Ai.Decorators
 				default:
 				case RoutineStatus.Running: return RoutineStatus.Running;
 				case RoutineStatus.Failure: return RoutineStatus.Success;
-				case RoutineStatus.Success: return RoutineStatus.Failure;
+				case RoutineStatus.Success: return RoutineStatus.Success;
 			}
 		}
 	}

@@ -2,10 +2,10 @@
 // For more information, see license file in the main folder
 
 using Xunit;
-using Yggrasil.Ai;
-using Yggrasil.Ai.Composites;
+using Yggrasil.Ai.BehaviorTree;
+using Yggrasil.Ai.BehaviorTree.Composites;
 
-namespace Yggdrasil.Test.AI.Composites
+namespace Yggdrasil.Test.AI.BehaviorTree.Composites
 {
 	public class SequenceTests
 	{

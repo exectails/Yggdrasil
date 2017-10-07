@@ -45,15 +45,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\Composites\Selector.cs" />
-    <Compile Include="AI\Composites\Sequence.cs" />
-    <Compile Include="AI\Composites\Conditional.cs" />
-    <Compile Include="AI\Decorators\Succeeder.cs" />
-    <Compile Include="AI\Decorators\Repeater.cs" />
-    <Compile Include="AI\Decorators\Inverter.cs" />
-    <Compile Include="AI\Leafs\Print.cs" />
-    <Compile Include="AI\Leafs\Execute.cs" />
-    <Compile Include="AI\Leafs\Wait.cs" />
+    <Compile Include="AI\BehaviorTree\Composites\Selector.cs" />
+    <Compile Include="AI\BehaviorTree\Composites\Sequence.cs" />
+    <Compile Include="AI\BehaviorTree\Composites\Conditional.cs" />
+    <Compile Include="AI\BehaviorTree\Decorators\Succeeder.cs" />
+    <Compile Include="AI\BehaviorTree\Decorators\Repeater.cs" />
+    <Compile Include="AI\BehaviorTree\Decorators\Inverter.cs" />
+    <Compile Include="AI\BehaviorTree\Leafs\Print.cs" />
+    <Compile Include="AI\BehaviorTree\Leafs\Execute.cs" />
+    <Compile Include="AI\BehaviorTree\Leafs\Wait.cs" />
     <Compile Include="Collections\Collection.cs" />
     <Compile Include="Collections\ListCollection.cs" />
     <Compile Include="Collections\OrderedDictionary.cs" />

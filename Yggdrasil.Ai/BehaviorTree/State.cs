@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Yggrasil.Ai
+namespace Yggrasil.Ai.BehaviorTree
 {
 	/// <summary>
 	/// State can traverse routines.

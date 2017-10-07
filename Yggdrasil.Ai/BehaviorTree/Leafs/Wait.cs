@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Yggrasil.Ai.Leafs
+namespace Yggrasil.Ai.BehaviorTree.Leafs
 {
 	/// <summary>
 	/// Returns running until the given time span is over.

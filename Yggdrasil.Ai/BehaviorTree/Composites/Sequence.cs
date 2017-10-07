@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yggrasil.Ai.Composites
+namespace Yggrasil.Ai.BehaviorTree.Composites
 {
 	/// <summary>
 	/// Runs through all given routines. It fails when they fail, it runs when

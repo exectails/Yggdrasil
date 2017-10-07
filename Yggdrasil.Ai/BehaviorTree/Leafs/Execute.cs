@@ -3,36 +3,35 @@
 
 using System;
 
-namespace Yggrasil.Ai.Leafs
+namespace Yggrasil.Ai.BehaviorTree.Leafs
 {
 	/// <summary>
-	/// Prints the given text.
+	/// Executes the given action.
 	/// </summary>
-	public class Print : Routine
+	public class Execute : Routine
 	{
 		/// <summary>
-		/// Text to output.
+		/// Action to execute.
 		/// </summary>
-		public readonly string Text;
+		public readonly Action<State> Action;
 
 		/// <summary>
-		/// Creates new instance of Print routine.
+		/// Creates new instance of Execute routine.
 		/// </summary>
-		/// <param name="text"></param>
-		public Print(string text)
+		/// <param name="action"></param>
+		public Execute(Action<State> action)
 		{
-			this.Text = text;
+			this.Action = action;
 		}
 
 		/// <summary>
-		/// Prints text and a line-break to standard output once.
+		/// Runs action once.
 		/// </summary>
 		/// <param name="state"></param>
 		/// <returns></returns>
 		public override RoutineStatus Act(State state)
 		{
-			Console.WriteLine(this.Text);
-
+			this.Action(state);
 			return RoutineStatus.Success;
 		}
 	}

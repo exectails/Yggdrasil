@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Yggrasil.Ai.Composites
+namespace Yggrasil.Ai.BehaviorTree.Composites
 {
 	/// <summary>
 	/// Returns either Success or Failure, depending on the result of the

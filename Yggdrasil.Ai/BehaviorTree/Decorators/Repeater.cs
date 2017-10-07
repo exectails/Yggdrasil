@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Yggrasil.Ai.Decorators
+namespace Yggrasil.Ai.BehaviorTree.Decorators
 {
 	/// <summary>
 	/// Repeats the given routine for the given amount of times or

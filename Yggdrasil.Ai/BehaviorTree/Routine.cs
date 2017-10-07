@@ -3,7 +3,7 @@
 
 using System.Threading;
 
-namespace Yggrasil.Ai
+namespace Yggrasil.Ai.BehaviorTree
 {
 	/// <summary>
 	/// Base class for routines.

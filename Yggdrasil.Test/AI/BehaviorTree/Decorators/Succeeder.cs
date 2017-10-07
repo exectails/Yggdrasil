@@ -2,11 +2,11 @@
 // For more information, see license file in the main folder
 
 using Xunit;
-using Yggrasil.Ai;
-using Yggrasil.Ai.Composites;
-using Yggrasil.Ai.Decorators;
+using Yggrasil.Ai.BehaviorTree;
+using Yggrasil.Ai.BehaviorTree.Composites;
+using Yggrasil.Ai.BehaviorTree.Decorators;
 
-namespace Yggdrasil.Test.AI.Decorators
+namespace Yggdrasil.Test.AI.BehaviorTree.Decorators
 {
 	public class SucceederTests
 	{

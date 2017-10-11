@@ -43,8 +43,7 @@ namespace Yggdrasil.Data
 		/// <returns></returns>
 		public TDatabase Get<TDatabase>() where TDatabase : IDatabase
 		{
-			IDatabase result;
-			_databases.TryGetValue(typeof(TDatabase), out result);
+			_databases.TryGetValue(typeof(TDatabase), out var result);
 			return (TDatabase)result;
 		}
 	}

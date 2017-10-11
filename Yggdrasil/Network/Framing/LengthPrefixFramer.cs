@@ -78,7 +78,7 @@ namespace Yggdrasil.Network.Framing
 			if (bytesAvailable == 0)
 				return;
 
-			for (int i = 0; i < bytesAvailable;)
+			for (var i = 0; i < bytesAvailable;)
 			{
 				if (_messageBuffer == null)
 				{
@@ -91,10 +91,10 @@ namespace Yggdrasil.Network.Framing
 					if (_bytesReceived == _lengthBuffer.Length)
 					{
 						var messageSize = 0;
-						messageSize |= (int)(_lengthBuffer[0] << (8 * 0));
-						messageSize |= (int)(_lengthBuffer[1] << (8 * 1));
-						messageSize |= (int)(_lengthBuffer[2] << (8 * 2));
-						messageSize |= (int)(_lengthBuffer[3] << (8 * 3));
+						messageSize |= _lengthBuffer[0] << (8 * 0);
+						messageSize |= _lengthBuffer[1] << (8 * 1);
+						messageSize |= _lengthBuffer[2] << (8 * 2);
+						messageSize |= _lengthBuffer[3] << (8 * 3);
 						messageSize -= sizeof(int);
 
 						if (messageSize < 0 || messageSize > this.MaxMessageSize)
@@ -115,9 +115,7 @@ namespace Yggdrasil.Network.Framing
 
 					if (_bytesReceived == _messageBuffer.Length)
 					{
-						var ev = this.MessageReceived;
-						if (ev != null)
-							ev(_messageBuffer);
+						this.MessageReceived?.Invoke(_messageBuffer);
 
 						_messageBuffer = null;
 						_bytesReceived = 0;

@@ -16,7 +16,7 @@ namespace Yggdrasil.Test.Extensions
 			var list = (IList<int>)new List<int>() { 11, 23, 34, 42 };
 			var results = new HashSet<int>();
 
-			for (int i = 0; i < 1000000; ++i)
+			for (var i = 0; i < 1000000; ++i)
 			{
 				var n = list.Random();
 				results.Add(n);
@@ -35,7 +35,7 @@ namespace Yggdrasil.Test.Extensions
 			var enumerable = list1.Where(a => a <= 34);
 			var results = new HashSet<int>();
 
-			for (int i = 0; i < 1000000; ++i)
+			for (var i = 0; i < 1000000; ++i)
 			{
 				var n = enumerable.Random();
 				results.Add(n);

@@ -16,7 +16,7 @@ namespace Yggdrasil.Test.Extensions
 		{
 			var rnd = RandomProvider.Get();
 
-			for (int i = 0; i < 1000000; ++i)
+			for (var i = 0; i < 1000000; ++i)
 				Assert.InRange(rnd.Between(10, 20), 10, 20);
 		}
 
@@ -27,7 +27,7 @@ namespace Yggdrasil.Test.Extensions
 			var rnd = RandomProvider.Get();
 			var results = new HashSet<int>();
 
-			for (int i = 0; i < 1000000; ++i)
+			for (var i = 0; i < 1000000; ++i)
 			{
 				var n = rnd.Rnd(list);
 				results.Add(n);

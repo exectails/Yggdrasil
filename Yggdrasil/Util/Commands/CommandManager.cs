@@ -42,8 +42,7 @@ namespace Yggdrasil.Util.Commands
 		/// <returns></returns>
 		public TCommand GetCommand(string name)
 		{
-			TCommand command;
-			_commands.TryGetValue(name, out command);
+			_commands.TryGetValue(name, out var command);
 			return command;
 		}
 	}

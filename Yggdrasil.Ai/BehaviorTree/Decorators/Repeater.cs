@@ -38,11 +38,8 @@ namespace Yggrasil.Ai.BehaviorTree.Decorators
 		/// <param name="routine"></param>
 		public Repeater(int repeats, Routine routine)
 		{
-			if (routine == null)
-				throw new ArgumentNullException("routine");
-
 			this.Repeats = repeats;
-			this.Routine = routine;
+			this.Routine = routine ?? throw new ArgumentNullException("routine");
 		}
 
 		/// <summary>

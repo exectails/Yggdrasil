@@ -14,8 +14,8 @@ namespace Yggdrasil.Test.Util.Commands
 		public void AddingAndGetting()
 		{
 			var mgr1 = new TestCommandManager();
-			mgr1.Add(new TestCommand("test1", "-", "One test command.", Handle1));
-			mgr1.Add(new TestCommand("test2", "/", "Two test commands.", Handle2));
+			mgr1.Add(new TestCommand("test1", "-", "One test command.", this.Handle1));
+			mgr1.Add(new TestCommand("test2", "/", "Two test commands.", this.Handle2));
 
 			var cmd1 = mgr1.GetCommand("test1");
 			var cmd2 = mgr1.GetCommand("test2");
@@ -31,7 +31,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Equal(202, cmd2.Func());
 
 			var mgr2 = new TestCommandManager2();
-			mgr2.Add(new TestCommand2("test3", "<p1> <p2> <p3>", "", Handle3));
+			mgr2.Add(new TestCommand2("test3", "<p1> <p2> <p3>", "", this.Handle3));
 
 			var cmd3 = mgr2.GetCommand("test3");
 			var args = new Arguments("test3 9182 foo foo:bar");

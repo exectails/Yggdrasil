@@ -61,7 +61,7 @@ namespace Yggdrasil.Configuration
 			{
 				foreach (var line in fr)
 				{
-					int pos = -1;
+					var pos = -1;
 
 					// Check for seperator
 					if ((pos = line.Value.IndexOf(':')) < 0)
@@ -109,8 +109,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			byte ret;
-			if (byte.TryParse(value, out ret))
+			if (byte.TryParse(value, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -132,8 +131,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			short ret;
-			if (short.TryParse(value, out ret))
+			if (short.TryParse(value, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -155,8 +153,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			int ret;
-			if (int.TryParse(value, out ret))
+			if (int.TryParse(value, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -178,8 +175,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			long ret;
-			if (long.TryParse(value, out ret))
+			if (long.TryParse(value, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -220,8 +216,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			float ret;
-			if (float.TryParse(value, out ret))
+			if (float.TryParse(value, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -246,8 +241,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			DateTime ret;
-			if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out ret))
+			if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var ret))
 				return ret;
 
 			return defaultValue;

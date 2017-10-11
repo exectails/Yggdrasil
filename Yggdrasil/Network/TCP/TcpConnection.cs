@@ -84,9 +84,7 @@ namespace Yggdrasil.Network.TCP
 		/// <param name="type"></param>
 		protected virtual void OnClosed(ConnectionCloseType type)
 		{
-			var ev = this.Closed;
-			if (ev != null)
-				ev(this, type);
+			this.Closed?.Invoke(this, type);
 		}
 
 		/// <summary>
@@ -146,9 +144,7 @@ namespace Yggdrasil.Network.TCP
 		/// </summary>
 		protected virtual void OnReceiveException(Exception ex)
 		{
-			var ev = this.ReceiveException;
-			if (ev != null)
-				ev(this, ex);
+			this.ReceiveException?.Invoke(this, ex);
 		}
 
 		/// <summary>

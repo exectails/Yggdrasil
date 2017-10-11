@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using Xunit;
-using Yggdrasil.Network;
 using Yggdrasil.Network.Framing;
 using Yggdrasil.Network.TCP;
 

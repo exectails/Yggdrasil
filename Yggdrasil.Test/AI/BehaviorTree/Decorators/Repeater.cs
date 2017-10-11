@@ -20,7 +20,7 @@ namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
 
 			var routine = new Repeater(2, new Execute(_ => test++));
 
-			for (int i = 1; i <= 100; ++i)
+			for (var i = 1; i <= 100; ++i)
 			{
 				Assert.Equal(RoutineStatus.Running, routine.Act(state));
 				Assert.Equal(RoutineStatus.Success, routine.Act(state));
@@ -28,7 +28,7 @@ namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
 				state.Reset();
 			}
 
-			for (int i = 1; i <= 100; ++i)
+			for (var i = 1; i <= 100; ++i)
 			{
 				Assert.Equal(RoutineStatus.Running, routine.Act(state));
 				Assert.Equal(RoutineStatus.Success, routine.Act(state));
@@ -54,7 +54,7 @@ namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
 				)
 			);
 
-			for (int i = 1; i <= 1234; ++i)
+			for (var i = 1; i <= 1234; ++i)
 			{
 				Assert.Equal(RoutineStatus.Running, routine.Act(state));
 				Assert.Equal(RoutineStatus.Running, routine.Act(state));

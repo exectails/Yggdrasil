@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
-using Yggdrasil.Network;
 using Yggdrasil.Network.Framing;
 
 namespace Yggdrasil.Test.Network
@@ -99,7 +98,7 @@ namespace Yggdrasil.Test.Network
 				dataList.AddRange(framer.Frame(message3));
 
 				// Receive data step by step
-				for (int i = 0; i < dataList.Count; i += steps)
+				for (var i = 0; i < dataList.Count; i += steps)
 				{
 					var take = Math.Min(dataList.Count - i, steps);
 					if (take < 0)
@@ -143,7 +142,7 @@ namespace Yggdrasil.Test.Network
 
 			// Receive data step by step
 			var steps = 3;
-			for (int i = 0; i < dataList.Count; i += steps)
+			for (var i = 0; i < dataList.Count; i += steps)
 			{
 				var take = Math.Min(dataList.Count - i, steps);
 				if (take < 0)

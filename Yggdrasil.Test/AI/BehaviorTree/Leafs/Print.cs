@@ -6,7 +6,6 @@ using System.IO;
 using System.Text;
 using Xunit;
 using Yggrasil.Ai.BehaviorTree;
-using Yggrasil.Ai.BehaviorTree.Composites;
 using Yggrasil.Ai.BehaviorTree.Leafs;
 
 namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
@@ -30,7 +29,7 @@ namespace Yggdrasil.Test.AI.BehaviorTree.Leafs
 					var cout = Console.Out;
 					Console.SetOut(sw);
 
-					for (int i = 0; i < 10; ++i)
+					for (var i = 0; i < 10; ++i)
 					{
 						Assert.Equal(RoutineStatus.Success, routine.Act(state));
 						state.Reset();

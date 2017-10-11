@@ -38,8 +38,7 @@ namespace Yggdrasil.Collections
 		{
 			lock (_entries)
 			{
-				List<TValue> list;
-				if (!_entries.TryGetValue(key, out list))
+				if (!_entries.TryGetValue(key, out var list))
 					return 0;
 
 				return list.Count;
@@ -56,8 +55,7 @@ namespace Yggdrasil.Collections
 		{
 			lock (_entries)
 			{
-				List<TValue> list;
-				_entries.TryGetValue(key, out list);
+				_entries.TryGetValue(key, out var list);
 
 				if (list == null)
 				{

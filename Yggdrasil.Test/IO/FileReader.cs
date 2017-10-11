@@ -50,7 +50,7 @@ line3
 			{
 				var lines = new List<string>();
 
-				int i = 0;
+				var i = 0;
 				foreach (var line in fr)
 				{
 					switch (i)
@@ -257,7 +257,7 @@ lineXY
 			{
 				var lines = new List<string>();
 
-				int i = 0;
+				var i = 0;
 				foreach (var line in fr)
 				{
 					switch (i)

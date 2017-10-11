@@ -38,12 +38,12 @@ namespace Yggdrasil.Extensions
 			if (cLen == 0)
 				return sLen;
 
-			for (int i = 0; i <= sLen; result[i, 0] = i++) ;
-			for (int i = 0; i <= cLen; result[0, i] = i++) ;
+			for (var i = 0; i <= sLen; result[i, 0] = i++) ;
+			for (var i = 0; i <= cLen; result[0, i] = i++) ;
 
-			for (int i = 1; i <= sLen; i++)
+			for (var i = 1; i <= sLen; i++)
 			{
-				for (int j = 1; j <= cLen; j++)
+				for (var j = 1; j <= cLen; j++)
 				{
 					var cost = (compare[j - 1] == str[i - 1]) ? 0 : 1;
 					result[i, j] = Math.Min(Math.Min(result[i - 1, j] + 1, result[i, j - 1] + 1), result[i - 1, j - 1] + cost);
@@ -64,7 +64,7 @@ namespace Yggdrasil.Extensions
 			if (value == null)
 				return true;
 
-			for (int i = 0; i < value.Length; ++i)
+			for (var i = 0; i < value.Length; ++i)
 			{
 				if (!char.IsWhiteSpace(value[i]))
 					return false;

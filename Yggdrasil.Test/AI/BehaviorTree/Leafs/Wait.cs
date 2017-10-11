@@ -5,7 +5,6 @@ using System;
 using System.Threading;
 using Xunit;
 using Yggrasil.Ai.BehaviorTree;
-using Yggrasil.Ai.BehaviorTree.Composites;
 using Yggrasil.Ai.BehaviorTree.Leafs;
 
 namespace Yggdrasil.Test.AI.BehaviorTree.Leafs

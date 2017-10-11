@@ -13,10 +13,10 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new ListCollection<int, int>();
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 6; ++i)
+			for (var i = 0; i < 6; ++i)
 				col.Add(2, 2200 + i);
 
 			var l1 = col.Get(1);
@@ -34,10 +34,10 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new ListCollection<int, int>();
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(2, 2200 + i);
 
 			col.Clear();
@@ -53,10 +53,10 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new ListCollection<int, int>();
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(2, 2200 + i);
 
 			var l1 = col.Get(1);
@@ -85,10 +85,10 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new ListCollection<int, int>();
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 5; ++i)
+			for (var i = 0; i < 5; ++i)
 				col.Add(2, 2200 + i);
 
 			Assert.Equal(true, col.ContainsKey(1));
@@ -102,13 +102,13 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new ListCollection<int, int>();
 
-			for (int i = 0; i < 11; ++i)
+			for (var i = 0; i < 11; ++i)
 				col.Add(1, 1000 + i);
 
-			for (int i = 0; i < 22; ++i)
+			for (var i = 0; i < 22; ++i)
 				col.Add(2, 2000 + i);
 
-			for (int i = 0; i < 33; ++i)
+			for (var i = 0; i < 33; ++i)
 				col.Add(3, 3000 + i);
 
 			Assert.Equal(11, col.CountValues(1));

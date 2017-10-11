@@ -146,9 +146,7 @@ namespace Yggdrasil.Network.TCP
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
 
-				var ev = this.ConnectionAccepted;
-				if (ev != null)
-					ev(connection);
+				this.ConnectionAccepted?.Invoke(connection);
 
 				connection.BeginReceive();
 
@@ -160,9 +158,7 @@ namespace Yggdrasil.Network.TCP
 			}
 			catch (Exception ex)
 			{
-				var ev = this.AcceptionException;
-				if (ev != null)
-					ev(ex);
+				this.AcceptionException?.Invoke(ex);
 
 				this.BeginAccept();
 			}

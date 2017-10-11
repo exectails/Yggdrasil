@@ -26,10 +26,7 @@ namespace Yggrasil.Ai.BehaviorTree.Composites
 		/// <param name="routines"></param>
 		public Sequence(params Routine[] routines)
 		{
-			if (routines == null)
-				throw new ArgumentNullException("routines");
-
-			_routines = routines;
+			_routines = routines ?? throw new ArgumentNullException("routines");
 			_routineCount = routines.Length;
 		}
 

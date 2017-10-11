@@ -15,8 +15,8 @@ namespace Yggdrasil.Logging.Targets
 	/// </remarks>
 	public class ConsoleTarget : LoggerTarget
 	{
-		private ConsoleColor DefaultForeground = Console.ForegroundColor;
-		private ConsoleColor DefaultBackground = Console.BackgroundColor;
+		private ConsoleColor _defaultForeground = Console.ForegroundColor;
+		private ConsoleColor _defaultBackground = Console.BackgroundColor;
 
 		/// <summary>
 		/// Writes message to Console standard output.
@@ -30,7 +30,7 @@ namespace Yggdrasil.Logging.Targets
 			// A little faster than writing every single char
 			using (var stream = new StreamWriter(Console.OpenStandardOutput()))
 			{
-				for (int i = 0; i < messageRaw.Length; ++i)
+				for (var i = 0; i < messageRaw.Length; ++i)
 				{
 					if (messageRaw[i] == '^')
 					{
@@ -46,10 +46,10 @@ namespace Yggdrasil.Logging.Targets
 							switch (command)
 							{
 								case 'c': // Color
-									Console.ForegroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : DefaultForeground);
+									Console.ForegroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : _defaultForeground);
 									break;
 								case 'b': // Background
-									Console.BackgroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : DefaultBackground);
+									Console.BackgroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : _defaultBackground);
 									break;
 								case 'r': // Reset
 									Console.ResetColor();

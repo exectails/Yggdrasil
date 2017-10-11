@@ -14,10 +14,10 @@ namespace Yggdrasil.Util
 		private const int M = 397;
 		private const uint UpperMask = 0x80000000;
 		private const uint LowerMask = 0x7FFFFFFF;
-		private readonly uint[] Matrix = new uint[] { 0x00, 0x9908B0DF };
+		private readonly uint[] _matrix = new uint[] { 0x00, 0x9908B0DF };
 
-		private int index = N;
-		private uint[] state = new uint[N];
+		private int _index = N;
+		private uint[] _state = new uint[N];
 
 		/// <summary>
 		/// Creates new instance of generator, with the current tick count
@@ -43,10 +43,10 @@ namespace Yggdrasil.Util
 		/// <param name="seed"></param>
 		public void Init(uint seed)
 		{
-			index = N;
-			state[0] = seed & 0xFFFFFFFF;
-			for (int i = 1; i < N; ++i)
-				state[i] = (0x00010DCD * state[i - 1]) & 0xFFFFFFFF;
+			_index = N;
+			_state[0] = seed & 0xFFFFFFFF;
+			for (var i = 1; i < N; ++i)
+				_state[i] = (0x00010DCD * _state[i - 1]) & 0xFFFFFFFF;
 		}
 
 		/// <summary>
@@ -55,29 +55,29 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		private uint Round()
 		{
-			if (index >= N)
+			if (_index >= N)
 			{
 				uint j;
 
-				for (int i = 0; i < N - M; i++)
+				for (var i = 0; i < N - M; i++)
 				{
-					j = (state[i] & UpperMask) | (state[i + 1] & LowerMask);
-					state[i] = state[i + M] ^ (j >> 1) ^ Matrix[j & 0x1];
+					j = (_state[i] & UpperMask) | (_state[i + 1] & LowerMask);
+					_state[i] = _state[i + M] ^ (j >> 1) ^ _matrix[j & 0x1];
 				}
 
-				for (int i = N - M; i < N - 1; i++)
+				for (var i = N - M; i < N - 1; i++)
 				{
-					j = (state[i] & UpperMask) | (state[i + 1] & LowerMask);
-					state[i] = state[i + (M - N)] ^ (j >> 1) ^ Matrix[j & 0x1];
+					j = (_state[i] & UpperMask) | (_state[i + 1] & LowerMask);
+					_state[i] = _state[i + (M - N)] ^ (j >> 1) ^ _matrix[j & 0x1];
 				}
 
-				j = (state[N - 1] & UpperMask) | (state[0] & LowerMask);
-				state[N - 1] = state[M - 1] ^ (j >> 1) ^ Matrix[j & 0x1];
+				j = (_state[N - 1] & UpperMask) | (_state[0] & LowerMask);
+				_state[N - 1] = _state[M - 1] ^ (j >> 1) ^ _matrix[j & 0x1];
 
-				index = 0;
+				_index = 0;
 			}
 
-			var result = state[index++];
+			var result = _state[_index++];
 			result ^= (result >> 0x0B);
 			result ^= (result << 0x07) & 0x9D2C5680;
 			result ^= (result << 0x0F) & 0xEFC60000;

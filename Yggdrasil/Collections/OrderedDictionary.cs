@@ -48,12 +48,12 @@ namespace Yggdrasil.Collections
 		/// <summary>
 		/// An unordered dictionary of key pairs.
 		/// </summary>
-		private readonly Dictionary<TKey, TValue> fDictionary;
+		private readonly Dictionary<TKey, TValue> _fDictionary;
 
 		/// <summary>
 		/// The keys of the dictionary in the exposed order.
 		/// </summary>
-		private readonly List<TKey> fKeys;
+		private readonly List<TKey> _fKeys;
 
 		/// <summary>
 		/// A dictionary that remembers the order that keys were first inserted. If a new entry overwrites an existing entry, the original insertion position is left unchanged. Deleting an entry and reinserting it will move it to the end.
@@ -63,8 +63,8 @@ namespace Yggdrasil.Collections
 			if (typeof(TKey) == typeof(int))
 				throw new NotSupportedException("Integer-like type is not appropriate for keys in an ordered dictionary - accessing values by key or index would be confusing.");
 
-			fDictionary = new Dictionary<TKey, TValue>();
-			fKeys = new List<TKey>();
+			_fDictionary = new Dictionary<TKey, TValue>();
+			_fKeys = new List<TKey>();
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace Yggdrasil.Collections
 		{
 			get
 			{
-				return fDictionary.Count;
+				return _fDictionary.Count;
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace Yggdrasil.Collections
 		{
 			get
 			{
-				return fKeys.AsReadOnly();
+				return _fKeys.AsReadOnly();
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace Yggdrasil.Collections
 		{
 			get
 			{
-				return fKeys.Select(key => fDictionary[key]).ToArray();
+				return _fKeys.Select(key => _fDictionary[key]).ToArray();
 			}
 		}
 
@@ -118,13 +118,13 @@ namespace Yggdrasil.Collections
 		{
 			get
 			{
-				var key = fKeys[index];
-				return fDictionary[key];
+				var key = _fKeys[index];
+				return _fDictionary[key];
 			}
 			set
 			{
-				var key = fKeys[index];
-				fDictionary[key] = value;
+				var key = _fKeys[index];
+				_fDictionary[key] = value;
 			}
 		}
 
@@ -135,17 +135,17 @@ namespace Yggdrasil.Collections
 		{
 			get
 			{
-				return fDictionary[key];
+				return _fDictionary[key];
 			}
 			set
 			{
-				if (!fDictionary.ContainsKey(key))
+				if (!_fDictionary.ContainsKey(key))
 				{
 					// New entries are added at the end of the order.
-					fKeys.Add(key);
+					_fKeys.Add(key);
 				}
 
-				fDictionary[key] = value;
+				_fDictionary[key] = value;
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public int IndexOf(TKey key)
 		{
-			return fKeys.IndexOf(key);
+			return _fKeys.IndexOf(key);
 		}
 
 		/// <summary>
@@ -162,9 +162,9 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public void RemoveAt(int index)
 		{
-			var key = fKeys[index];
-			fDictionary.Remove(key);
-			fKeys.RemoveAt(index);
+			var key = _fKeys[index];
+			_fDictionary.Remove(key);
+			_fKeys.RemoveAt(index);
 		}
 
 		/// <summary>
@@ -172,7 +172,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public bool ContainsKey(TKey key)
 		{
-			return fDictionary.ContainsKey(key);
+			return _fDictionary.ContainsKey(key);
 		}
 
 		/// <summary>
@@ -180,7 +180,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public bool TryGetValue(TKey key, out TValue value)
 		{
-			return fDictionary.TryGetValue(key, out value);
+			return _fDictionary.TryGetValue(key, out value);
 		}
 
 		/// <summary>
@@ -189,8 +189,8 @@ namespace Yggdrasil.Collections
 		public void Insert(int index, TKey key, TValue value)
 		{
 			// Dictionary operation first, so exception thrown if key already exists.
-			fDictionary.Add(key, value);
-			fKeys.Insert(index, key);
+			_fDictionary.Add(key, value);
+			_fKeys.Insert(index, key);
 		}
 
 		/// <summary>
@@ -199,8 +199,8 @@ namespace Yggdrasil.Collections
 		public void Add(TKey key, TValue value)
 		{
 			// Dictionary operation first, so exception thrown if key already exists.
-			fDictionary.Add(key, value);
-			fKeys.Add(key);
+			_fDictionary.Add(key, value);
+			_fKeys.Add(key);
 		}
 
 		/// <summary>
@@ -216,7 +216,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public bool Contains(KeyValuePair<TKey, TValue> pair)
 		{
-			return fDictionary.Contains(pair);
+			return _fDictionary.Contains(pair);
 		}
 
 		/// <summary>
@@ -238,8 +238,8 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public bool Remove(TKey key)
 		{
-			bool wasInDictionary = fDictionary.Remove(key);
-			bool wasInKeys = fKeys.Remove(key);
+			var wasInDictionary = _fDictionary.Remove(key);
+			var wasInKeys = _fKeys.Remove(key);
 
 			if (wasInDictionary != wasInKeys)
 				throw new Exception("Element was only removed from one of the lists.");
@@ -252,8 +252,8 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public void Clear()
 		{
-			fDictionary.Clear();
-			fKeys.Clear();
+			_fDictionary.Clear();
+			_fKeys.Clear();
 		}
 
 		/// <summary>
@@ -267,7 +267,7 @@ namespace Yggdrasil.Collections
 			if (index < 0)
 				throw new ArgumentOutOfRangeException("index", "Must be greater than or equal to zero.");
 
-			if (index + fDictionary.Count > array.Length)
+			if (index + _fDictionary.Count > array.Length)
 				throw new ArgumentException("Array is too small", "array");
 
 			foreach (var pair in this)
@@ -279,9 +279,9 @@ namespace Yggdrasil.Collections
 
 		private IEnumerable<KeyValuePair<TKey, TValue>> Enumerate()
 		{
-			foreach (var key in fKeys)
+			foreach (var key in _fKeys)
 			{
-				var value = fDictionary[key];
+				var value = _fDictionary[key];
 				yield return new KeyValuePair<TKey, TValue>(key, value);
 			}
 		}

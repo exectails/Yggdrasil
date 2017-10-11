@@ -77,7 +77,7 @@ namespace Yggdrasil.Network.Framing
 
 			var start = 0;
 
-			for (int i = 0; i <= bytesAvailable; ++i)
+			for (var i = 0; i <= bytesAvailable; ++i)
 			{
 				var isEnd = (i == bytesAvailable);
 				var isZero = !isEnd && (data[i] == 0);
@@ -94,9 +94,7 @@ namespace Yggdrasil.Network.Framing
 
 					if (isZero)
 					{
-						var ev = this.MessageReceived;
-						if (ev != null)
-							ev(Encoding.UTF8.GetString(_buffer, 0, _bytesReceived));
+						this.MessageReceived?.Invoke(Encoding.UTF8.GetString(_buffer, 0, _bytesReceived));
 
 						_bytesReceived = 0;
 						start = i + 1;

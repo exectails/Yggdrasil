@@ -18,8 +18,7 @@ namespace Yggdrasil.Extensions
 		/// <returns></returns>
 		public static TValue TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
 		{
-			TValue result;
-			dictionary.TryGetValue(key, out result);
+			dictionary.TryGetValue(key, out var result);
 			return result;
 		}
 	}

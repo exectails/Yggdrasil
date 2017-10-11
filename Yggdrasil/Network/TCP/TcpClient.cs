@@ -107,7 +107,7 @@ namespace Yggdrasil.Network.TCP
 				this.Disconnect();
 
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			_socket.BeginConnect(remoteEndPoint, OnConnect, null);
+			_socket.BeginConnect(remoteEndPoint, this.OnConnect, null);
 
 			this.Status = ClientStatus.Connecting;
 		}
@@ -172,9 +172,7 @@ namespace Yggdrasil.Network.TCP
 		/// <param name="type"></param>
 		protected virtual void OnDisconnect(ConnectionCloseType type)
 		{
-			var ev = this.Disconnected;
-			if (ev != null)
-				ev(this, type);
+			this.Disconnected?.Invoke(this, type);
 		}
 
 		/// <summary>
@@ -241,9 +239,7 @@ namespace Yggdrasil.Network.TCP
 		/// </summary>
 		protected virtual void OnReceiveException(Exception ex)
 		{
-			var ev = this.ReceiveException;
-			if (ev != null)
-				ev(this, ex);
+			this.ReceiveException?.Invoke(this, ex);
 		}
 
 		/// <summary>

@@ -64,8 +64,8 @@ namespace Yggdrasil.Test.Network
 			expected[3] = 0x7E;
 			Assert.Equal(expected, buffer);
 
-			buffer = framer.Frame(new byte[short.MaxValue + 10], false);
-			expected = new byte[2 + 8 + short.MaxValue + 10];
+			buffer = framer.Frame(new byte[ushort.MaxValue + 10], false);
+			expected = new byte[2 + 8 + ushort.MaxValue + 10];
 			expected[0] = 0x82;
 			expected[1] = 0x7F;
 			expected[2] = 0x00;
@@ -73,8 +73,8 @@ namespace Yggdrasil.Test.Network
 			expected[4] = 0x00;
 			expected[5] = 0x00;
 			expected[6] = 0x00;
-			expected[7] = 0x00;
-			expected[8] = 0x80;
+			expected[7] = 0x01;
+			expected[8] = 0x00;
 			expected[9] = 0x09;
 			Assert.Equal(expected, buffer);
 		}
@@ -151,7 +151,7 @@ namespace Yggdrasil.Test.Network
 
 			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
 
-			var data = framer.Frame(new byte[short.MaxValue + 10], true);
+			var data = framer.Frame(new byte[ushort.MaxValue + 10], true);
 			framer.ReceiveData(data, data.Length);
 
 			Assert.Equal(1, receivedMessages.Count);

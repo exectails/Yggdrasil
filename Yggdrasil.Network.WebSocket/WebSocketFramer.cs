@@ -158,7 +158,7 @@ namespace Yggdrasil.Network.WebSocket
 			if (payloadLength <= 125)
 			{
 			}
-			else if (payloadLength <= short.MaxValue)
+			else if (payloadLength <= ushort.MaxValue)
 			{
 				headerLength += sizeof(short); // extended payload length
 				payloadStart += sizeof(short);
@@ -188,7 +188,7 @@ namespace Yggdrasil.Network.WebSocket
 			{
 				result[1] |= (byte)payloadLength;
 			}
-			else if (payloadLength <= short.MaxValue)
+			else if (payloadLength <= ushort.MaxValue)
 			{
 				result[1] |= 0b01111110;
 				var val = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)payloadLength));
@@ -278,7 +278,7 @@ namespace Yggdrasil.Network.WebSocket
 						if (lenCode <= 125)
 							messageSize += lenCode;
 						else if (lenCode == 126)
-							messageSize += IPAddress.NetworkToHostOrder(BitConverter.ToInt16(_headerBuffer, sizeof(byte) * 2));
+							messageSize += (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(_headerBuffer, sizeof(byte) * 2));
 						else if (lenCode == 127)
 							messageSize += (int)IPAddress.NetworkToHostOrder(BitConverter.ToInt64(_headerBuffer, sizeof(byte) * 2));
 

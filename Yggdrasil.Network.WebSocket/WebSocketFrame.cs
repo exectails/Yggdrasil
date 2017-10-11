@@ -61,7 +61,7 @@ namespace Yggdrasil.Network.WebSocket
 			else if (lenCode == 126)
 			{
 				payloadStart += sizeof(short);
-				payloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, sizeof(byte) * 2));
+				payloadLength = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, sizeof(byte) * 2));
 			}
 			else if (lenCode == 127)
 			{

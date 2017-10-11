@@ -149,9 +149,6 @@ namespace Yggdrasil.Network.WebSocket
 		/// </exception>
 		public byte[] Frame(byte[] message, bool useMask, FrameOpCode opCode)
 		{
-			if (message != null && message.Length > 0 && opCode != FrameOpCode.BinaryData && opCode != FrameOpCode.TextData && opCode != FrameOpCode.Continuation)
-				throw new ArgumentException("Only data messages can have a payload.");
-
 			var payloadLength = (message != null ? message.Length : 0);
 			var payloadStart = 2;
 

@@ -2,6 +2,9 @@
 // For more information, see licence.txt in the main folder
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Xunit;
 using Yggdrasil.Network.WebSocket;
 
@@ -36,7 +39,7 @@ namespace Yggdrasil.Test.Network
 		[Fact]
 		public void FrameUnmasked()
 		{
-			var framer = new WebSocketFramer();
+			var framer = new WebSocketFramer(1024);
 
 			var buffer = framer.Frame(null, false, FrameOpCode.TerminateConnection);
 			Assert.Equal(new byte[] { 0x88, 0x00 }, buffer);
@@ -86,7 +89,7 @@ namespace Yggdrasil.Test.Network
 		[Fact]
 		public void FrameMasked()
 		{
-			var framer = new WebSocketFramer();
+			var framer = new WebSocketFramer(1024);
 
 			var val = new byte[] { 1, 2, 3 };
 			var buffer = framer.Frame(val, true);
@@ -98,6 +101,118 @@ namespace Yggdrasil.Test.Network
 			Console.WriteLine(BitConverter.ToString(buffer, headerLength, val.Length));
 			Console.WriteLine(BitConverter.ToString(buffer, headerLength - 4, 4));
 			Assert.Equal(new byte[] { 1, 2, 3 }, WebSocketFramer.EnDecode(buffer, headerLength, val.Length, buffer, headerLength - 4));
+		}
+
+		[Fact]
+		public void ReceiveDataUnmasked_Single()
+		{
+			var framer = new WebSocketFramer(1024);
+			var receivedMessages = new List<byte[]>();
+
+			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
+
+			var data = framer.Frame(new byte[] { 1, 2, 3 }, false);
+			framer.ReceiveData(data, data.Length);
+
+			Assert.Equal(1, receivedMessages.Count);
+			Assert.Equal(data, receivedMessages[0]);
+		}
+
+		[Fact]
+		public void ReceiveDataMasked_Single()
+		{
+			var framer = new WebSocketFramer(1024);
+			var receivedMessages = new List<byte[]>();
+
+			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
+
+			var data = framer.Frame(new byte[] { 1, 2, 3 }, true);
+			framer.ReceiveData(data, data.Length);
+
+			Assert.Equal(1, receivedMessages.Count);
+			Assert.Equal(data, receivedMessages[0]);
+		}
+
+		[Fact]
+		public void ReceiveDataMaskedShort_Single()
+		{
+			Console.WriteLine("--- ReceiveDataSingleMaskedShort");
+			var framer = new WebSocketFramer(102400);
+			var receivedMessages = new List<byte[]>();
+
+			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
+
+			var data = framer.Frame(new byte[512], true);
+			framer.ReceiveData(data, data.Length);
+
+			Assert.Equal(1, receivedMessages.Count);
+			Assert.Equal(data, receivedMessages[0]);
+			Console.WriteLine("---");
+		}
+
+		[Fact]
+		public void ReceiveDataMaskedLong_Single()
+		{
+			var framer = new WebSocketFramer(102400);
+			var receivedMessages = new List<byte[]>();
+
+			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
+
+			var data = framer.Frame(new byte[short.MaxValue + 10], true);
+			framer.ReceiveData(data, data.Length);
+
+			Assert.Equal(1, receivedMessages.Count);
+			Assert.Equal(data, receivedMessages[0]);
+		}
+
+		[Fact]
+		public void ReceiveData_Fragmented()
+		{
+			var framer = new WebSocketFramer(1024);
+			var receivedMessages = new List<byte[]>();
+
+			framer.MessageReceived += buffer => { receivedMessages.Add(buffer); };
+
+			// Check receiving a different amount of bytes each time
+			foreach (var steps in new int[] { 1, 2, 3, 4, 5 })
+			{
+				// Create messages
+				var message1 = new byte[] { 1, 2, 3, 4, 5 };
+				var message2 = new byte[] { 5, 6, 7 };
+				var message3 = Encoding.UTF8.GetBytes("foobar");
+				var message4 = new byte[512];
+
+				var framed1 = framer.Frame(message1, false);
+				var framed2 = framer.Frame(message2, true);
+				var framed3 = framer.Frame(message3, false);
+				var framed4 = framer.Frame(message4, true);
+
+				// Put messages into one array
+				var dataList = new List<byte>();
+				dataList.AddRange(framed1);
+				dataList.AddRange(framed2);
+				dataList.AddRange(framed3);
+				dataList.AddRange(framed4);
+
+				// Receive data step by step
+				for (var i = 0; i < dataList.Count; i += steps)
+				{
+					var take = Math.Min(dataList.Count - i, steps);
+					if (take < 0)
+						continue;
+
+					var data = dataList.Skip(i).Take(take).ToArray();
+					framer.ReceiveData(data, data.Length);
+				}
+
+				// Check
+				Assert.Equal(4, receivedMessages.Count);
+				Assert.Equal(framed1, receivedMessages[0]);
+				Assert.Equal(framed2, receivedMessages[1]);
+				Assert.Equal(framed3, receivedMessages[2]);
+				Assert.Equal(framed4, receivedMessages[3]);
+				receivedMessages.Clear();
+			}
 		}
 	}
 }

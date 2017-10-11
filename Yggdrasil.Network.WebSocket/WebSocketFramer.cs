@@ -3,6 +3,7 @@
 
 using System;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using Yggdrasil.Network.Framing;
 
@@ -13,6 +14,35 @@ namespace Yggdrasil.Network.WebSocket
 	/// </summary>
 	public class WebSocketFramer : IMessageFramer
 	{
+		public const int MinHeaderLength = 2;
+
+		private byte[] _headerBuffer, _messageBuffer;
+		private int _bytesReceived, _headerLength = MinHeaderLength;
+
+		private RNGCryptoServiceProvider _cryptoServiceProvider;
+
+		/// <summary>
+		/// Maximum size of messages.
+		/// </summary>
+		public int MaxMessageSize { get; private set; }
+
+		/// <summary>
+		/// Called every time ReceiveData got a full message.
+		/// </summary>
+		public event Action<byte[]> MessageReceived;
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
+		/// <param name="maxMessageSize">Maximum size of messages</param>
+		public WebSocketFramer(int maxMessageSize)
+		{
+			this.MaxMessageSize = maxMessageSize;
+
+			// fin+rsv (1), mask+payload_len (1), extended_payload_len (0~8), mask (0~4)
+			_headerBuffer = new byte[sizeof(byte) * 2 + sizeof(long) + sizeof(int)];
+		}
+
 		/// <summary>
 		/// En- or decodes value with the 4 byte mask.
 		/// </summary>
@@ -30,6 +60,36 @@ namespace Yggdrasil.Network.WebSocket
 				result[i] = (byte)(value[offsetVal + i] ^ mask[offsetMask + (i % 4)]);
 
 			return result;
+		}
+
+		/// <summary>
+		/// Returns a new mask, ready to be used
+		/// </summary>
+		/// <returns></returns>
+		private byte[] GetMask()
+		{
+			if (_cryptoServiceProvider == null)
+				_cryptoServiceProvider = new RNGCryptoServiceProvider();
+
+			var result = new byte[4];
+			_cryptoServiceProvider.GetBytes(result);
+
+			return result;
+		}
+
+		/// <summary>
+		/// En- or decodes value with the 4 byte mask.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="offsetVal"></param>
+		/// <param name="length"></param>
+		/// <param name="mask"></param>
+		/// <param name="offsetMask"></param>
+		/// <returns></returns>
+		public static void EnDecode(ref byte[] value, int offsetVal, int length, byte[] mask, int offsetMask)
+		{
+			for (var i = 0; i < length; ++i)
+				value[i] = (byte)(value[offsetVal + i] ^ mask[offsetMask + (i % 4)]);
 		}
 
 		/// <summary>
@@ -144,7 +204,7 @@ namespace Yggdrasil.Network.WebSocket
 			// mask
 			if (useMask)
 			{
-				var mask = BitConverter.GetBytes(0x0A0B0C0D);
+				var mask = this.GetMask();
 				Buffer.BlockCopy(mask, 0, result, payloadStart - sizeof(int), mask.Length);
 
 				if (message != null)
@@ -168,7 +228,79 @@ namespace Yggdrasil.Network.WebSocket
 		/// <param name="length"></param>
 		public void ReceiveData(byte[] data, int length)
 		{
-			throw new NotImplementedException();
+			var bytesAvailable = length;
+			if (bytesAvailable == 0)
+				return;
+
+			for (var i = 0; i < bytesAvailable;)
+			{
+				if (_messageBuffer == null)
+				{
+					var read = Math.Min(_headerLength - _bytesReceived, bytesAvailable - i);
+					Buffer.BlockCopy(data, i, _headerBuffer, _bytesReceived, read);
+
+					_bytesReceived += read;
+					i += read;
+
+					if (_bytesReceived == _headerLength)
+					{
+						int lenCode;
+
+						if (_headerLength == MinHeaderLength)
+						{
+							var prevLen = _headerLength;
+
+							if ((_headerBuffer[1] & 0b10000000) != 0)
+								_headerLength += sizeof(byte) * 4;
+
+							lenCode = (_headerBuffer[1] & ~0b10000000);
+							if (lenCode == 126)
+								_headerLength += sizeof(short);
+							else if (lenCode == 127)
+								_headerLength += sizeof(long);
+
+							if (_headerLength != prevLen)
+								continue;
+						}
+
+						var messageSize = _headerLength;
+
+						lenCode = (_headerBuffer[1] & ~0b10000000);
+						if (lenCode <= 125)
+							messageSize += lenCode;
+						else if (lenCode == 126)
+							messageSize += IPAddress.NetworkToHostOrder(BitConverter.ToInt16(_headerBuffer, sizeof(byte) * 2));
+						else if (lenCode == 127)
+							messageSize += (int)IPAddress.NetworkToHostOrder(BitConverter.ToInt64(_headerBuffer, sizeof(byte) * 2));
+
+						if (messageSize < 0 || messageSize > this.MaxMessageSize)
+							throw new InvalidMessageSizeException("Invalid size (" + messageSize + ").");
+
+						_messageBuffer = new byte[messageSize];
+						_bytesReceived = _headerLength;
+
+						Buffer.BlockCopy(_headerBuffer, 0, _messageBuffer, 0, _headerLength);
+					}
+				}
+
+				if (_messageBuffer != null)
+				{
+					var read = Math.Min(_messageBuffer.Length - _bytesReceived, bytesAvailable - i);
+					Buffer.BlockCopy(data, i, _messageBuffer, _bytesReceived, read);
+
+					_bytesReceived += read;
+					i += read;
+
+					if (_bytesReceived == _messageBuffer.Length)
+					{
+						this.MessageReceived?.Invoke(_messageBuffer);
+
+						_messageBuffer = null;
+						_bytesReceived = 0;
+						_headerLength = MinHeaderLength;
+					}
+				}
+			}
 		}
 	}
 

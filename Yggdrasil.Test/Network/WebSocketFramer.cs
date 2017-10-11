@@ -82,7 +82,7 @@ namespace Yggdrasil.Test.Network
 			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.Ping));
 			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.Pong));
 			Assert.DoesNotThrow(() => framer.Frame(new byte[1], false, FrameOpCode.BinaryData));
-			Assert.DoesNotThrow(() => framer.Frame(new byte[1], false, FrameOpCode.UTF8TextData));
+			Assert.DoesNotThrow(() => framer.Frame(new byte[1], false, FrameOpCode.TextData));
 			Assert.DoesNotThrow(() => framer.Frame(new byte[1], false, FrameOpCode.Continuation));
 		}
 

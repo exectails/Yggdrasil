@@ -123,7 +123,7 @@ namespace Yggdrasil.Network.WebSocket
 		public byte[] Frame(string message)
 		{
 			var bytes = Encoding.UTF8.GetBytes(message);
-			return this.Frame(bytes, false, FrameOpCode.UTF8TextData);
+			return this.Frame(bytes, false, FrameOpCode.TextData);
 		}
 
 		/// <summary>
@@ -134,7 +134,7 @@ namespace Yggdrasil.Network.WebSocket
 		public byte[] Frame(string message, bool useMask)
 		{
 			var bytes = Encoding.UTF8.GetBytes(message);
-			return this.Frame(bytes, useMask, FrameOpCode.UTF8TextData);
+			return this.Frame(bytes, useMask, FrameOpCode.TextData);
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// </exception>
 		public byte[] Frame(byte[] message, bool useMask, FrameOpCode opCode)
 		{
-			if (message != null && message.Length > 0 && opCode != FrameOpCode.BinaryData && opCode != FrameOpCode.UTF8TextData && opCode != FrameOpCode.Continuation)
+			if (message != null && message.Length > 0 && opCode != FrameOpCode.BinaryData && opCode != FrameOpCode.TextData && opCode != FrameOpCode.Continuation)
 				throw new ArgumentException("Only data messages can have a payload.");
 
 			var payloadLength = (message != null ? message.Length : 0);
@@ -322,7 +322,7 @@ namespace Yggdrasil.Network.WebSocket
 	public enum FrameOpCode
 	{
 		Continuation = 0x00,
-		UTF8TextData = 0x01,
+		TextData = 0x01,
 		BinaryData = 0x02,
 		Close = 0x08,
 		Ping = 0x09,

@@ -23,7 +23,7 @@ namespace Yggdrasil.Test.Network
 			buffer = framer.Frame("test", false);
 			frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
-			Assert.Equal(FrameOpCode.UTF8TextData, frame.OpCode);
+			Assert.Equal(FrameOpCode.TextData, frame.OpCode);
 			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.PayLoad);
 		}
 
@@ -41,7 +41,7 @@ namespace Yggdrasil.Test.Network
 			buffer = framer.Frame("test", true);
 			frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
-			Assert.Equal(FrameOpCode.UTF8TextData, frame.OpCode);
+			Assert.Equal(FrameOpCode.TextData, frame.OpCode);
 			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.PayLoad);
 		}
 	}

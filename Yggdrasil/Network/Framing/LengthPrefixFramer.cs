@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Yggdrasil.Network
+namespace Yggdrasil.Network.Framing
 {
 	/// <summary>
 	/// Handles messages prefixed with a single int that determines its
@@ -78,7 +78,7 @@ namespace Yggdrasil.Network
 			if (bytesAvailable == 0)
 				return;
 
-			for (int i = 0; i < bytesAvailable; )
+			for (int i = 0; i < bytesAvailable;)
 			{
 				if (_messageBuffer == null)
 				{

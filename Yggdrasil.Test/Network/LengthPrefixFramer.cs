@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 using Yggdrasil.Network;
+using Yggdrasil.Network.Framing;
 
 namespace Yggdrasil.Test.Network
 {

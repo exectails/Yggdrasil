@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Yggdrasil.Network
+namespace Yggdrasil.Network.TCP
 {
 	public abstract class TcpClient
 	{

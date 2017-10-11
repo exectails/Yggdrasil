@@ -12,6 +12,9 @@ namespace Yggdrasil.Network.WebSocket
 	/// <summary>
 	/// Framer for WebSocket messages, as per RFC6455.
 	/// </summary>
+	/// <remarks>
+	/// https://tools.ietf.org/html/rfc6455
+	/// </remarks>
 	public class WebSocketFramer : IMessageFramer
 	{
 		public const int MinHeaderLength = 2;
@@ -321,7 +324,7 @@ namespace Yggdrasil.Network.WebSocket
 		Continuation = 0x00,
 		UTF8TextData = 0x01,
 		BinaryData = 0x02,
-		TerminateConnection = 0x08,
+		Close = 0x08,
 		Ping = 0x09,
 		Pong = 0x0A,
 	}

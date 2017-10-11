@@ -41,7 +41,7 @@ namespace Yggdrasil.Test.Network
 		{
 			var framer = new WebSocketFramer(1024);
 
-			var buffer = framer.Frame(null, false, FrameOpCode.TerminateConnection);
+			var buffer = framer.Frame(null, false, FrameOpCode.Close);
 			Assert.Equal(new byte[] { 0x88, 0x00 }, buffer);
 
 			buffer = framer.Frame("123", false);
@@ -78,7 +78,7 @@ namespace Yggdrasil.Test.Network
 			expected[9] = 0x09;
 			Assert.Equal(expected, buffer);
 
-			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.TerminateConnection));
+			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.Close));
 			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.Ping));
 			Assert.Throws<ArgumentException>(() => framer.Frame(new byte[1], false, FrameOpCode.Pong));
 			Assert.DoesNotThrow(() => framer.Frame(new byte[1], false, FrameOpCode.BinaryData));

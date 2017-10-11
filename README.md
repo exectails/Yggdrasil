@@ -31,6 +31,12 @@ Extension for Yggdrasil.Data, for JSON support.
 
 Structures, such as `QuadTree`.
 
+### Yggdrasil.Network.WebSocket
+*Depends on: Yggdrasil*
+
+Extension for Yggdrasil.Network, adding a WebSocketConnection
+to accept connections from WebSockets, and other related classes.
+
 Links
 -----------------------------------------------------------------------------
 * GitHub: https://github.com/aura-project/Yggdrasil

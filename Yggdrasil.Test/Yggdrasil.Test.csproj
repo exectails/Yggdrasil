@@ -67,6 +67,7 @@
     <Compile Include="Network\LengthPrefixFramer.cs" />
     <Compile Include="Network\NullTerminationFramer.cs" />
     <Compile Include="Network\TcpConnectionAcceptor.cs" />
+    <Compile Include="Network\WebSocketFramer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />
     <Compile Include="Security\Hashing\MD5.cs" />
@@ -87,6 +88,10 @@
     <ProjectReference Include="..\Yggdrasil.Data\Yggdrasil.Data.csproj">
       <Project>{eb1f3e6e-c578-4c29-8a26-7b77434b5861}</Project>
       <Name>Yggdrasil.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj">
+      <Project>{337ef6cb-4b91-4f2c-9893-d0f77e9fac4c}</Project>
+      <Name>Yggdrasil.Network.WebSocket</Name>
     </ProjectReference>
     <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj">
       <Project>{4bb8df19-7d20-429a-af5f-5d1232538e08}</Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil", "Yggdrasil\Yggdrasil.csproj", "{4BB8DF19-7D20-429A-AF5F-5D1232538E08}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data.JSON", "Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj", "{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Network.WebSocket", "Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj", "{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

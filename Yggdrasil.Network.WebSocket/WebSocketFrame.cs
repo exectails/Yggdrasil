@@ -25,7 +25,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// <summary>
 		/// Returns the frame's data.
 		/// </summary>
-		public byte[] PayLoad { get; }
+		public byte[] Payload { get; }
 
 		/// <summary>
 		/// Creates a new instance, based on buffer.
@@ -35,7 +35,7 @@ namespace Yggdrasil.Network.WebSocket
 		{
 			this.Fin = (buffer[0] & 0b10000000) != 0;
 			this.OpCode = (FrameOpCode)(buffer[0] & ~0b11110000);
-			this.PayLoad = ParsePayload(buffer);
+			this.Payload = ParsePayload(buffer);
 		}
 
 		/// <summary>

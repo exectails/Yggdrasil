@@ -18,13 +18,13 @@ namespace Yggdrasil.Test.Network
 			var frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
 			Assert.Equal(FrameOpCode.BinaryData, frame.OpCode);
-			Assert.Equal(new byte[] { 4, 5, 6 }, frame.PayLoad);
+			Assert.Equal(new byte[] { 4, 5, 6 }, frame.Payload);
 
 			buffer = framer.Frame("test", false);
 			frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
 			Assert.Equal(FrameOpCode.TextData, frame.OpCode);
-			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.PayLoad);
+			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.Payload);
 		}
 
 		[Fact]
@@ -36,13 +36,13 @@ namespace Yggdrasil.Test.Network
 			var frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
 			Assert.Equal(FrameOpCode.BinaryData, frame.OpCode);
-			Assert.Equal(new byte[] { 4, 5, 6 }, frame.PayLoad);
+			Assert.Equal(new byte[] { 4, 5, 6 }, frame.Payload);
 
 			buffer = framer.Frame("test", true);
 			frame = new WebSocketFrame(buffer);
 			Assert.Equal(true, frame.Fin);
 			Assert.Equal(FrameOpCode.TextData, frame.OpCode);
-			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.PayLoad);
+			Assert.Equal(Encoding.UTF8.GetBytes("test"), frame.Payload);
 		}
 	}
 }

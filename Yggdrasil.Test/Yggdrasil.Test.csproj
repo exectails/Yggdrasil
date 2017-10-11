@@ -65,6 +65,7 @@
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Network\LengthPrefixFramer.cs" />
+    <Compile Include="Network\DoubleNewLineFramer.cs" />
     <Compile Include="Network\NullTerminationFramer.cs" />
     <Compile Include="Network\TcpConnectionAcceptor.cs" />
     <Compile Include="Network\WebSocketFrame.cs" />

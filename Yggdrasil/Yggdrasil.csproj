@@ -54,6 +54,7 @@
     <Compile Include="Logging\Targets\ConsoleTarget.cs" />
     <Compile Include="Logging\Targets\SmtpTarget.cs" />
     <Compile Include="Logging\Targets\FileTarget.cs" />
+    <Compile Include="Network\Framing\DoubleNewLineFramer.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />
     <Compile Include="Security\Hashing\MD5.cs" />
     <Compile Include="Util\BufferReaderWriter.cs" />

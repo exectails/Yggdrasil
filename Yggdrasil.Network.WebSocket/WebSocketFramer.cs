@@ -10,7 +10,7 @@ using Yggdrasil.Network.Framing;
 namespace Yggdrasil.Network.WebSocket
 {
 	/// <summary>
-	/// Framer for WebSocket messages.
+	/// Framer for WebSocket messages, as per RFC6455.
 	/// </summary>
 	public class WebSocketFramer : IMessageFramer
 	{
@@ -246,6 +246,11 @@ namespace Yggdrasil.Network.WebSocket
 					{
 						int lenCode;
 
+						// The length of the header (the data that comes
+						// before the payload) changes based on the bits set
+						// in the first two byte. If it's not the minimum,
+						// we have to wait for more information, to determine
+						// how long the entire frame will be.
 						if (_headerLength == MinHeaderLength)
 						{
 							var prevLen = _headerLength;
@@ -263,6 +268,10 @@ namespace Yggdrasil.Network.WebSocket
 								continue;
 						}
 
+						// Once we know the length of the whole frame,
+						// we can start to read it. We'll return the whole
+						// frame to the caller, as it contains data that's
+						// of interest to them.
 						var messageSize = _headerLength;
 
 						lenCode = (_headerBuffer[1] & ~0b10000000);

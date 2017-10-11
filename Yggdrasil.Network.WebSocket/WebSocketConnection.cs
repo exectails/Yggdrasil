@@ -131,7 +131,7 @@ namespace Yggdrasil.Network.WebSocket
 				if (!frame.Fin)
 					return;
 
-				var opCode = _frames[0].OpCode;
+				var type = (_frames[0].OpCode == FrameOpCode.TextData ? MessageType.Text : MessageType.Binary);
 
 				byte[] payload;
 				if (_frames.Count == 1)
@@ -145,7 +145,7 @@ namespace Yggdrasil.Network.WebSocket
 
 				_frames.Clear();
 
-				this.OnMessageReceived(opCode, payload);
+				this.OnMessageReceived(type, payload);
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// </summary>
 		/// <param name="opCode"></param>
 		/// <param name="data"></param>
-		protected abstract void OnMessageReceived(FrameOpCode opCode, byte[] data);
+		protected abstract void OnMessageReceived(MessageType type, byte[] data);
 
 		/// <summary>
 		/// Sends ping frame to client.
@@ -196,5 +196,14 @@ namespace Yggdrasil.Network.WebSocket
 			this.Send(responseBytes);
 			this.Close();
 		}
+	}
+
+	/// <summary>
+	/// Specifies the type of a received message.
+	/// </summary>
+	public enum MessageType
+	{
+		Text,
+		Binary,
 	}
 }

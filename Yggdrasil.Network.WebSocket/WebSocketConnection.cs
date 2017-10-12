@@ -4,11 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using Yggdrasil.Network.Framing;
 using Yggdrasil.Network.TCP;
+using Yggdrasil.Security.Hashing;
 
 namespace Yggdrasil.Network.WebSocket
 {
@@ -57,25 +56,12 @@ namespace Yggdrasil.Network.WebSocket
 		/// <param name="requestString"></param>
 		private void OnHttpMessageReceived(string requestString)
 		{
-			// Chrome upgrade request example
-			// GET / HTTP/1.1
-			// Host: 127.0.0.1:8080
-			// Connection: Upgrade
-			// Pragma: no-cache
-			// Cache-Control: no-cache
-			// Upgrade: websocket
-			// Origin: http://127.0.0.1:8080
-			// Sec-WebSocket-Version: 13
-			// User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36
-			// Accept-Encoding: gzip, deflate, br
-			// Accept-Language: en-US,en;q=0.8,de-DE;q=0.6,de;q=0.4
-			// Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
-			// Sec-WebSocket-Key: vLjSDjZHPYlfqo9WoJGTVw==
+			var request = new HttpRequest(requestString);
 
-			if (requestString.Contains("Upgrade: websocket") && requestString.Contains("Sec-WebSocket-Key: "))
+			if (request.Headers.ContainsKey("Upgrade") && request.Headers["Upgrade"] == "websocket" && request.Headers.ContainsKey("Sec-WebSocket-Key"))
 			{
-				var clientKey = new Regex("Sec-WebSocket-Key: (.*)").Match(requestString).Groups[1].Value.Trim();
-				var serverKey = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(clientKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
+				var clientKey = request.Headers["Sec-WebSocket-Key"];
+				var serverKey = Convert.ToBase64String(SHA1.Encode(Encoding.UTF8.GetBytes(clientKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
 
 				var response = Encoding.UTF8.GetBytes(
 					"HTTP/1.1 101 Switching Protocols\r\n" +

@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Yggdrasil.Network.Framing
 {
+	/// <summary>
+	/// Framer for text messages that end with a double-new-line (CR LF * 2).
+	/// </summary>
 	public class DoubleNewLineFramer : IMessageFramer
 	{
 		private byte[] _buffer;

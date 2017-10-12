@@ -83,17 +83,16 @@ namespace Yggdrasil.Network.WebSocket
 			var clientKey = request.Headers["Sec-WebSocket-Key"];
 			var serverKey = Convert.ToBase64String(SHA1.Encode(Encoding.UTF8.GetBytes(clientKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
 
-			var response = Encoding.UTF8.GetBytes(
-				"HTTP/1.1 101 Switching Protocols\r\n" +
-				"Connection: Upgrade\r\n" +
-				"Upgrade: websocket\r\n" +
-				"Sec-WebSocket-Accept: " + serverKey + "\r\n" +
-				"\r\n"
-			);
+			var response = new HttpResponse(101, "Switching Protocols");
+			response.Headers["Connection"] = "Upgrade";
+			response.Headers["Upgrade"] = "websocket";
+			response.Headers["Sec-WebSocket-Accept"] = serverKey;
+
+			var responseBytes = response.ToBytes();
 
 			_upgraded = true;
 
-			this.Send(response);
+			this.Send(responseBytes);
 		}
 
 		/// <summary>
@@ -171,28 +170,14 @@ namespace Yggdrasil.Network.WebSocket
 		/// </summary>
 		private void HandleNonWebSocketRequest()
 		{
-			var now = DateTime.Now.ToUniversalTime();
-			var content = "This server only processes WebSocket requests.";
+			var response = new HttpResponse(400, "Bad Request");
+			response.Headers["Date"] = DateTime.Now.ToUniversalTime().ToString("r");
+			response.Headers["Server"] = "Yggdrasil-WebSocketConnection";
+			response.Headers["Content-Type"] = "text/html";
+			response.Headers["Connection"] = "Closed";
+			response.Content = "This server only processes WebSocket requests.";
 
-			var contentBytes = Encoding.UTF8.GetBytes(content);
-			var contentUtf8 = Encoding.UTF8.GetString(contentBytes);
-
-			var response = new StringBuilder();
-			response.AppendFormat("HTTP/1.1 405 Method Not Allowed\r\n");
-			response.AppendFormat("Date: {0:r}\r\n", now);
-			response.AppendFormat("Server: Yggdrasil-WebSocketConnection\r\n");
-			response.AppendFormat("Last-Modified: {0:r}\r\n", now);
-			response.AppendFormat("Content-Length: {0}\r\n", contentBytes.Length);
-			response.AppendFormat("Content-Type: text/html\r\n");
-			response.AppendFormat("Connection: Closed\r\n");
-			if (contentBytes.Length > 0)
-			{
-				response.AppendFormat("\r\n");
-				response.Append(contentUtf8);
-			}
-			response.AppendFormat("\r\n\r\n");
-
-			var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
+			var responseBytes = response.ToBytes();
 
 			this.Send(responseBytes);
 			this.Close();
@@ -203,29 +188,15 @@ namespace Yggdrasil.Network.WebSocket
 		/// </summary>
 		private void HandleIncorrectVersionRequest()
 		{
-			var now = DateTime.Now.ToUniversalTime();
-			var content = "This server only supports WebSocket version 13.";
+			var response = new HttpResponse(400, "Bad Request");
+			response.Headers["Date"] = DateTime.Now.ToUniversalTime().ToString("r");
+			response.Headers["Server"] = "Yggdrasil-WebSocketConnection";
+			response.Headers["Content-Type"] = "text/html";
+			response.Headers["Connection"] = "Closed";
+			response.Headers["Sec-WebSocket-Version"] = "13";
+			response.Content = "This server only supports WebSocket version 13.";
 
-			var contentBytes = Encoding.UTF8.GetBytes(content);
-			var contentUtf8 = Encoding.UTF8.GetString(contentBytes);
-
-			var response = new StringBuilder();
-			response.AppendFormat("HTTP/1.1 400 Bad Request\r\n");
-			response.AppendFormat("Date: {0:r}\r\n", now);
-			response.AppendFormat("Server: Yggdrasil-WebSocketConnection\r\n");
-			response.AppendFormat("Last-Modified: {0:r}\r\n", now);
-			response.AppendFormat("Content-Length: {0}\r\n", contentBytes.Length);
-			response.AppendFormat("Content-Type: text/html\r\n");
-			response.AppendFormat("Connection: Closed\r\n");
-			response.AppendFormat("Sec-WebSocket-Version: 13\r\n");
-			if (contentBytes.Length > 0)
-			{
-				response.AppendFormat("\r\n");
-				response.Append(contentUtf8);
-			}
-			response.AppendFormat("\r\n\r\n");
-
-			var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
+			var responseBytes = response.ToBytes();
 
 			this.Send(responseBytes);
 			this.Close();

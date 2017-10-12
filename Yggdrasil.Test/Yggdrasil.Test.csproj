@@ -64,6 +64,7 @@
     <Compile Include="Extensions\String.cs" />
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Network\HttpResponse.cs" />
     <Compile Include="Network\HttpRequest.cs" />
     <Compile Include="Network\LengthPrefixFramer.cs" />
     <Compile Include="Network\DoubleNewLineFramer.cs" />

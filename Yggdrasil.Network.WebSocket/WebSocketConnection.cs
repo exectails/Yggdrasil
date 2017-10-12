@@ -18,7 +18,7 @@ namespace Yggdrasil.Network.WebSocket
 	{
 		private DoubleNewLineFramer _doubleNewLineFramer;
 		private WebSocketFramer _webSocketFramer;
-		private bool _shookHands = false;
+		private bool _upgraded = false;
 		private List<WebSocketFrame> _frames = new List<WebSocketFrame>();
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// <param name="length"></param>
 		protected override void ReveiveData(byte[] buffer, int length)
 		{
-			if (!_shookHands)
+			if (!_upgraded)
 			{
 				_doubleNewLineFramer.ReceiveData(buffer, length);
 			}
@@ -60,25 +60,40 @@ namespace Yggdrasil.Network.WebSocket
 
 			if (request.Headers.ContainsKey("Upgrade") && request.Headers["Upgrade"] == "websocket" && request.Headers.ContainsKey("Sec-WebSocket-Key"))
 			{
-				var clientKey = request.Headers["Sec-WebSocket-Key"];
-				var serverKey = Convert.ToBase64String(SHA1.Encode(Encoding.UTF8.GetBytes(clientKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
+				if (!request.Headers.ContainsKey("Sec-WebSocket-Version") || !int.TryParse(request.Headers["Sec-WebSocket-Version"], out var version) || version != 13)
+				{
+					this.HandleIncorrectVersionRequest();
+					return;
+				}
 
-				var response = Encoding.UTF8.GetBytes(
-					"HTTP/1.1 101 Switching Protocols\r\n" +
-					"Connection: Upgrade\r\n" +
-					"Upgrade: websocket\r\n" +
-					"Sec-WebSocket-Accept: " + serverKey + "\r\n" +
-					"\r\n"
-				);
-
-				_shookHands = true;
-
-				this.Send(response);
+				this.UpgradeConnection(request);
 			}
 			else
 			{
 				this.HandleNonWebSocketRequest();
 			}
+		}
+
+		/// <summary>
+		/// Sends handshake response.
+		/// </summary>
+		/// <param name="request"></param>
+		private void UpgradeConnection(HttpRequest request)
+		{
+			var clientKey = request.Headers["Sec-WebSocket-Key"];
+			var serverKey = Convert.ToBase64String(SHA1.Encode(Encoding.UTF8.GetBytes(clientKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
+
+			var response = Encoding.UTF8.GetBytes(
+				"HTTP/1.1 101 Switching Protocols\r\n" +
+				"Connection: Upgrade\r\n" +
+				"Upgrade: websocket\r\n" +
+				"Sec-WebSocket-Accept: " + serverKey + "\r\n" +
+				"\r\n"
+			);
+
+			_upgraded = true;
+
+			this.Send(response);
 		}
 
 		/// <summary>
@@ -170,6 +185,39 @@ namespace Yggdrasil.Network.WebSocket
 			response.AppendFormat("Content-Length: {0}\r\n", contentBytes.Length);
 			response.AppendFormat("Content-Type: text/html\r\n");
 			response.AppendFormat("Connection: Closed\r\n");
+			if (contentBytes.Length > 0)
+			{
+				response.AppendFormat("\r\n");
+				response.Append(contentUtf8);
+			}
+			response.AppendFormat("\r\n\r\n");
+
+			var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
+
+			this.Send(responseBytes);
+			this.Close();
+		}
+
+		/// <summary>
+		/// Sends error response to client and closes connection.
+		/// </summary>
+		private void HandleIncorrectVersionRequest()
+		{
+			var now = DateTime.Now.ToUniversalTime();
+			var content = "This server only supports WebSocket version 13.";
+
+			var contentBytes = Encoding.UTF8.GetBytes(content);
+			var contentUtf8 = Encoding.UTF8.GetString(contentBytes);
+
+			var response = new StringBuilder();
+			response.AppendFormat("HTTP/1.1 400 Bad Request\r\n");
+			response.AppendFormat("Date: {0:r}\r\n", now);
+			response.AppendFormat("Server: Yggdrasil-WebSocketConnection\r\n");
+			response.AppendFormat("Last-Modified: {0:r}\r\n", now);
+			response.AppendFormat("Content-Length: {0}\r\n", contentBytes.Length);
+			response.AppendFormat("Content-Type: text/html\r\n");
+			response.AppendFormat("Connection: Closed\r\n");
+			response.AppendFormat("Sec-WebSocket-Version: 13\r\n");
 			if (contentBytes.Length > 0)
 			{
 				response.AppendFormat("\r\n");

@@ -35,13 +35,12 @@ namespace Yggdrasil.Test.Network
 			response.Headers["Last-Modified"] = DateTime.Parse("Wed, 22 Jul 2009 19:15:56 GMT").ToUniversalTime().ToString("r");
 			response.Headers["Content-Type"] = "text/html";
 			response.Headers["Connection"] = "Closed";
-			response.Content = @"
-<html>
-<body>
-<h1>Hello, World!</h1>
-</body>
-</html>
-".Trim();
+			response.Content =
+				"<html>\r\n" +
+				"<body>\r\n" +
+				"<h1>Hello, World!</h1>\r\n" +
+				"</body>\r\n" +
+				"</html>";
 
 			var responseString = response.ToString();
 			Assert.Equal(expected, responseString);

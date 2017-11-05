@@ -16,21 +16,34 @@ namespace Yggdrasil.Network.WebSocket
 	/// </summary>
 	public abstract class WebSocketConnection : TcpConnection
 	{
-		private DoubleNewLineFramer _doubleNewLineFramer;
-		private WebSocketFramer _webSocketFramer;
-		private bool _upgraded = false;
 		private List<WebSocketFrame> _frames = new List<WebSocketFrame>();
+
+		/// <summary>
+		/// The HTTP framer used by this instance.
+		/// </summary>
+		public DoubleNewLineFramer DoubleNewLineFramer { get; protected set; }
+
+		/// <summary>
+		/// The WebSocket framer used by this instance.
+		/// </summary>
+		public WebSocketFramer WebSocketFramer { get; protected set; }
+
+		/// <summary>
+		/// Returns true once the connection was upgraded from HTTP to
+		/// WebSocket.
+		/// </summary>
+		public bool Upgraded { get; protected set; }
 
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		public WebSocketConnection()
 		{
-			_doubleNewLineFramer = new DoubleNewLineFramer(1024 * 8);
-			_doubleNewLineFramer.MessageReceived += this.OnHttpMessageReceived;
+			this.DoubleNewLineFramer = new DoubleNewLineFramer(1024 * 8);
+			this.DoubleNewLineFramer.MessageReceived += this.OnHttpMessageReceived;
 
-			_webSocketFramer = new WebSocketFramer(1024 * 90);
-			_webSocketFramer.MessageReceived += this.OnWebSocketMessageReceived;
+			this.WebSocketFramer = new WebSocketFramer(1024 * 90);
+			this.WebSocketFramer.MessageReceived += this.OnWebSocketMessageReceived;
 		}
 
 		/// <summary>
@@ -40,13 +53,13 @@ namespace Yggdrasil.Network.WebSocket
 		/// <param name="length"></param>
 		protected override void ReveiveData(byte[] buffer, int length)
 		{
-			if (!_upgraded)
+			if (!this.Upgraded)
 			{
-				_doubleNewLineFramer.ReceiveData(buffer, length);
+				this.DoubleNewLineFramer.ReceiveData(buffer, length);
 			}
 			else
 			{
-				_webSocketFramer.ReceiveData(buffer, length);
+				this.WebSocketFramer.ReceiveData(buffer, length);
 			}
 		}
 
@@ -90,7 +103,7 @@ namespace Yggdrasil.Network.WebSocket
 
 			var responseBytes = response.ToBytes();
 
-			_upgraded = true;
+			this.Upgraded = true;
 
 			this.Send(responseBytes);
 		}
@@ -105,13 +118,13 @@ namespace Yggdrasil.Network.WebSocket
 
 			if (frame.OpCode == FrameOpCode.Close)
 			{
-				var response = _webSocketFramer.Frame(frame.Payload, false, FrameOpCode.Close);
+				var response = this.WebSocketFramer.Frame(frame.Payload, false, FrameOpCode.Close);
 				this.Send(response);
 				this.Close();
 			}
 			else if (frame.OpCode == FrameOpCode.Ping)
 			{
-				var response = _webSocketFramer.Frame(frame.Payload, false, FrameOpCode.Pong);
+				var response = this.WebSocketFramer.Frame(frame.Payload, false, FrameOpCode.Pong);
 				this.Send(response);
 			}
 			else if (frame.OpCode == FrameOpCode.Pong)
@@ -161,7 +174,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// </summary>
 		public void Ping()
 		{
-			var response = _webSocketFramer.Frame(null, false, FrameOpCode.Ping);
+			var response = this.WebSocketFramer.Frame(null, false, FrameOpCode.Ping);
 			this.Send(response);
 		}
 

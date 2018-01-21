@@ -110,29 +110,13 @@ namespace Yggdrasil.Util.Commands
 		}
 
 		/// <summary>
-		/// Returns the argument with the given name.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException">
-		/// Thrown if no argument with the given name exists.
-		/// </exception>
-		public string Get(string name)
-		{
-			if (!this.Contains(name))
-				throw new ArgumentException("Argument with name '" + name + "' doesn't exist.");
-
-			return _named[name];
-		}
-
-		/// <summary>
 		/// Returns the argument with the given name. Returns given default
 		/// if parameter wasn't found.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		public string Get(string name, string defaultValue)
+		public string Get(string name, string defaultValue = null)
 		{
 			if (!this.Contains(name))
 				return defaultValue;

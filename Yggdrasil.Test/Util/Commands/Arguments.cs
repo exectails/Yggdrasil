@@ -43,7 +43,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Equal("0xff00ff", args1.Get("c3"));
 			Assert.Equal("5678", args1.Get("prefix"));
 			Assert.Equal("5678", args1.Get("prefix"));
-			Assert.Throws<ArgumentException>(() => args1.Get("foobar"));
+			Assert.Equal(null, args1.Get("foobar"));
 		}
 
 		[Fact]
@@ -59,7 +59,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Throws<ArgumentException>(() => args1.Get(1));
 
 			Assert.Equal("this is a test", args1.Get("text"));
-			Assert.Throws<ArgumentException>(() => args1.Get("foobar"));
+			Assert.Equal(null, args1.Get("foobar"));
 
 			// Quoted key and value
 			var args2 = new Arguments(">bc1 \"test text\":\"this is a test\"");
@@ -71,7 +71,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Throws<ArgumentException>(() => args2.Get(1));
 
 			Assert.Equal("this is a test", args2.Get("test text"));
-			Assert.Throws<ArgumentException>(() => args2.Get("foobar"));
+			Assert.Equal(null, args2.Get("foobar"));
 
 			// Quoted key with spaces
 			var args3 = new Arguments(">bc2 \"test text 2\":\"this is a test\" color:0x00ff12");
@@ -84,7 +84,7 @@ namespace Yggdrasil.Test.Util.Commands
 
 			Assert.Equal("this is a test", args3.Get("test text 2"));
 			Assert.Equal("0x00ff12", args3.Get("color"));
-			Assert.Throws<ArgumentException>(() => args3.Get("foobar"));
+			Assert.Equal(null, args3.Get("foobar"));
 
 			// Quoted key and value in one with spaces and whitespace padding
 			var args4 = new Arguments(">bc3 \"    test text 3  :  this is a test \" color:0x00ff13");
@@ -97,7 +97,7 @@ namespace Yggdrasil.Test.Util.Commands
 
 			Assert.Equal("this is a test", args4.Get("test text 3"));
 			Assert.Equal("0x00ff13", args4.Get("color"));
-			Assert.Throws<ArgumentException>(() => args4.Get("foobar"));
+			Assert.Equal(null, args4.Get("foobar"));
 		}
 	}
 }

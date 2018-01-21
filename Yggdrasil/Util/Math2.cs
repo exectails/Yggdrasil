@@ -139,21 +139,21 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// Adds addend to value, returns either the result or Min/MaxValue
 		/// if the addition caused an overflow.
 		/// </summary>
-		/// <param name="value1"></param>
-		/// <param name="value2"></param>
+		/// <param name="value"></param>
+		/// <param name="addend"></param>
 		/// <returns></returns>
-		public static short AddChecked(short value1, short value2)
+		public static short AddChecked(short value, short addend)
 		{
 			try
 			{
-				checked { return (short)(value1 + value2); }
+				checked { return (short)(value + addend); }
 			}
 			catch
 			{
-				if (value2 >= 0)
+				if (addend >= 0)
 					return short.MaxValue;
 				else
 					return short.MinValue;
@@ -161,21 +161,21 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// Adds addend to value, returns either the result or Min/MaxValue
 		/// if the addition caused an overflow.
 		/// </summary>
-		/// <param name="value1"></param>
-		/// <param name="value2"></param>
+		/// <param name="value"></param>
+		/// <param name="addend"></param>
 		/// <returns></returns>
-		public static int AddChecked(int value1, int value2)
+		public static int AddChecked(int value, int addend)
 		{
 			try
 			{
-				checked { return (value1 + value2); }
+				checked { return (value + addend); }
 			}
 			catch
 			{
-				if (value2 >= 0)
+				if (addend >= 0)
 					return int.MaxValue;
 				else
 					return int.MinValue;
@@ -183,21 +183,21 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Adds value1 to value 2, returns either the result or Min/MaxValue
+		/// Adds addend to value, returns either the result or Min/MaxValue
 		/// if the addition caused an overflow.
 		/// </summary>
-		/// <param name="value1"></param>
-		/// <param name="value2"></param>
+		/// <param name="value"></param>
+		/// <param name="addend"></param>
 		/// <returns></returns>
-		public static long AddChecked(long value1, long value2)
+		public static long AddChecked(long value, long addend)
 		{
 			try
 			{
-				checked { return (value1 + value2); }
+				checked { return (value + addend); }
 			}
 			catch
 			{
-				if (value2 >= 0)
+				if (addend >= 0)
 					return long.MaxValue;
 				else
 					return long.MinValue;

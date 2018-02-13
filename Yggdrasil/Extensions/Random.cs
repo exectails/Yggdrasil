@@ -5,12 +5,14 @@ using System;
 
 namespace Yggdrasil.Extensions
 {
+	/// <summary>
+	/// Extensions to Random.
+	/// </summary>
 	public static class RandomExtensions
 	{
 		/// <summary>
 		/// Returns a random number between min and max (incl).
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="rnd"></param>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
@@ -21,8 +23,25 @@ namespace Yggdrasil.Extensions
 		}
 
 		/// <summary>
+		/// Returns a random time span between the given ones based on
+		/// their millisecond properties.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <param name="minTimeSpan"></param>
+		/// <param name="maxTimeSpan"></param>
+		/// <returns></returns>
+		public static TimeSpan Between(this Random rnd, TimeSpan minTimeSpan, TimeSpan maxTimeSpan)
+		{
+			var min = (float)minTimeSpan.TotalMilliseconds;
+			var max = (float)maxTimeSpan.TotalMilliseconds;
+
+			return TimeSpan.FromMilliseconds(rnd.Between(min, max));
+		}
+
+		/// <summary>
 		/// Returns a random value from the given ones.
 		/// </summary>
+		/// <param name="rnd"></param>
 		/// <param name="values"></param>
 		public static T Rnd<T>(this Random rnd, params T[] values)
 		{

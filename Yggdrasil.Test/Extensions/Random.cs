@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -18,6 +19,9 @@ namespace Yggdrasil.Test.Extensions
 
 			for (var i = 0; i < 1000000; ++i)
 				Assert.InRange(rnd.Between(10, 20), 10, 20);
+
+			for (var i = 0; i < 1000000; ++i)
+				Assert.InRange(rnd.Between(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(20)), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(20));
 		}
 
 		[Fact]

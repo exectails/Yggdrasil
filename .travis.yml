@@ -12,3 +12,4 @@ install:
 script:
   - xbuild /p:Configuration=Release Yggdrasil.sln
   - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./Yggdrasil.Test/bin/Release/Yggdrasil.Test.dll
+

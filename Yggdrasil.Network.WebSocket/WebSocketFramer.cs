@@ -320,11 +320,34 @@ namespace Yggdrasil.Network.WebSocket
 	/// </summary>
 	public enum FrameOpCode
 	{
+		/// <summary>
+		/// Continuation of a previous frame.
+		/// </summary>
 		Continuation = 0x00,
+
+		/// <summary>
+		/// Payload is plain text data.
+		/// </summary>
 		TextData = 0x01,
+
+		/// <summary>
+		/// Payload is binary data.
+		/// </summary>
 		BinaryData = 0x02,
+
+		/// <summary>
+		/// Request to close the connection.
+		/// </summary>
 		Close = 0x08,
+
+		/// <summary>
+		/// Ping frame.
+		/// </summary>
 		Ping = 0x09,
+
+		/// <summary>
+		/// Pong frame (ping response).
+		/// </summary>
 		Pong = 0x0A,
 	}
 }

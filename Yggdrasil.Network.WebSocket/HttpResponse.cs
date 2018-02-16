@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Yggdrasil.Network.WebSocket
 {
+	/// <summary>
+	/// Constructs HTTP response based on its properties.
+	/// </summary>
 	public class HttpResponse
 	{
 		/// <summary>

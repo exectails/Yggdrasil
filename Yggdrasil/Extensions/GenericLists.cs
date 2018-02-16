@@ -7,6 +7,9 @@ using Yggdrasil.Util;
 
 namespace Yggdrasil.Extensions
 {
+	/// <summary>
+	/// Extensions for lists.
+	/// </summary>
 	public static class GenericListExtensions
 	{
 		/// <summary>

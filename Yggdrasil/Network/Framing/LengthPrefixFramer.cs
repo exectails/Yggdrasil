@@ -125,8 +125,15 @@ namespace Yggdrasil.Network.Framing
 		}
 	}
 
+	/// <summary>
+	/// An exception that might occur if a message has an invalid size.
+	/// </summary>
 	public class InvalidMessageSizeException : Exception
 	{
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
+		/// <param name="message"></param>
 		public InvalidMessageSizeException(string message)
 			: base(message)
 		{

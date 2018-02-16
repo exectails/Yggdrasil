@@ -165,7 +165,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// <summary>
 		/// Called when a new, complete message was received.
 		/// </summary>
-		/// <param name="opCode"></param>
+		/// <param name="type"></param>
 		/// <param name="data"></param>
 		protected abstract void OnMessageReceived(MessageType type, byte[] data);
 
@@ -221,7 +221,14 @@ namespace Yggdrasil.Network.WebSocket
 	/// </summary>
 	public enum MessageType
 	{
+		/// <summary>
+		/// Plain text data.
+		/// </summary>
 		Text,
+
+		/// <summary>
+		/// Binary data.
+		/// </summary>
 		Binary,
 	}
 }

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Yggdrasil.Extensions
 {
+	/// <summary>
+	/// Extensions for the generic Dictionary type.
+	/// </summary>
 	public static class DictionaryExtensions
 	{
 		/// <summary>

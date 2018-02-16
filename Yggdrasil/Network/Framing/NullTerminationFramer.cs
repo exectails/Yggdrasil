@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Yggdrasil.Network.Framing
 {
+	/// <summary>
+	/// A framer for messages that end in a null byte.
+	/// </summary>
 	public class NullTerminationFramer : IMessageFramer
 	{
 		private byte[] _buffer;

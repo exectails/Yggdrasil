@@ -14,6 +14,9 @@ namespace Yggdrasil.Collections
 	/// <typeparam name="TValue"></typeparam>
 	public class Collection<TKey, TValue>
 	{
+		/// <summary>
+		/// List of entries.
+		/// </summary>
 		protected Dictionary<TKey, TValue> _entries;
 
 		/// <summary>

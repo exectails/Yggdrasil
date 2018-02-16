@@ -56,6 +56,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <typeparam name="TValue"></typeparam>
 		/// <param name="name"></param>
+		/// <param name="def"></param>
 		/// <returns></returns>
 		public TValue Get<TValue>(string name, TValue def = default(TValue))
 		{

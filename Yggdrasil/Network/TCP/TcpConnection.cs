@@ -7,6 +7,9 @@ using System.Net.Sockets;
 
 namespace Yggdrasil.Network.TCP
 {
+	/// <summary>
+	/// A connection via TCP socket.
+	/// </summary>
 	public abstract class TcpConnection
 	{
 		private const int BufferMaxSize = 4 * 1024;
@@ -165,16 +168,40 @@ namespace Yggdrasil.Network.TCP
 		}
 	}
 
+	/// <summary>
+	/// A network connection's status.
+	/// </summary>
 	public enum ConnectionStatus
 	{
+		/// <summary>
+		/// Connection is closed and no data can be sent or received.
+		/// </summary>
 		Closed,
+
+		/// <summary>
+		/// Connection is open and data can be sent and received.
+		/// </summary>
 		Open,
 	}
 
+	/// <summary>
+	/// The way a connection was closed.
+	/// </summary>
 	public enum ConnectionCloseType
 	{
+		/// <summary>
+		/// The connection was closed by the host.
+		/// </summary>
 		Closed,
+
+		/// <summary>
+		/// The connection was closed by the client.
+		/// </summary>
 		Disconnected,
+
+		/// <summary>
+		/// The connection was lost unexpectedly.
+		/// </summary>
 		Lost,
 	}
 }

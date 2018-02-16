@@ -21,7 +21,6 @@ namespace Yggdrasil.Data.CSV
 		/// <param name="source"></param>
 		/// <param name="line"></param>
 		/// <param name="msg"></param>
-		/// <param name="args"></param>
 		public CsvDatabaseWarningException(string source, int line, string msg)
 			: base(source, msg)
 		{

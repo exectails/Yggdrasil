@@ -50,7 +50,7 @@ namespace Yggdrasil.Util.Commands
 		/// <summary>
 		/// Returns true if an argument with the given name exists.
 		/// </summary>
-		/// <param name="index"></param>
+		/// <param name="name"></param>
 		/// <returns></returns>
 		public bool Contains(string name)
 		{

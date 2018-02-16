@@ -38,6 +38,7 @@ namespace Yggdrasil.Data.CSV
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="fields"></param>
+		/// <param name="line"></param>
 		public CsvEntry(List<string> fields, int line)
 		{
 			this.Fields = fields;

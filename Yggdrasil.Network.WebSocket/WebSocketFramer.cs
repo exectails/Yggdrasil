@@ -17,7 +17,7 @@ namespace Yggdrasil.Network.WebSocket
 	/// </remarks>
 	public class WebSocketFramer : IMessageFramer
 	{
-		public const int MinHeaderLength = 2;
+		private const int MinHeaderLength = 2;
 
 		private byte[] _headerBuffer, _messageBuffer;
 		private int _bytesReceived, _headerLength = MinHeaderLength;
@@ -109,6 +109,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// Frames given bytes as binary data message.
 		/// </summary>
 		/// <param name="message"></param>
+		/// <param name="useMask"></param>
 		/// <returns></returns>
 		public byte[] Frame(byte[] message, bool useMask)
 		{
@@ -130,6 +131,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// Frames given string as UTF8 text message.
 		/// </summary>
 		/// <param name="message"></param>
+		/// <param name="useMask"></param>
 		/// <returns></returns>
 		public byte[] Frame(string message, bool useMask)
 		{

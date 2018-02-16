@@ -7,6 +7,9 @@ using System.Net.Sockets;
 
 namespace Yggdrasil.Network.TCP
 {
+	/// <summary>
+	/// A TCP client used to connect to TCP servers.
+	/// </summary>
 	public abstract class TcpClient
 	{
 		private const int BufferMaxSize = 4 * 1024;
@@ -260,6 +263,9 @@ namespace Yggdrasil.Network.TCP
 		}
 	}
 
+	/// <summary>
+	/// A client's connection status.
+	/// </summary>
 	public enum ClientStatus
 	{
 		/// <summary>

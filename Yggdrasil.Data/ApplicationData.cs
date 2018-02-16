@@ -8,6 +8,9 @@ using System.Reflection;
 
 namespace Yggdrasil.Data
 {
+	/// <summary>
+	/// Manages databases.
+	/// </summary>
 	public class ApplicationData
 	{
 		private Dictionary<Type, IDatabase> _databases = new Dictionary<Type, IDatabase>();

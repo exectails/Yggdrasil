@@ -9,6 +9,9 @@ using Yggdrasil.Logging;
 
 namespace Yggdrasil.Util
 {
+	/// <summary>
+	/// Console utility functions.
+	/// </summary>
 	public class ConsoleUtil
 	{
 		/// <summary>

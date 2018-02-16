@@ -19,7 +19,6 @@ namespace Yggdrasil.Data
 		/// Loads data from file.
 		/// </summary>
 		/// <param name="filePath"></param>
-		/// <param name="clear"></param>
 		void LoadFile(string filePath);
 
 		/// <summary>
@@ -79,6 +78,7 @@ namespace Yggdrasil.Data
 		/// Adds data to database, fails and returns false if index exists
 		/// already.
 		/// </summary>
+		/// <param name="index"></param>
 		/// <param name="data"></param>
 		/// <returns></returns>
 		bool Add(TIndex index, TData data);
@@ -88,6 +88,7 @@ namespace Yggdrasil.Data
 		/// Returns whether data was replaced or not.
 		/// </summary>
 		/// <param name="data"></param>
+		/// <param name="index"></param>
 		/// <returns></returns>
 		bool AddOrReplace(TIndex index, TData data);
 	}

@@ -6,6 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Yggdrasil.Data.JSON
 {
+	/// <summary>
+	/// Extensions for the JObject type.
+	/// </summary>
 	public static class JsonExtensions
 	{
 		/// <summary>

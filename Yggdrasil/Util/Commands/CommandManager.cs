@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Yggdrasil.Util.Commands
 {
@@ -16,6 +14,9 @@ namespace Yggdrasil.Util.Commands
 		where TCommand : Command<TFunc>
 		where TFunc : class
 	{
+		/// <summary>
+		/// List of available commands.
+		/// </summary>
 		protected Dictionary<string, TCommand> _commands;
 
 		/// <summary>

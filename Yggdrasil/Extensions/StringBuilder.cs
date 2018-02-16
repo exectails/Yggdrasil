@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Yggdrasil.Extensions
 {
+	/// <summary>
+	/// Extensions for the StringBuilder type.
+	/// </summary>
 	public static class StringBuilderExtensions
 	{
 		/// <summary>

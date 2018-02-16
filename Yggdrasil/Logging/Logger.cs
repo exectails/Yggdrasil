@@ -92,7 +92,6 @@ namespace Yggdrasil.Logging
 		/// <summary>
 		/// Creates new named logger.
 		/// </summary>
-		/// <param name="name"></param>
 		/// <returns></returns>
 		public static Logger Get<T>()
 		{

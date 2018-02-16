@@ -5,6 +5,9 @@ using System;
 
 namespace Yggdrasil.Extensions
 {
+	/// <summary>
+	/// Extensions for the string type.
+	/// </summary>
 	public static class StringExtensions
 	{
 		/// <summary>

@@ -16,6 +16,9 @@ namespace Yggdrasil.Data.CSV
 	{
 		private int _min;
 
+		/// <summary>
+		/// Warnings that occurred during load.
+		/// </summary>
 		protected List<DatabaseWarningException> Warnings = new List<DatabaseWarningException>();
 
 		/// <summary>
@@ -115,6 +118,9 @@ namespace Yggdrasil.Data.CSV
 	/// <typeparam name="TData"></typeparam>
 	public abstract class DatabaseCsv<TData> : DatabaseCsvBase, IDatabase<TData> where TData : class, new()
 	{
+		/// <summary>
+		/// The database's entries.
+		/// </summary>
 		protected List<TData> Entries = new List<TData>();
 
 		/// <summary>
@@ -158,6 +164,9 @@ namespace Yggdrasil.Data.CSV
 	/// <typeparam name="TData"></typeparam>
 	public abstract class DatabaseCsvIndexed<TIndex, TData> : DatabaseCsvBase, IDatabaseIndexed<TIndex, TData> where TData : class, new()
 	{
+		/// <summary>
+		/// The database's entries.
+		/// </summary>
 		protected Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
 
 		/// <summary>
@@ -201,6 +210,7 @@ namespace Yggdrasil.Data.CSV
 		/// Adds data to database, fails and returns false if index exists
 		/// already.
 		/// </summary>
+		/// <param name="index"></param>
 		/// <param name="data"></param>
 		public bool Add(TIndex index, TData data)
 		{
@@ -219,6 +229,7 @@ namespace Yggdrasil.Data.CSV
 		/// Adds data to database, replacing potentially existing values.
 		/// Returns whether data was replaced or not.
 		/// </summary>
+		/// <param name="index"></param>
 		/// <param name="data"></param>
 		public bool AddOrReplace(TIndex index, TData data)
 		{

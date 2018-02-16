@@ -13,6 +13,9 @@ namespace Yggdrasil.Collections
 	/// <typeparam name="TValue">Type of the list.</typeparam>
 	public class ListCollection<TKey, TValue>
 	{
+		/// <summary>
+		/// Wrapped entries list.
+		/// </summary>
 		protected Dictionary<TKey, List<TValue>> _entries;
 
 		/// <summary>

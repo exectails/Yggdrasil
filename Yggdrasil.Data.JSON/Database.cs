@@ -15,6 +15,9 @@ namespace Yggdrasil.Data.JSON
 	/// </summary>
 	public abstract class DatabaseJsonBase
 	{
+		/// <summary>
+		/// Warnings that occurred during loading.
+		/// </summary>
 		protected List<DatabaseWarningException> Warnings = new List<DatabaseWarningException>();
 
 		/// <summary>
@@ -101,6 +104,9 @@ namespace Yggdrasil.Data.JSON
 	/// <typeparam name="TData"></typeparam>
 	public abstract class DatabaseJson<TData> : DatabaseJsonBase, IDatabase<TData> where TData : class, new()
 	{
+		/// <summary>
+		/// The database's entries.
+		/// </summary>
 		protected List<TData> Entries = new List<TData>();
 
 		/// <summary>
@@ -144,6 +150,9 @@ namespace Yggdrasil.Data.JSON
 	/// <typeparam name="TData"></typeparam>
 	public abstract class DatabaseJsonIndexed<TIndex, TData> : DatabaseJsonBase, IDatabaseIndexed<TIndex, TData> where TData : class, new()
 	{
+		/// <summary>
+		/// The database's entries.
+		/// </summary>
 		protected Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
 
 		/// <summary>
@@ -187,6 +196,7 @@ namespace Yggdrasil.Data.JSON
 		/// Adds data to database, fails and returns false if index exists
 		/// already.
 		/// </summary>
+		/// <param name="index"></param>
 		/// <param name="data"></param>
 		public bool Add(TIndex index, TData data)
 		{
@@ -205,6 +215,7 @@ namespace Yggdrasil.Data.JSON
 		/// Adds data to database, replacing potentially existing values.
 		/// Returns whether data was replaced or not.
 		/// </summary>
+		/// <param name="index"></param>
 		/// <param name="data"></param>
 		public bool AddOrReplace(TIndex index, TData data)
 		{

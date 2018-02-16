@@ -74,6 +74,7 @@ namespace Yggdrasil.Util
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="length"></param>
+		/// <param name="fixedLength"></param>
 		public BufferReaderWriter(byte[] buffer, int index, int length, bool fixedLength)
 		{
 			_buffer = buffer;
@@ -135,7 +136,6 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="destination"></param>
 		/// <param name="offset"></param>
-		/// <param name="length"></param>
 		public void CopyTo(byte[] destination, int offset)
 		{
 			if (offset < 0)
@@ -310,6 +310,7 @@ namespace Yggdrasil.Util
 		/// the buffer, at the given offset.
 		/// </summary>
 		/// <param name="buffer"></param>
+		/// <param name="offset"></param>
 		/// <param name="length"></param>
 		public void ReadTo(byte[] buffer, int offset, int length)
 		{

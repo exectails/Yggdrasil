@@ -18,6 +18,9 @@ namespace Yggdrasil.Configuration
 	/// </remarks>
 	public class ConfFile
 	{
+		/// <summary>
+		/// Options loaded from the conf file.
+		/// </summary>
 		protected readonly Dictionary<string, string> _options;
 
 		/// <summary>

@@ -3,6 +3,10 @@
 
 namespace Yggdrasil.Scripting
 {
+	/// <summary>
+	/// Implemented by classes in scripts that can be initialized
+	/// on load.
+	/// </summary>
 	public interface IScript
 	{
 		/// <summary>

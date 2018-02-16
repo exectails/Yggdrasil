@@ -147,6 +147,13 @@ namespace Yggdrasil.Util.Commands
 	/// </summary>
 	public class ConsoleCommand : Command<ConsoleCommandFunc>
 	{
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="usage"></param>
+		/// <param name="description"></param>
+		/// <param name="func"></param>
 		public ConsoleCommand(string name, string usage, string description, ConsoleCommandFunc func)
 			: base(name, usage, description, func)
 		{
@@ -164,5 +171,26 @@ namespace Yggdrasil.Util.Commands
 	/// <summary>
 	/// Command results for the Console Commands.
 	/// </summary>
-	public enum CommandResult { Okay, Fail, InvalidArgument, Break }
+	public enum CommandResult
+	{
+		/// <summary>
+		/// Command executed correctly.
+		/// </summary>
+		Okay,
+
+		/// <summary>
+		/// Command failed to execute.
+		/// </summary>
+		Fail,
+
+		/// <summary>
+		/// An invalid argument stopped the execution.
+		/// </summary>
+		InvalidArgument,
+
+		/// <summary>
+		/// Stop command handling.
+		/// </summary>
+		Break,
+	}
 }

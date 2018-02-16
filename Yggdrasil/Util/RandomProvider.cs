@@ -2,7 +2,6 @@
 // For more information, see license file in the main folder
 
 using System;
-using System.Threading;
 
 namespace Yggdrasil.Util
 {
@@ -25,11 +24,19 @@ namespace Yggdrasil.Util
 			if (_random != null)
 				return _random;
 
-			int seed;
-			lock (_seed)
-				seed = _seed.Next();
+			var seed = GetSeed();
 
 			return (_random = new Random(seed));
+		}
+
+		/// <summary>
+		/// Returns a random seed.
+		/// </summary>
+		/// <returns></returns>
+		public static int GetSeed()
+		{
+			lock (_seed)
+				return _seed.Next();
 		}
 	}
 }

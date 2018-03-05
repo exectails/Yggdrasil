@@ -148,7 +148,7 @@ namespace Yggdrasil.Logging
 		/// Uses obj's ToString method.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void Info(object obj) { this.Info(obj.ToString()); }
+		public void Info(object obj) { this.Info(obj?.ToString()); }
 
 		/// <summary>
 		/// Logs warning.
@@ -176,7 +176,7 @@ namespace Yggdrasil.Logging
 		/// Uses obj's ToString method.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void Warning(object obj) { this.Warning(obj.ToString()); }
+		public void Warning(object obj) { this.Warning(obj?.ToString()); }
 
 		/// <summary>
 		/// Logs error.
@@ -204,7 +204,7 @@ namespace Yggdrasil.Logging
 		/// Uses obj's ToString method.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void Error(object obj) { this.Error(obj.ToString()); }
+		public void Error(object obj) { this.Error(obj?.ToString()); }
 
 		/// <summary>
 		/// Logs status message.
@@ -232,7 +232,7 @@ namespace Yggdrasil.Logging
 		/// Uses obj's ToString method.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void Status(object obj) { this.Status(obj.ToString()); }
+		public void Status(object obj) { this.Status(obj?.ToString()); }
 
 		/// <summary>
 		/// Logs debug message.
@@ -260,7 +260,7 @@ namespace Yggdrasil.Logging
 		/// Uses obj's ToString method.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void Debug(object obj) { this.Debug(obj.ToString()); }
+		public void Debug(object obj) { this.Debug(obj?.ToString()); }
 
 		/// <summary>
 		/// Writes message to log.

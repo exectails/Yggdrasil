@@ -85,6 +85,7 @@
     <Compile Include="Util\ConsoleUtil.cs" />
     <Compile Include="Util\Commands\Arguments.cs" />
     <Compile Include="Util\Commands\CommandManager.cs" />
+    <Compile Include="Util\Hex.cs" />
     <Compile Include="Util\Math2.cs" />
     <Compile Include="Util\MT19937.cs" />
     <Compile Include="Util\RandomProvider.cs" />

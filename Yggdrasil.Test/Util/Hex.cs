@@ -26,7 +26,6 @@ namespace Yggdrasil.Test.Util
 		{
 			var byteArray = new byte[] { 0x00, 0x02, 0x55, 0x66, 0xAA, 0xFF };
 
-			Assert.Equal("00025566AAFF", Hex.ToString(byteArray));
 			Assert.Equal("00025566AAFF", Hex.ToString(byteArray, HexStringOptions.None));
 			Assert.Equal("00 02 55 66 AA FF", Hex.ToString(byteArray, HexStringOptions.SpaceSeparated));
 			Assert.Equal("00-02-55-66-AA-FF", Hex.ToString(byteArray, HexStringOptions.DashSeparated));

@@ -54,13 +54,31 @@ namespace Yggdrasil.Util
 		/// <param name="byteArray"></param>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public static string ToString(byte[] byteArray, HexStringOptions options = HexStringOptions.None)
+		public static string ToString(byte[] byteArray, HexStringOptions options = HexStringOptions.SpaceSeparated)
+		{
+			return ToString(byteArray, 0, byteArray.Length, options);
+		}
+
+		/// <summary>
+		/// Converts byte array to hex string.
+		/// </summary>
+		/// <example>
+		/// Hex.ToString(new byte[] { 0x00, 0x01, 0x02 }); // = "000102"
+		/// Hex.ToString(new byte[] { 0x00, 0x01, 0x02 }, HexStringOptions.DashSeparated); // = "00-01-02"
+		/// Hex.ToString(new byte[] { 0x00, 0x01, 0x02 }, HexStringOptions.OXPrefixed | HexStringOptions.CommaSeparated | HexStringOptions.SpaceSeparated); // = "0x00, 0x01, 0x02"
+		/// </example>
+		/// <param name="byteArray"></param>
+		/// <param name="start"></param>
+		/// <param name="length"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public static string ToString(byte[] byteArray, int start, int length, HexStringOptions options = HexStringOptions.SpaceSeparated)
 		{
 			var result = new StringBuilder(byteArray.Length * 2);
 
 			var brokeLine = false;
 
-			for (var i = 0; i < byteArray.Length; ++i)
+			for (var i = start; i < start + length; ++i)
 			{
 				if (i != 0 && !brokeLine)
 				{

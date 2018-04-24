@@ -329,26 +329,6 @@ namespace Yggdrasil.Util
 			_ptr += length;
 		}
 
-		/// <summary>
-		/// Reads variable-length integer from buffer.
-		/// </summary>
-		/// <returns></returns>
-		public long ReadVarInt()
-		{
-			var result = 0L;
-
-			for (var i = 0; ; ++i)
-			{
-				var val = this.ReadByte();
-				result |= (long)(val & 0x7F) << (7 * i);
-
-				if ((val & 0x80) == 0)
-					break;
-			}
-
-			return result;
-		}
-
 		// Writing
 		// ------------------------------------------------------------------
 
@@ -445,30 +425,6 @@ namespace Yggdrasil.Util
 
 			Buffer.BlockCopy(value, 0, _buffer, _ptr, length);
 			this.UpdatePtrLength(length);
-		}
-
-		/// <summary>
-		/// Writes variable-length integer to buffer.
-		/// </summary>
-		/// <returns></returns>
-		public void WriteVarInt(long value)
-		{
-			if (value <= 0x7F)
-			{
-				this.WriteByte((byte)value);
-				return;
-			}
-
-			while (value > 0)
-			{
-				var part = (value & 0x7F);
-
-				value >>= 7;
-				if (value != 0)
-					part |= 0x80;
-
-				this.WriteByte((byte)part);
-			}
 		}
 	}
 }

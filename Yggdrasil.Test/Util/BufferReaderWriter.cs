@@ -43,9 +43,68 @@ namespace Yggdrasil.Test.Util
 		}
 
 		[Fact]
+		public void WritingLE()
+		{
+			var buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteByte(0x42);
+			Assert.Equal(new byte[] { 0x42 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteShort(0x4243);
+			Assert.Equal(new byte[] { 0x43, 0x42 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteInt(0x42434445);
+			Assert.Equal(new byte[] { 0x45, 0x44, 0x43, 0x42 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteLong(0x4243444546474849);
+			Assert.Equal(new byte[] { 0x49, 0x48, 0x47, 0x46, 0x45, 0x44, 0x43, 0x42 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteFloat(42.43f);
+			Assert.Equal(new byte[] { 0x52, 0xB8, 0x29, 0x42 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.WriteDouble(42.43);
+			Assert.Equal(new byte[] { 0xD7, 0xA3, 0x70, 0x3D, 0x0A, 0x37, 0x45, 0x40 }, buffer.Copy());
+
+			buffer = new BufferReaderWriter() { Endianness = Endianness.LittleEndian };
+			buffer.Write(new byte[] { 0x42, 0x43, 0x44, 0x45 });
+			Assert.Equal(new byte[] { 0x42, 0x43, 0x44, 0x45 }, buffer.Copy());
+		}
+
+		[Fact]
 		public void Reading()
 		{
 			var buffer = new BufferReaderWriter(31);
+			buffer.WriteByte(0x42);
+			buffer.WriteShort(0x4243);
+			buffer.WriteInt(0x42434445);
+			buffer.WriteLong(0x4243444546474849);
+			buffer.WriteFloat(42.43f);
+			buffer.WriteDouble(42.43);
+			buffer.Write(new byte[] { 0x42, 0x43, 0x44, 0x45 });
+
+			buffer.Seek(0, SeekOrigin.Begin);
+
+			Assert.Equal(0x42, buffer.ReadByte());
+			Assert.Equal(0x4243, buffer.ReadShort());
+			Assert.Equal(0x42434445, buffer.ReadInt());
+			Assert.Equal(0x4243444546474849, buffer.ReadLong());
+			Assert.Equal(42.43f, buffer.ReadFloat());
+			Assert.Equal(42.43, buffer.ReadDouble());
+			Assert.Equal(new byte[] { 0x42, 0x43, 0x44, 0x45 }, buffer.Read(4));
+
+			Assert.Throws<InvalidOperationException>(() => { buffer.Read(1); });
+		}
+
+		[Fact]
+		public void ReadingLE()
+		{
+			var buffer = new BufferReaderWriter(31);
+			buffer.Endianness = Endianness.LittleEndian;
+
 			buffer.WriteByte(0x42);
 			buffer.WriteShort(0x4243);
 			buffer.WriteInt(0x42434445);

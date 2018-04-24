@@ -42,6 +42,11 @@ namespace Yggdrasil.Util
 		public int Length { get { return _length; } }
 
 		/// <summary>
+		/// Gets or sets this instance's endianness.
+		/// </summary>
+		public Endianness Endianness { get; set; } = Endianness.BigEndian;
+
+		/// <summary>
 		/// Creates new buffer with default size.
 		/// </summary>
 		public BufferReaderWriter()
@@ -229,7 +234,10 @@ namespace Yggdrasil.Util
 			for (var i = 0; i < sizeof(short); ++i)
 				result += ((short)_buffer[_ptr++] << (i * 8));
 
-			return IPAddress.NetworkToHostOrder((short)result);
+			if (this.Endianness == Endianness.BigEndian)
+				return IPAddress.NetworkToHostOrder((short)result);
+			else
+				return (short)result;
 		}
 
 		/// <summary>
@@ -244,7 +252,10 @@ namespace Yggdrasil.Util
 			for (var i = 0; i < sizeof(int); ++i)
 				result += ((int)_buffer[_ptr++] << (i * 8));
 
-			return IPAddress.NetworkToHostOrder(result);
+			if (this.Endianness == Endianness.BigEndian)
+				return IPAddress.NetworkToHostOrder(result);
+			else
+				return result;
 		}
 
 		/// <summary>
@@ -259,7 +270,10 @@ namespace Yggdrasil.Util
 			for (var i = 0; i < sizeof(long); ++i)
 				result += ((long)_buffer[_ptr++] << (i * 8));
 
-			return IPAddress.NetworkToHostOrder(result);
+			if (this.Endianness == Endianness.BigEndian)
+				return IPAddress.NetworkToHostOrder(result);
+			else
+				return result;
 		}
 
 		/// <summary>
@@ -352,7 +366,8 @@ namespace Yggdrasil.Util
 		{
 			this.EnsureSpace(sizeof(short));
 
-			value = IPAddress.HostToNetworkOrder(value);
+			if (this.Endianness == Endianness.BigEndian)
+				value = IPAddress.HostToNetworkOrder(value);
 
 			for (var i = 0; i < sizeof(short); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
@@ -367,7 +382,8 @@ namespace Yggdrasil.Util
 		{
 			this.EnsureSpace(sizeof(int));
 
-			value = IPAddress.HostToNetworkOrder(value);
+			if (this.Endianness == Endianness.BigEndian)
+				value = IPAddress.HostToNetworkOrder(value);
 
 			for (var i = 0; i < sizeof(int); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
@@ -382,7 +398,8 @@ namespace Yggdrasil.Util
 		{
 			this.EnsureSpace(sizeof(long));
 
-			value = IPAddress.HostToNetworkOrder(value);
+			if (this.Endianness == Endianness.BigEndian)
+				value = IPAddress.HostToNetworkOrder(value);
 
 			for (var i = 0; i < sizeof(long); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
@@ -426,5 +443,21 @@ namespace Yggdrasil.Util
 			Buffer.BlockCopy(value, 0, _buffer, _ptr, length);
 			this.UpdatePtrLength(length);
 		}
+	}
+
+	/// <summary>
+	/// Describes endiannes.
+	/// </summary>
+	public enum Endianness
+	{
+		/// <summary>
+		/// Lower bits first.
+		/// </summary>
+		LittleEndian,
+
+		/// <summary>
+		/// Higher bits first.
+		/// </summary>
+		BigEndian,
 	}
 }

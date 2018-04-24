@@ -92,6 +92,10 @@ namespace Yggdrasil.Test.Util
 				Console.WindowWidth = 90;
 				widthSettingSupported = true;
 			}
+			catch (IOException)
+			{
+				Console.WriteLine("Skipping part of test WriteSeperator, IOException...?");
+			}
 			catch (NotSupportedException)
 			{
 				Console.WriteLine("Skipping part of test WriteSeperator, setting of console width not supported.");

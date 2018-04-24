@@ -241,6 +241,15 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Returns the next short in the buffer.
+		/// </summary>
+		/// <returns></returns>
+		public ushort ReadUShort()
+		{
+			return (ushort)this.ReadShort();
+		}
+
+		/// <summary>
 		/// Returns the next int in the buffer.
 		/// </summary>
 		/// <returns></returns>
@@ -259,6 +268,15 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Returns the next int in the buffer.
+		/// </summary>
+		/// <returns></returns>
+		public uint ReadUInt()
+		{
+			return (uint)this.ReadInt();
+		}
+
+		/// <summary>
 		/// Returns the next long in the buffer.
 		/// </summary>
 		/// <returns></returns>
@@ -274,6 +292,15 @@ namespace Yggdrasil.Util
 				return IPAddress.NetworkToHostOrder(result);
 			else
 				return result;
+		}
+
+		/// <summary>
+		/// Returns the next long in the buffer.
+		/// </summary>
+		/// <returns></returns>
+		public ulong ReadULong()
+		{
+			return (ulong)this.ReadLong();
 		}
 
 		/// <summary>
@@ -378,6 +405,15 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
+		public void WriteUShort(ushort value)
+		{
+			this.WriteShort((short)value);
+		}
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
 		public void WriteInt(int value)
 		{
 			this.EnsureSpace(sizeof(int));
@@ -394,6 +430,15 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
+		public void WriteUInt(uint value)
+		{
+			this.WriteInt((int)value);
+		}
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
 		public void WriteLong(long value)
 		{
 			this.EnsureSpace(sizeof(long));
@@ -404,6 +449,15 @@ namespace Yggdrasil.Util
 			for (var i = 0; i < sizeof(long); ++i)
 				_buffer[_ptr + i] = (byte)((value >> (i * 8)) & 0xFF);
 			this.UpdatePtrLength(sizeof(long));
+		}
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
+		public void WriteULong(ulong value)
+		{
+			this.WriteLong((long)value);
 		}
 
 		/// <summary>

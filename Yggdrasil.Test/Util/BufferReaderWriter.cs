@@ -97,6 +97,13 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(new byte[] { 0x42, 0x43, 0x44, 0x45 }, buffer.Read(4));
 
 			Assert.Throws<InvalidOperationException>(() => { buffer.Read(1); });
+
+			buffer = new BufferReaderWriter(Hex.ToByteArray("57 80 06 00 00 00 DB 9B D2 9A D2 F9"));
+
+			Assert.Equal(0x5780u, buffer.ReadUShort());
+			Assert.Equal(0x06000000u, buffer.ReadUInt());
+			Assert.Equal(0xDB9Bu, buffer.ReadUShort());
+			Assert.Equal(0xD29AD2F9u, buffer.ReadUInt());
 		}
 
 		[Fact]
@@ -124,6 +131,14 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(new byte[] { 0x42, 0x43, 0x44, 0x45 }, buffer.Read(4));
 
 			Assert.Throws<InvalidOperationException>(() => { buffer.Read(1); });
+
+			buffer = new BufferReaderWriter(Hex.ToByteArray("57 80 06 00 00 00 DB 9B D2 9A D2 F9"));
+			buffer.Endianness = Endianness.LittleEndian;
+
+			Assert.Equal(0x8057u, buffer.ReadUShort());
+			Assert.Equal(0x00000006u, buffer.ReadUInt());
+			Assert.Equal(0x9BDBu, buffer.ReadUShort());
+			Assert.Equal(0xF9D29AD2u, buffer.ReadUInt());
 		}
 
 		[Fact]

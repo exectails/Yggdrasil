@@ -17,6 +17,8 @@ namespace Yggdrasil.Network.TCP
 		private byte[] _buffer;
 		private Socket _socket;
 
+		private bool _raisedConnected;
+
 		/// <summary>
 		/// Current status of the connection.
 		/// </summary>
@@ -102,6 +104,12 @@ namespace Yggdrasil.Network.TCP
 				throw new InvalidOperationException("Connection hasn't been initialized yet.");
 
 			_socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, this.OnReceive, null);
+
+			if (!_raisedConnected)
+			{
+				this.OnConnected();
+				_raisedConnected = true;
+			}
 		}
 
 		/// <summary>
@@ -139,6 +147,14 @@ namespace Yggdrasil.Network.TCP
 				this.OnReceiveException(ex);
 				this.Close();
 			}
+		}
+
+		/// <summary>
+		/// Called after the connection was accepted by the server
+		/// and it's ready to be used.
+		/// </summary>
+		protected virtual void OnConnected()
+		{
 		}
 
 		/// <summary>

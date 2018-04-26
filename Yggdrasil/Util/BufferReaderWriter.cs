@@ -29,7 +29,7 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Returns the buffer's current position.
 		/// </summary>
-		public int Index { get { return _ptr; } }
+		public int Index { get { return Math.Min(_ptr, this.Capacity - 1); } }
 
 		/// <summary>
 		/// Returns the current length of the underlying array.

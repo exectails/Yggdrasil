@@ -193,6 +193,30 @@ namespace Yggdrasil.Test.Util
 		}
 
 		[Fact]
+		public void Rewriting()
+		{
+			var buffer = new BufferReaderWriter(10);
+
+			buffer.WriteShort(0);
+			buffer.WriteLong(0);
+
+			var index = buffer.Index;
+			buffer.Seek(0, SeekOrigin.Begin);
+
+			buffer.WriteShort(0x1111);
+			buffer.WriteLong(0x2222222222222222);
+
+			Console.WriteLine("index: " + index);
+			Console.WriteLine("capac: " + buffer.Capacity);
+			buffer.Seek(index, SeekOrigin.Begin);
+			Assert.Equal(9, buffer.Index);
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.Equal(0x1111, buffer.ReadShort());
+			Assert.Equal(0x2222222222222222, buffer.ReadLong());
+		}
+
+		[Fact]
 		public void Resizing()
 		{
 			var buffer = new BufferReaderWriter(4);

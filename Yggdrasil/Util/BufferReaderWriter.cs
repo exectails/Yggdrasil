@@ -211,6 +211,19 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Returns the byte at the given position without modifying the
+		/// index.
+		/// </summary>
+		/// <returns></returns>
+		public byte GetAt(int index)
+		{
+			if (index < 0 || index > _buffer.Length - 1)
+				throw new InvalidOperationException("Out of buffer.");
+
+			return _buffer[index];
+		}
+
+		/// <summary>
 		/// Returns the next byte in the buffer.
 		/// </summary>
 		/// <returns></returns>

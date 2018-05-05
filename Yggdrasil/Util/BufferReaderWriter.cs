@@ -143,13 +143,25 @@ namespace Yggdrasil.Util
 		/// <param name="offset"></param>
 		public void CopyTo(byte[] destination, int offset)
 		{
-			if (offset < 0)
+			this.CopyTo(destination, offset, 0);
+		}
+
+		/// <summary>
+		/// Copies the buffer's data into the given array, at the offset.
+		/// </summary>
+		/// <param name="destination">The array to copy to.</param>
+		/// <param name="destinationOffset">The offset in the array copied to.</param>
+		/// <param name="sourceOffset">The offset from which to read in the buffer.</param>
+		public void CopyTo(byte[] destination, int destinationOffset, int sourceOffset)
+		{
+			if (destinationOffset < 0)
 				throw new InvalidOperationException("Offset must be a positive number.");
 
-			if (destination.Length < _length + offset)
+			if (destination.Length < _length + destinationOffset - sourceOffset)
 				throw new InvalidOperationException("Destination is not long enough.");
-
-			Buffer.BlockCopy(_buffer, 0, destination, offset, _length);
+			Console.WriteLine("_length: " + _length);
+			Console.WriteLine("sourceOffset: " + sourceOffset);
+			Buffer.BlockCopy(_buffer, sourceOffset, destination, destinationOffset, _length - sourceOffset);
 		}
 
 		/// <summary>

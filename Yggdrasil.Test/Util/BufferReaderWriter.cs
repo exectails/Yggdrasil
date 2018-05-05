@@ -294,6 +294,12 @@ namespace Yggdrasil.Test.Util
 			arr = new byte[12];
 			buffer.CopyTo(arr, 2);
 			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+
+			buffer = new BufferReaderWriter(new byte[10] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+			arr = new byte[8];
+			buffer.CopyTo(arr, 0, 2);
+			Assert.Equal(new byte[] { 3, 4, 5, 6, 7, 8, 9, 10 }, arr);
+		}
 		}
 
 		[Fact]

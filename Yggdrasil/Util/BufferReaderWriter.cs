@@ -210,6 +210,16 @@ namespace Yggdrasil.Util
 			_ptr += mod;
 		}
 
+		/// <summary>
+		/// Resets the length of the underlying buffer, making the length
+		/// of the actual data 0.
+		/// </summary>
+		public void ResetLength()
+		{
+			_ptr = 0;
+			_length = 0;
+		}
+
 		// Reading
 		// ------------------------------------------------------------------
 

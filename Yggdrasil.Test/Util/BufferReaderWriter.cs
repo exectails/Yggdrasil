@@ -300,6 +300,37 @@ namespace Yggdrasil.Test.Util
 			buffer.CopyTo(arr, 0, 2);
 			Assert.Equal(new byte[] { 3, 4, 5, 6, 7, 8, 9, 10 }, arr);
 		}
+
+		[Fact]
+		public void ResetLength()
+		{
+			var buffer = new BufferReaderWriter(new byte[10], 0, 0, false);
+			Assert.Equal(10, buffer.Capacity);
+			Assert.Equal(0, buffer.Length);
+			Assert.Equal(0, buffer.Index);
+
+			buffer.WriteInt(1);
+			buffer.WriteInt(2);
+			Assert.Equal(10, buffer.Capacity);
+			Assert.Equal(8, buffer.Length);
+			Assert.Equal(8, buffer.Index);
+
+			buffer.ResetLength();
+			Assert.Equal(10, buffer.Capacity);
+			Assert.Equal(0, buffer.Length);
+			Assert.Equal(0, buffer.Index);
+
+			buffer.WriteInt(1);
+			buffer.WriteInt(2);
+			buffer.WriteInt(3);
+			Assert.Equal(10 + 256, buffer.Capacity);
+			Assert.Equal(12, buffer.Length);
+			Assert.Equal(12, buffer.Index);
+
+			buffer.ResetLength();
+			Assert.Equal(10 + 256, buffer.Capacity);
+			Assert.Equal(0, buffer.Length);
+			Assert.Equal(0, buffer.Index);
 		}
 
 		[Fact]

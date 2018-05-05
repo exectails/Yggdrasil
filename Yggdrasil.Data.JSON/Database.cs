@@ -105,9 +105,14 @@ namespace Yggdrasil.Data.JSON
 	public abstract class DatabaseJson<TData> : DatabaseJsonBase, IDatabase<TData> where TData : class, new()
 	{
 		/// <summary>
+		/// Returns number of entries in the database.
+		/// </summary>
+		public int Count => this.Entries.Count;
+
+		/// <summary>
 		/// The database's entries.
 		/// </summary>
-		protected List<TData> Entries = new List<TData>();
+		public List<TData> Entries = new List<TData>();
 
 		/// <summary>
 		/// Searches for first entry that matches the given predicate
@@ -151,9 +156,14 @@ namespace Yggdrasil.Data.JSON
 	public abstract class DatabaseJsonIndexed<TIndex, TData> : DatabaseJsonBase, IDatabaseIndexed<TIndex, TData> where TData : class, new()
 	{
 		/// <summary>
+		/// Returns number of entries in the database.
+		/// </summary>
+		public int Count => this.Entries.Count;
+
+		/// <summary>
 		/// The database's entries.
 		/// </summary>
-		protected Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
+		public Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
 
 		/// <summary>
 		/// Searches for first entry that matches the given predicate

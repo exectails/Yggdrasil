@@ -11,6 +11,11 @@ namespace Yggdrasil.Data
 	public interface IDatabase
 	{
 		/// <summary>
+		/// Returns the number of entries in the database.
+		/// </summary>
+		int Count { get; }
+
+		/// <summary>
 		/// Removes all entries from database.
 		/// </summary>
 		void Clear();

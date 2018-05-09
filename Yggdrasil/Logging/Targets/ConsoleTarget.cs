@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Yggdrasil.Logging.Targets
 {
@@ -18,6 +19,9 @@ namespace Yggdrasil.Logging.Targets
 		private readonly ConsoleColor _defaultForeground = Console.ForegroundColor;
 		private readonly ConsoleColor _defaultBackground = Console.BackgroundColor;
 
+		private const int CodeMaxLength = 6;
+		private readonly static Regex CodeRegex = new Regex("\u001B" + @"\^(?<command>[a-z])(?<arg>[0-9]{1,2})?;", RegexOptions.Compiled);
+
 		/// <summary>
 		/// Writes message to Console standard output.
 		/// </summary>
@@ -32,33 +36,41 @@ namespace Yggdrasil.Logging.Targets
 			{
 				for (var i = 0; i < messageRaw.Length; ++i)
 				{
-					if (messageRaw[i] == '^')
+					if (messageRaw[i] == '\x1B')
 					{
-						// Flush, so we get the color updates
-						stream.Flush();
-
-						var command = messageRaw[i + 1];
-						var end = messageRaw.IndexOf(';', i);
-						if (end != -1)
+						try
 						{
-							var value = messageRaw.Substring(i + 2, end - i - 2);
-
-							switch (command)
+							var match = CodeRegex.Match(messageRaw, i, CodeMaxLength);
+							if (match.Success)
 							{
-								case 'c': // Color
-									Console.ForegroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : _defaultForeground);
-									break;
-								case 'b': // Background
-									Console.BackgroundColor = (value != "" ? (ConsoleColor)int.Parse(value) : _defaultBackground);
-									break;
-								case 'r': // Reset
-									Console.ResetColor();
-									break;
+								var command = match.Groups["command"].Value[0];
+								var arg = match.Groups["arg"].Value;
+
+								stream.Flush();
+
+								switch (command)
+								{
+									case 'c': // Color
+										Console.ForegroundColor = (arg != "" ? (ConsoleColor)int.Parse(arg) : _defaultForeground);
+										break;
+									case 'b': // Background
+										Console.BackgroundColor = (arg != "" ? (ConsoleColor)int.Parse(arg) : _defaultBackground);
+										break;
+									case 'r': // Reset
+										Console.ResetColor();
+										break;
+								}
+
+								i += match.Length - 1;
+
+								continue;
 							}
-
-							i = end;
-
-							continue;
+						}
+						catch
+						{
+							// Continue to write message if anything went
+							// wrong, it's more important to continue logging
+							// than to worry about codes.
 						}
 					}
 
@@ -76,11 +88,11 @@ namespace Yggdrasil.Logging.Targets
 		{
 			switch (level)
 			{
-				case LogLevel.Info: return "^c15;[{0}]^r; - {1}"; // White
-				case LogLevel.Warning: return "^c14;[{0}]^r; - {1}"; // Yellow
-				case LogLevel.Error: return "^c12;[{0}]^r; - {1}"; // Red
-				case LogLevel.Debug: return "^c8;[{0}]^r; - {1}"; // Dark Gray
-				case LogLevel.Status: return "^c10;[{0}]^r; - {1}"; // Green
+				case LogLevel.Info: return "\u001B^c15;[{0}]\u001B^r; - {1}"; // White
+				case LogLevel.Warning: return "\u001B^c14;[{0}]\u001B^r; - {1}"; // Yellow
+				case LogLevel.Error: return "\u001B^c12;[{0}]\u001B^r; - {1}"; // Red
+				case LogLevel.Debug: return "\u001B^c8;[{0}]\u001B^r; - {1}"; // Dark Gray
+				case LogLevel.Status: return "\u001B^c10;[{0}]\u001B^r; - {1}"; // Green
 			}
 
 			return "[{0}] - {1}";

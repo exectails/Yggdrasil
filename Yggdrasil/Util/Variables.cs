@@ -74,6 +74,23 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Returns variable with given name as object.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public object Get(string name)
+		{
+			object result;
+			lock (_syncLock)
+			{
+				if (!_variables.TryGetValue(name, out result))
+					return null;
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns the given variable or the default value if it doesn't
 		/// exist.
 		/// </summary>

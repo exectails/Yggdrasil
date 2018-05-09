@@ -15,8 +15,8 @@ namespace Yggdrasil.Logging.Targets
 	/// </remarks>
 	public class ConsoleTarget : LoggerTarget
 	{
-		private ConsoleColor _defaultForeground = Console.ForegroundColor;
-		private ConsoleColor _defaultBackground = Console.BackgroundColor;
+		private readonly ConsoleColor _defaultForeground = Console.ForegroundColor;
+		private readonly ConsoleColor _defaultBackground = Console.BackgroundColor;
 
 		/// <summary>
 		/// Writes message to Console standard output.

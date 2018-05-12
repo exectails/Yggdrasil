@@ -236,72 +236,84 @@ namespace Yggdrasil.Scripting
 		/// <returns></returns>
 		private Assembly Compile(IEnumerable<string> scriptFilesList)
 		{
-			var filePaths = scriptFilesList.Select(a => a.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar)).ToArray();
-			var precompilers = _precompilers;
+			var tempFiles = new LinkedList<string>();
 
-			if (_precompilers.Any())
+			try
 			{
-				for (var i = 0; i < filePaths.Length; ++i)
+				var filePaths = scriptFilesList.Select(a => a.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar)).ToArray();
+				var precompilers = _precompilers;
+
+				if (_precompilers.Any())
 				{
-					for (var j = 0; j < precompilers.Count; ++j)
+					for (var i = 0; i < filePaths.Length; ++i)
 					{
-						var filePath = filePaths[i];
+						for (var j = 0; j < precompilers.Count; ++j)
+						{
+							var filePath = filePaths[i];
 
-						var tmpPath = Path.GetTempFileName();
-						var content = File.ReadAllText(filePath);
+							var tmpPath = Path.GetTempFileName();
+							var content = File.ReadAllText(filePath);
 
-						content = precompilers[j].Precompile(content);
+							content = precompilers[j].Precompile(content);
 
-						File.WriteAllText(tmpPath, content);
-						filePaths[i] = tmpPath;
+							File.WriteAllText(tmpPath, content);
+							filePaths[i] = tmpPath;
+
+							tempFiles.AddLast(tmpPath);
+						}
 					}
 				}
-			}
 
-			// Prepare parameters
-			var parameters = new CompilerParameters();
-			parameters.GenerateExecutable = false;
-			parameters.GenerateInMemory = true;
-			parameters.WarningLevel = 0;
+				// Prepare parameters
+				var parameters = new CompilerParameters();
+				parameters.GenerateExecutable = false;
+				parameters.GenerateInMemory = true;
+				parameters.WarningLevel = 0;
 
-			// Add default references
-			foreach (var reference in _defaultReferences)
-				parameters.ReferencedAssemblies.Add(reference);
+				// Add default references
+				foreach (var reference in _defaultReferences)
+					parameters.ReferencedAssemblies.Add(reference);
 
-			// Get assemblies referenced by application
-			var entryAssembly = Assembly.GetEntryAssembly();
-			var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-			var toReference = new HashSet<string>();
+				// Get assemblies referenced by application
+				var entryAssembly = Assembly.GetEntryAssembly();
+				var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+				var toReference = new HashSet<string>();
 
-			if (entryAssembly != null)
-			{
-				toReference.Add(entryAssembly.Location);
-
-				foreach (var assemblyName in entryAssembly.GetReferencedAssemblies())
+				if (entryAssembly != null)
 				{
-					var assembly = Assembly.Load(assemblyName);
+					toReference.Add(entryAssembly.Location);
+
+					foreach (var assemblyName in entryAssembly.GetReferencedAssemblies())
+					{
+						var assembly = Assembly.Load(assemblyName);
+						toReference.Add(assembly.Location);
+					}
+				}
+
+				foreach (var assembly in loadedAssemblies.Where(a => !a.IsDynamic))
+				{
 					toReference.Add(assembly.Location);
 				}
-			}
 
-			foreach (var assembly in loadedAssemblies.Where(a => !a.IsDynamic))
+				foreach (var location in toReference)
+				{
+					parameters.ReferencedAssemblies.Add(location);
+				}
+
+				// Compile, throw if compilation failed
+				var result = _compiler.CompileAssemblyFromFile(parameters, filePaths);
+				var errors = result.Errors;
+
+				if (errors.Count != 0)
+					throw new CompilerErrorException(errors);
+
+				return result.CompiledAssembly;
+			}
+			finally
 			{
-				toReference.Add(assembly.Location);
+				foreach (var tempFile in tempFiles)
+					File.Delete(tempFile);
 			}
-
-			foreach (var location in toReference)
-			{
-				parameters.ReferencedAssemblies.Add(location);
-			}
-
-			// Compile, throw if compilation failed
-			var result = _compiler.CompileAssemblyFromFile(parameters, filePaths);
-			var errors = result.Errors;
-
-			if (errors.Count != 0)
-				throw new CompilerErrorException(errors);
-
-			return result.CompiledAssembly;
 		}
 
 		/// <summary>

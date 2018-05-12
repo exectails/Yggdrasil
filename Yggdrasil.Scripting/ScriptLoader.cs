@@ -306,12 +306,25 @@ namespace Yggdrasil.Scripting
 
 					if (type.GetInterfaces().Contains(typeof(IDisposable)))
 						_disposable.Add(script as IDisposable);
+
+					_types.Add(typeName, type);
 				}
 				catch (Exception ex)
 				{
 					throw new ScriptLoadingException("Failed to initialize '{0}'.{1}{2}", typeName, Environment.NewLine, ex);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns loaded script type by name.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public Type GetScriptType(string typeName)
+		{
+			_types.TryGetValue(typeName, out var result);
+			return result;
 		}
 	}
 }

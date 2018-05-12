@@ -246,6 +246,8 @@ namespace Yggdrasil.Scripting
 
 			if (entryAssembly != null)
 			{
+				toReference.Add(entryAssembly.Location);
+
 				foreach (var assemblyName in entryAssembly.GetReferencedAssemblies())
 				{
 					var assembly = Assembly.Load(assemblyName);
@@ -253,13 +255,15 @@ namespace Yggdrasil.Scripting
 				}
 			}
 
-			foreach (var assembly in loadedAssemblies)
+			foreach (var assembly in loadedAssemblies.Where(a => !a.IsDynamic))
 			{
 				toReference.Add(assembly.Location);
 			}
 
 			foreach (var location in toReference)
+			{
 				parameters.ReferencedAssemblies.Add(location);
+			}
 
 			// Compile, throw if compilation failed
 			var result = _compiler.CompileAssemblyFromFile(parameters, filePaths);

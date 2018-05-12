@@ -33,6 +33,21 @@ namespace Yggdrasil.Scripting
 		};
 
 		/// <summary>
+		/// Returns the amount of scripts that were successfully loaded.
+		/// </summary>
+		public int LoadedCount { get; private set; }
+
+		/// <summary>
+		/// Returns the amount of scripts that failed to load.
+		/// </summary>
+		public int FailCount { get; private set; }
+
+		/// <summary>
+		/// Returns the amount of scripts that were to be loaded.
+		/// </summary>
+		public int TotalCount { get; private set; }
+
+		/// <summary>
 		/// Creates new instance, using the given CodeDomProvider to compile
 		/// scripts.
 		/// </summary>
@@ -322,10 +337,17 @@ namespace Yggdrasil.Scripting
 						_disposable.Add(script as IDisposable);
 
 					_types.Add(typeName, type);
+
+					this.LoadedCount++;
 				}
 				catch (Exception ex)
 				{
+					this.FailCount++;
 					throw new ScriptLoadingException("Failed to initialize '{0}'.{1}{2}", typeName, Environment.NewLine, ex);
+				}
+				finally
+				{
+					this.TotalCount++;
 				}
 			}
 		}

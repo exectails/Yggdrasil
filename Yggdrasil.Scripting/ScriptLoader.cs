@@ -179,7 +179,7 @@ namespace Yggdrasil.Scripting
 		/// </summary>
 		public void Reload()
 		{
-			this.DisposeAll();
+			this.Unload();
 
 			// Mono's runtime compiler throws an exception if no files are
 			// specified.
@@ -191,13 +191,27 @@ namespace Yggdrasil.Scripting
 		}
 
 		/// <summary>
-		/// Disposes all loaded scripts that are disposable.
+		/// Unloads all scripts, disposing them and clearing the internal
+		/// script lists. Does not clear script file list, reloading after
+		/// this loads the previously loaded scripts.
 		/// </summary>
-		private void DisposeAll()
+		public void Unload()
 		{
 			foreach (var disposable in _disposable)
 				disposable.Dispose();
+
 			_disposable.Clear();
+			_types.Clear();
+		}
+
+		/// <summary>
+		/// Unloads all scripts and clears script file list. Unlike Unload,
+		/// reloading after this doesn't actually load anything.
+		/// </summary>
+		public void Clear()
+		{
+			this.Unload();
+			_filePaths.Clear();
 		}
 
 		/// <summary>

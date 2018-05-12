@@ -298,10 +298,10 @@ namespace Yggdrasil.Scripting
 						if (type.GetInterfaces().Contains(typeof(IDisposable)))
 						{
 							try { (script as IDisposable).Dispose(); }
-							catch { throw new ScriptLoadingException("Failed to initiate and dispose '{0}'.", typeName); }
+							catch { throw new ScriptLoadingException("Failed to initialize and dispose '{0}'.", typeName); }
 						}
 
-						throw new ScriptLoadingException("Failed to initiate '{0}'.", typeName);
+						throw new ScriptLoadingException("Failed to initialize '{0}'.", typeName);
 					}
 
 					if (type.GetInterfaces().Contains(typeof(IDisposable)))
@@ -309,7 +309,7 @@ namespace Yggdrasil.Scripting
 				}
 				catch (Exception ex)
 				{
-					throw new ScriptLoadingException("Failed to initiate '{0}'.{1}{2}", typeName, Environment.NewLine, ex);
+					throw new ScriptLoadingException("Failed to initialize '{0}'.{1}{2}", typeName, Environment.NewLine, ex);
 				}
 			}
 		}

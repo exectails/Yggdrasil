@@ -17,6 +17,7 @@ namespace Yggdrasil.Scripting
 	public class ScriptLoader
 	{
 		private CodeDomProvider _compiler;
+		private List<IPrecompiler> _precompilers = new List<IPrecompiler>();
 		private HashSet<string> _filePaths = new HashSet<string>();
 		private Dictionary<string, Type> _types = new Dictionary<string, Type>();
 		private List<IDisposable> _disposable = new List<IDisposable>();
@@ -39,6 +40,15 @@ namespace Yggdrasil.Scripting
 		public ScriptLoader(CodeDomProvider provider)
 		{
 			_compiler = provider;
+		}
+
+		/// <summary>
+		/// Adds precompiler to be used on load.
+		/// </summary>
+		/// <param name="precompiler"></param>
+		public void AddPrecompiler(IPrecompiler precompiler)
+		{
+			_precompilers.Add(precompiler);
 		}
 
 		/// <summary>
@@ -198,6 +208,26 @@ namespace Yggdrasil.Scripting
 		private Assembly Compile(IEnumerable<string> scriptFilesList)
 		{
 			var filePaths = scriptFilesList.Select(a => a.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar)).ToArray();
+			var precompilers = _precompilers;
+
+			if (_precompilers.Any())
+			{
+				for (var i = 0; i < filePaths.Length; ++i)
+				{
+					for (var j = 0; j < precompilers.Count; ++j)
+					{
+						var filePath = filePaths[i];
+
+						var tmpPath = Path.GetTempFileName();
+						var content = File.ReadAllText(filePath);
+
+						content = precompilers[j].Precompile(content);
+
+						File.WriteAllText(tmpPath, content);
+						filePaths[i] = tmpPath;
+					}
+				}
+			}
 
 			// Prepare parameters
 			var parameters = new CompilerParameters();

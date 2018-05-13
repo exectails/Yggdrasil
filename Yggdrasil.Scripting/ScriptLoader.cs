@@ -254,7 +254,7 @@ namespace Yggdrasil.Scripting
 							var tmpPath = Path.GetTempFileName();
 							var content = File.ReadAllText(filePath);
 
-							content = precompilers[j].Precompile(content);
+							content = precompilers[j].Precompile(filePath, content);
 
 							File.WriteAllText(tmpPath, content);
 							filePaths[i] = tmpPath;

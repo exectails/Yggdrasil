@@ -50,6 +50,8 @@ class TestScript1 : IScript
 			});
 
 			Assert.Equal(1, Test);
+
+			File.Delete(tmpFilePath);
 		}
 
 		[Fact]
@@ -95,13 +97,64 @@ class TestScript2 : IScript, IFoobarer
 			Assert.NotNull(script);
 
 			Test = script.Foobar();
-
 			Assert.Equal(2, Test);
+
+			File.Delete(tmpFilePath);
+		}
+
+		[Fact]
+		public void Precompile()
+		{
+			Test = 0;
+
+			var testScript = "ScriptLoaderTests.Test = 42;";
+
+			var tmpFilePath = Path.GetTempFileName();
+			File.WriteAllText(tmpFilePath, testScript);
+
+			Assert.DoesNotThrow(() =>
+			{
+				try
+				{
+					var loader = new ScriptLoader(new CSharpCodeProvider());
+					loader.AddPrecompiler(new TestPrecompiler());
+					loader.LoadFromList(new[] { tmpFilePath });
+				}
+				catch (CompilerErrorException ex)
+				{
+					foreach (var err in ex.Errors)
+						Console.WriteLine(err);
+					throw;
+				}
+			});
+
+			Assert.Equal(42, Test);
+
+			File.Delete(tmpFilePath);
 		}
 	}
 
 	public interface IFoobarer
 	{
 		int Foobar();
+	}
+
+	public class TestPrecompiler : IPrecompiler
+	{
+		public string Precompile(string script)
+		{
+			return @"
+using Yggdrasil.Scripting;
+using Yggdrasil.Test.Scripting;
+
+class TestScript2 : IScript
+{
+	public bool Init()
+	{
+		" + script + @"
+		return true;
+	}
+}";
+		}
 	}
 }

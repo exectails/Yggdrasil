@@ -21,6 +21,7 @@ namespace Yggdrasil.Scripting
 		private HashSet<string> _filePaths = new HashSet<string>();
 		private Dictionary<string, Type> _types = new Dictionary<string, Type>();
 		private List<IDisposable> _disposable = new List<IDisposable>();
+		private LinkedList<string> _tempFiles = new LinkedList<string>();
 
 		private readonly string[] _defaultReferences = new string[]
 		{
@@ -236,11 +237,10 @@ namespace Yggdrasil.Scripting
 		/// <returns></returns>
 		private Assembly Compile(IEnumerable<string> scriptFilesList)
 		{
-			var tempFiles = new LinkedList<string>();
-
 			try
 			{
 				var filePaths = scriptFilesList.Select(a => a.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar)).ToArray();
+				var mapFilePaths = filePaths.ToDictionary(a => a);
 				var precompilers = _precompilers;
 
 				if (_precompilers.Any())
@@ -259,7 +259,8 @@ namespace Yggdrasil.Scripting
 							File.WriteAllText(tmpPath, content);
 							filePaths[i] = tmpPath;
 
-							tempFiles.AddLast(tmpPath);
+							_tempFiles.AddLast(tmpPath);
+							mapFilePaths[tmpPath] = filePath;
 						}
 					}
 				}
@@ -305,15 +306,28 @@ namespace Yggdrasil.Scripting
 				var errors = result.Errors;
 
 				if (errors.Count != 0)
+				{
+					foreach (CompilerError error in errors)
+						error.FileName = mapFilePaths[error.FileName];
+
 					throw new CompilerErrorException(errors);
+				}
 
 				return result.CompiledAssembly;
 			}
 			finally
 			{
-				foreach (var tempFile in tempFiles)
-					File.Delete(tempFile);
+				this.ClearTempFiles();
 			}
+		}
+
+		/// <summary>
+		/// Clears temp files created during compilation.
+		/// </summary>
+		private void ClearTempFiles()
+		{
+			foreach (var tempFile in _tempFiles)
+				File.Delete(tempFile);
 		}
 
 		/// <summary>

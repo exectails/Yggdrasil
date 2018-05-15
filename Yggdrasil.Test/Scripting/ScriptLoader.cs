@@ -31,7 +31,7 @@ class TestScript1 : IScript
 	}
 }
 ";
-			var tmpFilePath = Path.GetTempFileName();
+			var tmpFilePath = Path.GetTempFileName() + ".cs";
 			File.WriteAllText(tmpFilePath, testScript);
 
 			Assert.DoesNotThrow(() =>
@@ -40,9 +40,14 @@ class TestScript1 : IScript
 				{
 					var loader = new ScriptLoader(new CSharpCodeProvider());
 					loader.LoadFromList(new[] { tmpFilePath });
+
+					Console.WriteLine("LoadingExceptions");
+					foreach (var err in loader.LoadingExceptions)
+						Console.WriteLine(err);
 				}
 				catch (CompilerErrorException ex)
 				{
+					Console.WriteLine("CompilerErrorException");
 					foreach (var err in ex.Errors)
 						Console.WriteLine(err);
 					throw;
@@ -75,7 +80,7 @@ class TestScript2 : IScript, IFoobarer
 	}
 }
 ";
-			var tmpFilePath = Path.GetTempFileName();
+			var tmpFilePath = Path.GetTempFileName() + ".cs";
 			File.WriteAllText(tmpFilePath, testScript);
 
 			Assert.DoesNotThrow(() =>
@@ -84,9 +89,14 @@ class TestScript2 : IScript, IFoobarer
 				{
 					var loader = new ScriptLoader(new CSharpCodeProvider());
 					loader.LoadFromList(new[] { tmpFilePath });
+
+					Console.WriteLine("LoadingExceptions");
+					foreach (var err in loader.LoadingExceptions)
+						Console.WriteLine(err);
 				}
 				catch (CompilerErrorException ex)
 				{
+					Console.WriteLine("CompilerErrorException");
 					foreach (var err in ex.Errors)
 						Console.WriteLine(err);
 					throw;
@@ -109,7 +119,7 @@ class TestScript2 : IScript, IFoobarer
 
 			var testScript = "ScriptLoaderTests.Test = 42;";
 
-			var tmpFilePath = Path.GetTempFileName();
+			var tmpFilePath = Path.GetTempFileName() + ".cs";
 			File.WriteAllText(tmpFilePath, testScript);
 
 			Assert.DoesNotThrow(() =>
@@ -119,9 +129,14 @@ class TestScript2 : IScript, IFoobarer
 					var loader = new ScriptLoader(new CSharpCodeProvider());
 					loader.AddPrecompiler(new TestPrecompiler());
 					loader.LoadFromList(new[] { tmpFilePath });
+
+					Console.WriteLine("LoadingExceptions");
+					foreach (var err in loader.LoadingExceptions)
+						Console.WriteLine(err);
 				}
 				catch (CompilerErrorException ex)
 				{
+					Console.WriteLine("CompilerErrorException");
 					foreach (var err in ex.Errors)
 						Console.WriteLine(err);
 					throw;

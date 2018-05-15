@@ -34,19 +34,31 @@ namespace Yggdrasil.Scripting
 		};
 
 		/// <summary>
-		/// Returns the amount of scripts that were successfully loaded.
+		/// Returns the amount of script classes that were successfully
+		/// loaded and initialized.
 		/// </summary>
 		public int LoadedCount { get; private set; }
 
 		/// <summary>
-		/// Returns the amount of scripts that failed to load.
+		/// Returns the amount of script classes that failed to initialize.
 		/// </summary>
 		public int FailCount { get; private set; }
 
 		/// <summary>
-		/// Returns the amount of scripts that were to be loaded.
+		/// Returns the amount of script classes that were to be loaded.
 		/// </summary>
 		public int TotalCount { get; private set; }
+
+		/// <summary>
+		/// Returns the amount of files loaded.
+		/// </summary>
+		public int FileCount => _filePaths.Count;
+
+		/// <summary>
+		/// A list of exceptions thrown while initializing the compiled
+		/// scripts.
+		/// </summary>
+		public List<ScriptLoadingException> LoadingExceptions { get; } = new List<ScriptLoadingException>();
 
 		/// <summary>
 		/// Creates new instance, using the given CodeDomProvider to compile
@@ -206,6 +218,11 @@ namespace Yggdrasil.Scripting
 
 			_disposable.Clear();
 			_types.Clear();
+
+			this.LoadedCount = 0;
+			this.FailCount = 0;
+			this.TotalCount = 0;
+			this.LoadingExceptions.Clear();
 		}
 
 		/// <summary>
@@ -258,6 +275,7 @@ namespace Yggdrasil.Scripting
 				parameters.GenerateExecutable = false;
 				parameters.GenerateInMemory = true;
 				parameters.WarningLevel = 0;
+				parameters.IncludeDebugInformation = true;
 
 				// Add default references
 				foreach (var reference in _defaultReferences)
@@ -331,7 +349,7 @@ namespace Yggdrasil.Scripting
 				var typeName = type.Name;
 
 				if (_types.ContainsKey(typeName))
-					throw new ScriptLoadingException("Script classes must have unique names, duplicate '{0}' found.", typeName);
+					throw new ScriptLoadingException($"Script classes must have unique names, duplicate '{typeName}' found.");
 
 				try
 				{
@@ -341,10 +359,10 @@ namespace Yggdrasil.Scripting
 						if (type.GetInterfaces().Contains(typeof(IDisposable)))
 						{
 							try { (script as IDisposable).Dispose(); }
-							catch { throw new ScriptLoadingException("Failed to initialize and dispose '{0}'.", typeName); }
+							catch { throw new ScriptLoadingException($"Failed to initialize and dispose '{typeName}'."); }
 						}
 
-						throw new ScriptLoadingException("Failed to initialize '{0}'.", typeName);
+						throw new ScriptLoadingException($"Failed to initialize '{typeName}'.");
 					}
 
 					if (type.GetInterfaces().Contains(typeof(IDisposable)))
@@ -357,7 +375,7 @@ namespace Yggdrasil.Scripting
 				catch (Exception ex)
 				{
 					this.FailCount++;
-					throw new ScriptLoadingException("Failed to initialize '{0}'.{1}{2}", typeName, Environment.NewLine, ex);
+					this.LoadingExceptions.Add(new ScriptLoadingException(typeName, ex));
 				}
 				finally
 				{

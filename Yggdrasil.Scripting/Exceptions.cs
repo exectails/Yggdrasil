@@ -43,8 +43,10 @@ namespace Yggdrasil.Scripting
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
-		public ScriptLoadingException(string format, params object[] args)
-			: base(string.Format(format, args))
+		/// <param name="typeName"></param>
+		/// <param name="innerException"></param>
+		public ScriptLoadingException(string typeName, Exception innerException)
+			: base($"Failed to initialize '{typeName}'.", innerException)
 		{
 		}
 	}

@@ -190,7 +190,7 @@ namespace Yggdrasil.Scripting
 			if (!_filePaths.Any())
 				return;
 
-			var assembly = this.Compile(_filePaths);
+			var assembly = this.Compile(_filePaths.Where(a => a.EndsWith(".cs")));
 			this.InitAssembly(assembly);
 		}
 

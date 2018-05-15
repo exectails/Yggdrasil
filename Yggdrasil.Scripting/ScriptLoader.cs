@@ -100,28 +100,14 @@ namespace Yggdrasil.Scripting
 		protected List<string> ReadScriptList(string scriptListFile, params string[] priorityFolders)
 		{
 			var result = new List<string>();
+			var cwd = Directory.GetCurrentDirectory().Replace("\\", "/") + "/";
 
 			using (var fr = new FileReader(scriptListFile))
 			{
 				foreach (var line in fr)
 				{
-					var scriptPath = line.Value;
-
-					// Path relative to cwd
-					if (scriptPath.StartsWith("/"))
-					{
-						scriptPath = Path.Combine(Directory.GetCurrentDirectory().Replace("\\", "/"), scriptPath.Replace("\\", "/").TrimStart('/')).Replace("\\", "/");
-					}
-					// Path relative to list file
-					else
-					{
-						// Get path to the current list's directory
-						var listPath = Path.GetFullPath(line.File);
-						listPath = Path.GetDirectoryName(listPath);
-
-						// Get full path to script
-						scriptPath = Path.Combine(listPath, scriptPath).Replace("\\", "/");
-					}
+					var scriptPath = line.Value.Replace("\\", "/");
+					var listDirPath = Path.GetDirectoryName(Path.GetFullPath(line.File)).Replace("\\", "/").Replace(cwd, "") + "/";
 
 					var paths = new List<string>();
 					if (!scriptPath.EndsWith("/*"))
@@ -131,48 +117,50 @@ namespace Yggdrasil.Scripting
 					else
 					{
 						var recursive = scriptPath.EndsWith("/**/*");
-						var directoryPath = scriptPath.TrimEnd('/', '*');
+						var directoryPath = Path.Combine(listDirPath, scriptPath).Replace("\\", "/").Replace(cwd, "").TrimEnd('/', '*');
 
-						if (Directory.Exists(directoryPath))
+						if (!Directory.Exists(directoryPath))
+							continue;
+
+						foreach (var eFilePath in Directory.EnumerateFiles(directoryPath, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 						{
-							foreach (var file in Directory.EnumerateFiles(directoryPath, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-							{
-								// Ignore "hidden" files
-								if (Path.GetFileName(file).StartsWith("."))
-									continue;
+							// Ignore "hidden" files
+							if (Path.GetFileName(eFilePath).StartsWith("."))
+								continue;
 
-								paths.Add(file.Replace("\\", "/"));
-							}
+							paths.Add(eFilePath.Replace("\\", "/").Replace(listDirPath, ""));
+						}
+					}
+
+					for (var i = 0; i < paths.Count; ++i)
+					{
+						var path = paths[i];
+
+						if (path.StartsWith("/"))
+						{
+							path = path.Substring(1);
 						}
 						else
 						{
-							throw new ScriptLoadingException("Directory not found: {0}", directoryPath);
-						}
-					}
+							var found = false;
 
-					foreach (var path in paths)
-					{
+							foreach (var priorityPath in priorityFolders)
+							{
+								var combinedPath = Path.Combine(priorityPath, path).Replace("\\", "/").Replace(cwd, "");
+								if (File.Exists(combinedPath))
+								{
+									path = combinedPath;
+									found = true;
+									break;
+								}
+							}
+
+							if (!found)
+								path = Path.Combine(listDirPath, path).Replace("\\", "/").Replace(cwd, "");
+						}
+
 						if (!result.Contains(path))
 							result.Add(path);
-					}
-				}
-			}
-
-			// Fix paths to prioritize files
-			if (priorityFolders != null && priorityFolders.Any())
-			{
-				for (var i = 0; i < result.Count; ++i)
-				{
-					var path = result[i];
-
-					foreach (var folderPath in priorityFolders)
-					{
-						var combinedPath = Path.Combine(folderPath, path).Replace("\\", "/");
-						if (File.Exists(combinedPath))
-						{
-							result[i] = combinedPath;
-							break;
-						}
 					}
 				}
 			}

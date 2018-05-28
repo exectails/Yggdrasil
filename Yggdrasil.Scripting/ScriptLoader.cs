@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using Yggdrasil.IO;
 
 namespace Yggdrasil.Scripting
@@ -22,6 +23,7 @@ namespace Yggdrasil.Scripting
 		private Dictionary<string, Type> _types = new Dictionary<string, Type>();
 		private List<IDisposable> _disposable = new List<IDisposable>();
 		private LinkedList<string> _tempFiles = new LinkedList<string>();
+		private string _cacheFilePath;
 
 		private readonly string[] _defaultReferences = new string[]
 		{
@@ -62,12 +64,24 @@ namespace Yggdrasil.Scripting
 
 		/// <summary>
 		/// Creates new instance, using the given CodeDomProvider to compile
-		/// scripts.
+		/// scripts and no caching.
 		/// </summary>
 		/// <param name="provider"></param>
 		public ScriptLoader(CodeDomProvider provider)
+			: this(provider, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance, using the given CodeDomProvider to compile
+		/// scripts, caching the result in the given file.
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <param name="cacheFilePath"></param>
+		public ScriptLoader(CodeDomProvider provider, string cacheFilePath)
 		{
 			_compiler = provider;
+			_cacheFilePath = cacheFilePath;
 		}
 
 		/// <summary>
@@ -244,7 +258,19 @@ namespace Yggdrasil.Scripting
 		{
 			try
 			{
-				var filePaths = scriptFilesList.Select(a => a.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar)).ToArray();
+				var filePaths = scriptFilesList.Select(a => a.Replace('/', Path.DirectorySeparatorChar)).ToArray();
+				var latestFileChange = filePaths.Max(a => File.GetLastWriteTime(a));
+
+				// Return cached assembly if it exists and is not older than
+				// the latest changed file in the list.
+				if (_cacheFilePath != null && File.Exists(_cacheFilePath))
+				{
+					var lastCacheChange = File.GetLastWriteTime(_cacheFilePath);
+					if (latestFileChange < lastCacheChange)
+						return Assembly.LoadFile(Path.GetFullPath(_cacheFilePath));
+				}
+
+				// Pre-compile files
 				var mapFilePaths = filePaths.ToDictionary(a => a);
 				var precompilers = _precompilers;
 
@@ -270,12 +296,16 @@ namespace Yggdrasil.Scripting
 					}
 				}
 
+				var tmpAssemblyPath = Path.GetTempFileName();
+				_tempFiles.AddLast(tmpAssemblyPath);
+
 				// Prepare parameters
 				var parameters = new CompilerParameters();
 				parameters.GenerateExecutable = false;
 				parameters.GenerateInMemory = true;
 				parameters.WarningLevel = 0;
 				parameters.IncludeDebugInformation = true;
+				parameters.OutputAssembly = tmpAssemblyPath;
 
 				// Add default references
 				foreach (var reference in _defaultReferences)
@@ -314,12 +344,36 @@ namespace Yggdrasil.Scripting
 				if (errors.Count != 0)
 				{
 					foreach (CompilerError error in errors)
-						error.FileName = mapFilePaths[error.FileName];
+					{
+						if (mapFilePaths.TryGetValue(error.FileName, out var fileName))
+							error.FileName = fileName;
+					}
 
 					throw new CompilerErrorException(errors);
 				}
 
-				return result.CompiledAssembly;
+				var compiledAssembly = result.CompiledAssembly;
+
+				// Save assembly to file, ignoring access exceptions
+				// because those are to be expected at run-time, when the
+				// cached assembly was loaded into memory.
+				if (_cacheFilePath != null)
+				{
+					try
+					{
+						var dirPath = Path.GetDirectoryName(_cacheFilePath);
+						if (!Directory.Exists(dirPath))
+							Directory.CreateDirectory(dirPath);
+
+						File.Delete(_cacheFilePath);
+						File.Copy(tmpAssemblyPath, _cacheFilePath);
+					}
+					catch (UnauthorizedAccessException)
+					{
+					}
+				}
+
+				return compiledAssembly;
 			}
 			finally
 			{
@@ -334,6 +388,8 @@ namespace Yggdrasil.Scripting
 		{
 			foreach (var tempFile in _tempFiles)
 				File.Delete(tempFile);
+
+			_tempFiles.Clear();
 		}
 
 		/// <summary>

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
 
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -139,6 +140,22 @@ namespace Yggdrasil.Data.JSON
 				if (!obj.ContainsKey(key))
 					throw new MandatoryValueException(null, key, obj);
 			}
+		}
+
+		/// <summary>
+		/// Provides an iterator over all objects in the list with the given
+		/// name. If the property doesn't exists no elements are returned.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public static IEnumerable<JObject> ForEachObject(this JObject obj, string key)
+		{
+			if (!obj.ContainsKey(key))
+				yield break;
+
+			foreach (JObject element in obj[key])
+				yield return element;
 		}
 	}
 }

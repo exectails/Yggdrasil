@@ -27,6 +27,12 @@ Base classes for reading databases from text files.
 
 Extension for Yggdrasil.Data, for JSON support.
 
+### Yggdrasil.Scripting
+*Depends on: Yggdrasil*
+
+Script loader for .NET scripts that can be compiled and loaded
+at run-time.
+
 ### Yggdrasil.Structures
 
 Structures, such as `QuadTree`.

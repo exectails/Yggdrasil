@@ -208,6 +208,19 @@ namespace Yggdrasil.Data.CSV
 		}
 
 		/// <summary>
+		/// Returns the entry with the given index via out. Returns false
+		/// if the index wasn't found.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public bool TryFind(TIndex index, out TData data)
+		{
+			lock (this.Entries)
+				return this.Entries.TryGetValue(index, out data);
+		}
+
+		/// <summary>
 		/// Removes all entries from database.
 		/// </summary>
 		public virtual void Clear()

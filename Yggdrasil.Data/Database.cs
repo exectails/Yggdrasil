@@ -80,6 +80,15 @@ namespace Yggdrasil.Data
 		TData Find(TIndex index);
 
 		/// <summary>
+		/// Returns the entry with the given index via out. Returns false
+		/// if the index wasn't found.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		bool TryFind(TIndex index, out TData data);
+
+		/// <summary>
 		/// Adds data to database, fails and returns false if index exists
 		/// already.
 		/// </summary>

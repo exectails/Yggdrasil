@@ -23,7 +23,7 @@ namespace Yggdrasil.Scripting
 		private Dictionary<string, Type> _types = new Dictionary<string, Type>();
 		private List<IDisposable> _disposable = new List<IDisposable>();
 		private LinkedList<string> _tempFiles = new LinkedList<string>();
-		private string _cacheFilePath;
+		private readonly string _cacheFilePath;
 
 		private readonly string[] _defaultReferences = new string[]
 		{

@@ -24,7 +24,7 @@ namespace Yggdrasil.Util
 
 		private byte[] _buffer;
 		private int _ptr, _length;
-		private bool _fixedLength;
+		private readonly bool _fixedLength;
 
 		/// <summary>
 		/// Returns the buffer's current position.
@@ -258,7 +258,13 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns the next short in the buffer.
+		/// Returns the next signed byte in the buffer.
+		/// </summary>
+		/// <returns></returns>
+		public sbyte ReadSByte() => (sbyte)this.ReadByte();
+
+		/// <summary>
+		/// Returns the next signed short in the buffer.
 		/// </summary>
 		/// <returns></returns>
 		public short ReadShort()
@@ -276,16 +282,13 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns the next short in the buffer.
+		/// Returns the next unsigned short in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public ushort ReadUShort()
-		{
-			return (ushort)this.ReadShort();
-		}
+		public ushort ReadUShort() => (ushort)this.ReadShort();
 
 		/// <summary>
-		/// Returns the next int in the buffer.
+		/// Returns the next signed int in the buffer.
 		/// </summary>
 		/// <returns></returns>
 		public int ReadInt()
@@ -303,16 +306,13 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns the next int in the buffer.
+		/// Returns the next unsigned int in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public uint ReadUInt()
-		{
-			return (uint)this.ReadInt();
-		}
+		public uint ReadUInt() => (uint)this.ReadInt();
 
 		/// <summary>
-		/// Returns the next long in the buffer.
+		/// Returns the next signed long in the buffer.
 		/// </summary>
 		/// <returns></returns>
 		public long ReadLong()
@@ -330,13 +330,10 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
-		/// Returns the next long in the buffer.
+		/// Returns the next unsigned long in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public ulong ReadULong()
-		{
-			return (ulong)this.ReadLong();
-		}
+		public ulong ReadULong() => (ulong)this.ReadLong();
 
 		/// <summary>
 		/// Returns the next float in the buffer.
@@ -424,6 +421,12 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
+		public void WriteSByte(sbyte value) => this.WriteByte((byte)value);
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
 		public void WriteShort(short value)
 		{
 			this.EnsureSpace(sizeof(short));
@@ -440,10 +443,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteUShort(ushort value)
-		{
-			this.WriteShort((short)value);
-		}
+		public void WriteUShort(ushort value) => this.WriteShort((short)value);
 
 		/// <summary>
 		/// Writes value to buffer.
@@ -465,10 +465,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteUInt(uint value)
-		{
-			this.WriteInt((int)value);
-		}
+		public void WriteUInt(uint value) => this.WriteInt((int)value);
 
 		/// <summary>
 		/// Writes value to buffer.
@@ -490,10 +487,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteULong(ulong value)
-		{
-			this.WriteLong((long)value);
-		}
+		public void WriteULong(ulong value) => this.WriteLong((long)value);
 
 		/// <summary>
 		/// Writes value to buffer.

@@ -10,6 +10,28 @@ namespace Yggdrasil.Util
 	public static class Math2
 	{
 		/// <summary>
+		/// Return the shorter of the two time spans.
+		/// </summary>
+		/// <param name="val1"></param>
+		/// <param name="val2"></param>
+		/// <returns></returns>
+		public static TimeSpan Min(TimeSpan val1, TimeSpan val2)
+		{
+			return (val1 < val2 ? val1 : val2);
+		}
+
+		/// <summary>
+		/// Return the longer of the two time spans.
+		/// </summary>
+		/// <param name="val1"></param>
+		/// <param name="val2"></param>
+		/// <returns></returns>
+		public static TimeSpan Max(TimeSpan val1, TimeSpan val2)
+		{
+			return (val1 > val2 ? val1 : val2);
+		}
+
+		/// <summary>
 		/// Returns min, if val is lower than min, max, if val is
 		/// greater than max, or simply val.
 		/// </summary>

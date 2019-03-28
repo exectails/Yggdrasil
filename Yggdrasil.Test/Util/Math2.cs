@@ -10,6 +10,22 @@ namespace Yggdrasil.Test.Util
 	public class Math2Tests
 	{
 		[Fact]
+		public void Min()
+		{
+			Assert.Equal(TimeSpan.FromSeconds(1), Math2.Min(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2)));
+			Assert.Equal(TimeSpan.FromSeconds(2), Math2.Min(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(2)));
+			Assert.Equal(TimeSpan.FromSeconds(2), Math2.Min(TimeSpan.FromHours(1), TimeSpan.FromSeconds(2)));
+		}
+
+		[Fact]
+		public void Max()
+		{
+			Assert.Equal(TimeSpan.FromSeconds(2), Math2.Max(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2)));
+			Assert.Equal(TimeSpan.FromSeconds(3), Math2.Max(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(2)));
+			Assert.Equal(TimeSpan.FromHours(1), Math2.Max(TimeSpan.FromHours(1), TimeSpan.FromSeconds(2)));
+		}
+
+		[Fact]
 		public void Clamp()
 		{
 			Assert.Equal(10, Math2.Clamp(10, 20, 05));

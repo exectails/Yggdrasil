@@ -23,7 +23,7 @@ namespace Yggdrasil.Util
 		private static readonly Regex _validityRegex = new Regex("^([^:]+:[^:]+:[^;]*;)+$", RegexOptions.Compiled);
 		private static readonly Regex _valueRegex = new Regex("([^:]+):([^:]+):([^;]*);", RegexOptions.Compiled);
 
-		private object _syncLock = new object();
+		private readonly object _syncLock = new object();
 		private Dictionary<string, object> _variables = new Dictionary<string, object>();
 		private string _cache = null;
 
@@ -109,10 +109,28 @@ namespace Yggdrasil.Util
 		/// <param name="name"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
+		public sbyte GetSByte(string name, sbyte def = 0) => (sbyte)this.GetByte(name, (byte)def);
+
+		/// <summary>
+		/// Returns the given variable or the default value if it doesn't
+		/// exist.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
 		public short GetShort(string name, short def = 0)
 		{
 			return this.Get(name, def);
 		}
+
+		/// <summary>
+		/// Returns the given variable or the default value if it doesn't
+		/// exist.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public ushort GetUShort(string name, ushort def = 0) => (ushort)this.GetShort(name, (short)def);
 
 		/// <summary>
 		/// Returns the given variable or the default value if it doesn't
@@ -133,10 +151,28 @@ namespace Yggdrasil.Util
 		/// <param name="name"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
+		public uint GetUInt(string name, uint def = 0) => (uint)this.GetInt(name, (int)def);
+
+		/// <summary>
+		/// Returns the given variable or the default value if it doesn't
+		/// exist.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
 		public long GetLong(string name, long def = 0)
 		{
 			return this.Get(name, def);
 		}
+
+		/// <summary>
+		/// Returns the given variable or the default value if it doesn't
+		/// exist.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public ulong GetULong(string name, ulong def = 0) => (ulong)this.GetLong(name, (long)def);
 
 		/// <summary>
 		/// Returns the given variable or the default value if it doesn't
@@ -222,10 +258,24 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
+		public void SetSByte(string name, sbyte value) => this.SetByte(name, (byte)value);
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public void SetShort(string name, short value)
 		{
 			this.Set(name, value);
 		}
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public void SetUShort(string name, ushort value) => this.SetShort(name, (short)value);
 
 		/// <summary>
 		/// Sets the given variable.
@@ -242,10 +292,24 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
+		public void SetUInt(string name, uint value) => this.SetInt(name, (int)value);
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public void SetLong(string name, long value)
 		{
 			this.Set(name, value);
 		}
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public void SetULong(string name, ulong value) => this.SetLong(name, (long)value);
 
 		/// <summary>
 		/// Sets the given variable.
@@ -344,6 +408,7 @@ namespace Yggdrasil.Util
 				case TypeCode.Int64:
 				case TypeCode.UInt64: return "8";
 				case TypeCode.Single: return "f";
+				case TypeCode.Double: return "d";
 				case TypeCode.String: return "s";
 				case TypeCode.Boolean: return "b";
 

@@ -400,6 +400,15 @@ namespace Yggdrasil.Scripting
 		{
 			var types = assembly.GetTypes().Where(a => a.GetInterfaces().Contains(typeof(IScript)) && !a.IsAbstract);
 
+			types = types.OrderByDescending(a =>
+			{
+				var attributes = a.GetCustomAttributes(typeof(PriorityAttribute), false);
+				if (attributes.Length == 0)
+					return 0;
+
+				return ((PriorityAttribute)attributes[0]).Value;
+			});
+
 			foreach (var type in types)
 			{
 				var typeName = type.Name;

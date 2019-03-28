@@ -453,6 +453,8 @@ namespace Yggdrasil.Util
 						sb.AppendFormat("{0}:{1}:{2};", variable.Key, sType, ((string)variable.Value).Replace(";", "%S").Replace(":", "%C"));
 					else if (sType == "f")
 						sb.AppendFormat("{0}:{1}:{2};", variable.Key, sType, ((float)variable.Value).ToString(CultureInfo.InvariantCulture));
+					else if (sType == "d")
+						sb.AppendFormat("{0}:{1}:{2};", variable.Key, sType, ((double)variable.Value).ToString(CultureInfo.InvariantCulture));
 					else if (sType == "B")
 						sb.AppendFormat("{0}:{1}:{2};", variable.Key, sType, Convert.ToBase64String((byte[])variable.Value));
 					else
@@ -490,6 +492,7 @@ namespace Yggdrasil.Util
 					case "4": this.Set(name, Convert.ToInt32(value)); break;
 					case "8": this.Set(name, Convert.ToInt64(value)); break;
 					case "f": this.Set(name, Convert.ToSingle(value, CultureInfo.InvariantCulture)); break;
+					case "d": this.Set(name, Convert.ToDouble(value, CultureInfo.InvariantCulture)); break;
 					case "s": this.Set(name, value.Replace("%S", ";").Replace("%C", ":")); break;
 					case "b": this.Set(name, value == "1"); break;
 					case "B": this.Set(name, Convert.FromBase64String(value)); break;

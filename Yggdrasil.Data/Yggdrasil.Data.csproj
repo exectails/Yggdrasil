@@ -40,12 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationData.cs" />
+    <Compile Include="Binary\Database.cs" />
     <Compile Include="CSV\Database.cs" />
     <Compile Include="CSV\CsvEntry.cs" />
     <Compile Include="CSV\CsvReader.cs" />
     <Compile Include="CSV\Exceptions.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Yggdrasil.Extensions;
 
 namespace Yggdrasil.Util.Commands
 {
@@ -11,6 +13,8 @@ namespace Yggdrasil.Util.Commands
 	/// </summary>
 	public class Arguments
 	{
+		private static readonly Regex TokenRegex = new Regex(@"((?:(?<key>[a-z0-9_]+)\:)?(?<val>(?:""[^""]+(?:""|$))|(?:[^ ]+)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
 		private List<string> _indexed;
 		private Dictionary<string, string> _named;
 
@@ -63,34 +67,21 @@ namespace Yggdrasil.Util.Commands
 		/// <param name="line"></param>
 		public void Parse(string line)
 		{
-			var quote = false;
-
-			for (int i = 0, n = 0; i <= line.Length; ++i)
+			foreach (Match match in TokenRegex.Matches(line))
 			{
-				if ((i == line.Length || line[i] == ' ') && !quote)
-				{
-					if (i - n > 0)
-					{
-						var str = line.Substring(n, i - n);
-						var index = str.IndexOf(":");
-						if (index != -1)
-						{
-							var key = str.Substring(0, index).Trim(' ', '"');
-							var val = str.Substring(index + 1, str.Length - index - 1).Trim(' ', '"');
+				var key = match.Groups["key"].Value.Trim();
+				var val = match.Groups["val"].Value.Trim('"').Trim();
 
-							_named.Add(key, val);
-						}
-						else
-							_indexed.Add(str.Trim(' ', '"'));
-					}
-
-					n = i + 1;
+				if (val.IsNullOrWhiteSpace())
 					continue;
-				}
 
-				if (line[i] == '"')
-					quote = !quote;
+				if (key.IsNullOrWhiteSpace())
+					_indexed.Add(val);
+				else
+					_named.Add(key, val);
 			}
+
+			// TODO: Add a proper tokenizer
 		}
 
 		/// <summary>

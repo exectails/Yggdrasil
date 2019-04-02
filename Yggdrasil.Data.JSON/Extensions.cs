@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -103,6 +104,24 @@ namespace Yggdrasil.Data.JSON
 		public static string ReadString(this JObject obj, string key, string def = "") { return (string)(obj[key] ?? def); }
 
 		/// <summary>
+		/// Reads value as string and parses it into enum type.
+		/// Returns the default if key wasn't found.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public static TEnum ReadEnum<TEnum>(this JObject obj, string key, TEnum def = default(TEnum))
+		{
+			if (!obj.ContainsKey(key))
+				return def;
+
+			var str = obj.ReadString(key);
+
+			return (TEnum)Enum.Parse(typeof(TEnum), str);
+		}
+
+		/// <summary>
 		/// Returns true if object contains all keys.
 		/// </summary>
 		/// <param name="obj"></param>
@@ -156,6 +175,23 @@ namespace Yggdrasil.Data.JSON
 
 			foreach (JObject element in obj[key])
 				yield return element;
+		}
+
+		/// <summary>
+		/// Provides an iterator over all elements in the list with the
+		/// given name. If the property doesn't exists no elements are
+		/// returned.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public static IEnumerable<TType> ForEach<TType>(this JObject obj, string key)
+		{
+			if (!obj.ContainsKey(key))
+				yield break;
+
+			foreach (JValue element in obj[key])
+				yield return (TType)element.Value;
 		}
 	}
 }

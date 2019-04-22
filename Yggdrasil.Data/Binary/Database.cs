@@ -199,6 +199,15 @@ namespace Yggdrasil.Data.Binary
 		}
 
 		/// <summary>
+		/// Returns true if the database contains an element with the
+		/// given index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public bool Contains(TIndex index)
+			=> this.Entries.ContainsKey(index);
+
+		/// <summary>
 		/// Returns the first entry that matches the given predicate.
 		/// </summary>
 		/// <param name="predicate"></param>

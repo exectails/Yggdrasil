@@ -178,6 +178,15 @@ namespace Yggdrasil.Data.JSON
 		public Dictionary<TIndex, TData> Entries = new Dictionary<TIndex, TData>();
 
 		/// <summary>
+		/// Returns true if the database contains an element with the
+		/// given index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public bool Contains(TIndex index)
+			=> this.Entries.ContainsKey(index);
+
+		/// <summary>
 		/// Searches for first entry that matches the given predicate
 		/// and returns it, or null if no matches were found.
 		/// </summary>

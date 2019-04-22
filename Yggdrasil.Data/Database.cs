@@ -73,6 +73,14 @@ namespace Yggdrasil.Data
 	public interface IDatabaseIndexed<TIndex, TData> : IDatabase where TData : class, new()
 	{
 		/// <summary>
+		/// Returns true if the database contains an element with the
+		/// given index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		bool Contains(TIndex index);
+
+		/// <summary>
 		/// Searches for first entry that matches the given predicate
 		/// and returns it, or null if no matches were found.
 		/// </summary>

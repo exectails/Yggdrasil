@@ -122,6 +122,18 @@ namespace Yggdrasil.Data.Binary
 				return this.Entries.FirstOrDefault(predicate);
 			}
 		}
+
+		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData[] FindAll(Func<TData, bool> predicate)
+		{
+			lock (this.Entries)
+				return this.Entries.Where(predicate).ToArray();
+		}
 	}
 
 	/// <summary>
@@ -197,6 +209,18 @@ namespace Yggdrasil.Data.Binary
 			{
 				return this.Entries.Values.FirstOrDefault(predicate);
 			}
+		}
+
+		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData[] FindAll(Func<TData, bool> predicate)
+		{
+			lock (this.Entries)
+				return this.Entries.Values.Where(predicate).ToArray();
 		}
 
 		/// <summary>

@@ -129,6 +129,18 @@ namespace Yggdrasil.Data.JSON
 		}
 
 		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData[] FindAll(Func<TData, bool> predicate)
+		{
+			lock (this.Entries)
+				return this.Entries.Where(predicate).ToArray();
+		}
+
+		/// <summary>
 		/// Removes all entries from database.
 		/// </summary>
 		public virtual void Clear()
@@ -204,6 +216,18 @@ namespace Yggdrasil.Data.JSON
 		{
 			lock (this.Entries)
 				return this.Entries.TryGetValue(index, out data);
+		}
+
+		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TData[] FindAll(Func<TData, bool> predicate)
+		{
+			lock (this.Entries)
+				return this.Entries.Values.Where(predicate).ToArray();
 		}
 
 		/// <summary>

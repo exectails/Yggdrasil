@@ -2,6 +2,7 @@
 // For more information, see licence.txt in the main folder
 
 using System;
+using System.Collections.Generic;
 
 namespace Yggdrasil.Data
 {
@@ -48,6 +49,14 @@ namespace Yggdrasil.Data
 		TData Find(Func<TData, bool> predicate);
 
 		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		TData[] FindAll(Func<TData, bool> predicate);
+
+		/// <summary>
 		/// Adds data to database.
 		/// </summary>
 		/// <param name="data"></param>
@@ -87,6 +96,14 @@ namespace Yggdrasil.Data
 		/// <param name="data"></param>
 		/// <returns></returns>
 		bool TryFind(TIndex index, out TData data);
+
+		/// <summary>
+		/// Searches for entries that match the given predicate
+		/// and returns them.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		TData[] FindAll(Func<TData, bool> predicate);
 
 		/// <summary>
 		/// Adds data to database, fails and returns false if index exists

@@ -29,14 +29,12 @@ namespace Yggdrasil.Util
 		public static byte[] ToByteArray(string hexString)
 		{
 			hexString = _invalidHexCharacters.Replace(hexString, "");
-			hexString = Regex.Replace(hexString, @"\s|-|,|0x", "");
 
 			var characterCount = hexString.Length;
 			if ((characterCount % 2) != 0)
 				throw new InvalidHexStringException("Hex strings must contain a multiple of 2 characters.");
 
 			var result = new byte[characterCount / 2];
-
 			for (var i = 0; i < characterCount; i += 2)
 				result[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
 
@@ -55,9 +53,7 @@ namespace Yggdrasil.Util
 		/// <param name="options"></param>
 		/// <returns></returns>
 		public static string ToString(byte[] byteArray, HexStringOptions options = HexStringOptions.SpaceSeparated)
-		{
-			return ToString(byteArray, 0, byteArray.Length, options);
-		}
+			=> ToString(byteArray, 0, byteArray.Length, options);
 
 		/// <summary>
 		/// Converts byte array to hex string.
@@ -74,12 +70,46 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public static string ToString(byte[] byteArray, int start, int length, HexStringOptions options = HexStringOptions.SpaceSeparated)
 		{
-			var result = new StringBuilder(byteArray.Length * 2);
+			var result = new StringBuilder();
 
+			var lineLength = length;
 			var brokeLine = false;
+			var line = 0;
+
+			if ((options & HexStringOptions.EightNewLine) != 0)
+				lineLength = 8;
+			else if ((options & HexStringOptions.SixteenNewLine) != 0)
+				lineLength = 16;
+
+			if ((options & HexStringOptions.ColNumbers) != 0)
+			{
+				var spacerWidth = 47;
+
+				if ((options & HexStringOptions.LineNumbers) != 0)
+					spacerWidth += 11;
+
+				if ((options & HexStringOptions.AsciiText) != 0)
+					spacerWidth += 19;
+
+				result.Append('-', spacerWidth);
+				result.AppendLine();
+
+				if ((options & HexStringOptions.LineNumbers) != 0)
+					result.Append(' ', 11);
+
+				for (var i = 0; i < lineLength; ++i)
+					result.AppendFormat("{0:X2} ", i);
+
+				result.AppendLine();
+				result.Append('-', spacerWidth);
+				result.AppendLine();
+			}
 
 			for (var i = start; i < start + length; ++i)
 			{
+				if ((i == 0 || brokeLine) && (options & HexStringOptions.LineNumbers) != 0)
+					result.AppendFormat("{0:X8}   ", line++ * lineLength);
+
 				if (i != 0 && !brokeLine)
 				{
 					if ((options & HexStringOptions.CommaSeparated) != 0)
@@ -107,24 +137,71 @@ namespace Yggdrasil.Util
 					if ((options & HexStringOptions.EightNewLine) != 0)
 					{
 						if (((i + 1) % 8) == 0)
-						{
-							Console.WriteLine(result.ToString().Replace(Environment.NewLine, "|"));
-							result.AppendLine();
 							brokeLine = true;
-						}
 					}
 					else if ((options & HexStringOptions.SixteenNewLine) != 0)
 					{
 						if (((i + 1) % 16) == 0)
-						{
-							result.AppendLine();
 							brokeLine = true;
+					}
+
+					if (brokeLine)
+					{
+						if ((options & HexStringOptions.AsciiText) != 0)
+						{
+							result.Append("   ");
+							for (var j = lineLength - 1; j >= 0; --j)
+							{
+								var b = byteArray[i - j];
+								var chr = (b > ' ' && b < '~' ? (char)b : '.');
+								result.Append(chr);
+							}
+						}
+
+						result.AppendLine();
+					}
+				}
+
+				if (i == start + length - 1)
+				{
+					if ((options & HexStringOptions.AsciiText) != 0)
+					{
+						var remaining = 0;
+
+						if ((options & HexStringOptions.EightNewLine) != 0)
+							remaining = (start + length) % 8;
+						else if ((options & HexStringOptions.SixteenNewLine) != 0)
+							remaining = (start + length) % 16;
+
+						if (remaining == 0)
+							remaining = lineLength;
+
+						for (var j = 0; j < lineLength - remaining; ++j)
+						{
+							result.Append("  ");
+
+							if ((options & HexStringOptions.CommaSeparated) != 0)
+								result.Append(",");
+
+							if ((options & HexStringOptions.SpaceSeparated) != 0)
+								result.Append(" ");
+
+							if ((options & HexStringOptions.DashSeparated) != 0)
+								result.Append("-");
+						}
+
+						result.Append("   ");
+						for (var j = remaining - 1; j >= 0; --j)
+						{
+							var b = byteArray[i - j];
+							var chr = (b > ' ' && b < '~' ? (char)b : '.');
+							result.Append(chr);
 						}
 					}
 				}
 			}
 
-			return result.ToString().Trim();
+			return result.ToString().TrimEnd();
 		}
 	}
 
@@ -187,5 +264,32 @@ namespace Yggdrasil.Util
 		/// Adds a new line after 16 hex characters.
 		/// </summary>
 		SixteenNewLine = 0x40,
+
+		/// <summary>
+		/// Adds ASCII representation before new lines.
+		/// </summary>
+		AsciiText = 0x40,
+
+		/// <summary>
+		/// Adds line numbers at the start of new lines.
+		/// </summary>
+		LineNumbers = 0x80,
+
+		/// <summary>
+		/// Adds column numbers on the first line.
+		/// </summary>
+		ColNumbers = 0x100,
+
+		/// <summary>
+		/// A combination of options that result in a view similar to
+		/// that of a hex editor.
+		/// </summary>
+		HexEditorFull = SpaceSeparated | SixteenNewLine | AsciiText | LineNumbers | ColNumbers,
+
+		/// <summary>
+		/// A combination of options that result in a view similar to
+		/// that of a hex editor.
+		/// </summary>
+		HexEditor = SpaceSeparated | SixteenNewLine | AsciiText | LineNumbers,
 	}
 }

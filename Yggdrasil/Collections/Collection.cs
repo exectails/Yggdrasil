@@ -17,7 +17,7 @@ namespace Yggdrasil.Collections
 		/// <summary>
 		/// List of entries.
 		/// </summary>
-		protected Dictionary<TKey, TValue> _entries;
+		protected readonly Dictionary<TKey, TValue> _entries = new Dictionary<TKey, TValue>();
 
 		/// <summary>
 		/// Returns number of entries in collection.
@@ -25,11 +25,22 @@ namespace Yggdrasil.Collections
 		public int Count { get { lock (_entries) return _entries.Count; } }
 
 		/// <summary>
-		/// Creates new collection.
+		/// Adds value to collection.
 		/// </summary>
-		public Collection()
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the key already exists.
+		/// </exception>
+		public void Add(TKey key, TValue value)
 		{
-			_entries = new Dictionary<TKey, TValue>();
+			lock (_entries)
+			{
+				if (_entries.ContainsKey(key))
+					throw new ArgumentException("The key already exists in the collection.");
+
+				_entries.Add(key, value);
+			}
 		}
 
 		/// <summary>
@@ -37,8 +48,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
-		/// <returns></returns>
-		public bool Add(TKey key, TValue value)
+		public bool AddIfNotExists(TKey key, TValue value)
 		{
 			lock (_entries)
 			{
@@ -56,10 +66,22 @@ namespace Yggdrasil.Collections
 		/// <param name="key"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public void Set(TKey key, TValue value)
+		public void AddOrReplace(TKey key, TValue value)
 		{
 			lock (_entries)
 				_entries[key] = value;
+		}
+
+		/// <summary>
+		/// Adds a value to the collection or returns it. Equivalent to
+		/// Get and AddOrReplace.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public TValue this[TKey key]
+		{
+			get => this.Get(key);
+			set => this.AddOrReplace(key, value);
 		}
 
 		/// <summary>
@@ -129,6 +151,87 @@ namespace Yggdrasil.Collections
 		{
 			lock (_entries)
 				return _entries.Where(predicate).ToDictionary(a => a.Key, a => a.Value);
+		}
+
+		/// <summary>
+		/// Returns the value with the given key.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the key wasn't found.
+		/// </exception>
+		public TValue Get(TKey key)
+		{
+			lock (_entries)
+			{
+				if (!_entries.TryGetValue(key, out var value))
+					throw new ArgumentException("Key not found.");
+
+				return value;
+			}
+		}
+
+		/// <summary>
+		/// Returns the value with the given key via out, returns false
+		/// if the value couldn't be found.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public bool TryGet(TKey key, out TValue value)
+		{
+			lock (_entries)
+				return _entries.TryGetValue(key, out value);
+		}
+
+		/// <summary>
+		/// Returns a list of all values.
+		/// </summary>
+		/// <returns></returns>
+		public TValue[] GetList()
+		{
+			lock (_entries)
+				return _entries.Values.ToArray();
+		}
+
+		/// <summary>
+		/// Returns a list of all values that match the given predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TValue[] GetList(Func<TValue, bool> predicate)
+		{
+			lock (_entries)
+				return _entries.Values.Where(predicate).ToArray();
+		}
+
+		/// <summary>
+		/// Executes the given function an all entries.
+		/// </summary>
+		/// <param name="func"></param>
+		public void Execute(Action<TValue> func)
+		{
+			lock (_entries)
+			{
+				foreach (var value in _entries.Values)
+					func(value);
+			}
+		}
+
+		/// <summary>
+		/// Returns a list of results queried from all entries.
+		/// </summary>
+		/// <example>
+		/// var characters = world.Regions.Query(a => a.GetCharacters());
+		/// </example>
+		/// <typeparam name="TObj"></typeparam>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		public TObj[] Query<TObj>(Func<TValue, IEnumerable<TObj>> func)
+		{
+			lock (_entries)
+				return _entries.Values.SelectMany(func).ToArray();
 		}
 	}
 }

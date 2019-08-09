@@ -28,6 +28,23 @@ namespace Yggdrasil.Util
 		private string _cache = null;
 
 		/// <summary>
+		/// Gets or sets this instance's cached variable string.
+		/// </summary>
+		protected string Cache
+		{
+			get { lock (_syncLock) return _cache; }
+			set { lock (_syncLock) _cache = value; }
+		}
+
+		/// <summary>
+		/// Returns the number of variables in this instance.
+		/// </summary>
+		public int Count
+		{
+			get { lock (_syncLock) return _variables.Count; }
+		}
+
+		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		public Variables()
@@ -393,7 +410,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		private static string GetTypeIdent(object value)
+		protected virtual string GetTypeIdent(object value)
 		{
 			var typeCode = Type.GetTypeCode(value.GetType());
 
@@ -443,7 +460,7 @@ namespace Yggdrasil.Util
 
 				foreach (var variable in _variables)
 				{
-					var sType = GetTypeIdent(variable.Value);
+					var sType = this.GetTypeIdent(variable.Value);
 					if (sType == null)
 						throw new ArgumentException($"Unsupported type '{variable.Value.GetType().Name}' on '{variable.Key}'.");
 
@@ -470,7 +487,7 @@ namespace Yggdrasil.Util
 		/// the values to this tag collection.
 		/// </summary>
 		/// <param name="str"></param>
-		public void Parse(string str)
+		public virtual void Parse(string str)
 		{
 			if (str == null)
 				throw new ArgumentNullException(nameof(str));

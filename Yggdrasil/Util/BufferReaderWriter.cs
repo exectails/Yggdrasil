@@ -220,6 +220,15 @@ namespace Yggdrasil.Util
 			_length = 0;
 		}
 
+		/// <summary>
+		/// Reverses the order of the bytes.
+		/// </summary>
+		/// <param name="bytes"></param>
+		private static void ReverseBytes(ref byte[] bytes)
+		{
+			Array.Reverse(bytes, 0, bytes.Length);
+		}
+
 		// Reading
 		// ------------------------------------------------------------------
 
@@ -267,7 +276,7 @@ namespace Yggdrasil.Util
 		/// Returns the next signed short in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public short ReadShort()
+		public short ReadInt16()
 		{
 			this.AssertEnoughBytes(sizeof(short));
 
@@ -285,13 +294,13 @@ namespace Yggdrasil.Util
 		/// Returns the next unsigned short in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public ushort ReadUShort() => (ushort)this.ReadShort();
+		public ushort ReadUInt16() => (ushort)this.ReadInt16();
 
 		/// <summary>
 		/// Returns the next signed int in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public int ReadInt()
+		public int ReadInt32()
 		{
 			this.AssertEnoughBytes(sizeof(int));
 
@@ -309,13 +318,38 @@ namespace Yggdrasil.Util
 		/// Returns the next unsigned int in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public uint ReadUInt() => (uint)this.ReadInt();
+		public uint ReadUInt32() => (uint)this.ReadInt32();
+
+		/// <summary>
+		/// Returns the next 3-byte integer in the buffer.
+		/// </summary>
+		/// <returns></returns>
+		public int ReadInt24()
+		{
+			this.AssertEnoughBytes(sizeof(int) - 1);
+
+			var result = 0;
+			if (this.Endianness == Endianness.BigEndian)
+			{
+				result |= (_buffer[_ptr++] << 16);
+				result |= (_buffer[_ptr++] << 8);
+				result |= (_buffer[_ptr++] << 0);
+			}
+			else
+			{
+				result |= (_buffer[_ptr++] << 0);
+				result |= (_buffer[_ptr++] << 8);
+				result |= (_buffer[_ptr++] << 16);
+			}
+
+			return result;
+		}
 
 		/// <summary>
 		/// Returns the next signed long in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public long ReadLong()
+		public long ReadInt64()
 		{
 			this.AssertEnoughBytes(sizeof(long));
 
@@ -333,7 +367,7 @@ namespace Yggdrasil.Util
 		/// Returns the next unsigned long in the buffer.
 		/// </summary>
 		/// <returns></returns>
-		public ulong ReadULong() => (ulong)this.ReadLong();
+		public ulong ReadUInt64() => (ulong)this.ReadInt64();
 
 		/// <summary>
 		/// Returns the next float in the buffer.
@@ -341,12 +375,11 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public float ReadFloat()
 		{
-			this.AssertEnoughBytes(sizeof(float));
+			var bytes = this.Read(sizeof(float));
+			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
+				ReverseBytes(ref bytes);
 
-			var result = BitConverter.ToSingle(_buffer, _ptr);
-			_ptr += sizeof(float);
-
-			return result;
+			return BitConverter.ToSingle(bytes, 0);
 		}
 
 		/// <summary>
@@ -355,12 +388,11 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public double ReadDouble()
 		{
-			this.AssertEnoughBytes(sizeof(double));
+			var bytes = this.Read(sizeof(double));
+			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
+				ReverseBytes(ref bytes);
 
-			var result = BitConverter.ToDouble(_buffer, _ptr);
-			_ptr += sizeof(double);
-
-			return result;
+			return BitConverter.ToDouble(bytes, 0);
 		}
 
 		/// <summary>
@@ -427,7 +459,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteShort(short value)
+		public void WriteInt16(short value)
 		{
 			this.EnsureSpace(sizeof(short));
 
@@ -443,17 +475,48 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteUShort(ushort value) => this.WriteShort((short)value);
+		public void WriteUInt16(ushort value) => this.WriteInt16((short)value);
 
 		/// <summary>
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteInt(int value)
+		public void WriteInt32(int value) => this.WriteInt32(value, this.Endianness);
+
+		/// <summary>
+		/// Writes 3-byte integer value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
+		public void WriteInt24(int value)
+		{
+			this.AssertEnoughBytes(sizeof(int) - 1);
+
+			if (this.Endianness == Endianness.BigEndian)
+			{
+				_buffer[_ptr + 0] = (byte)(value >> 16);
+				_buffer[_ptr + 1] = (byte)(value >> 8);
+				_buffer[_ptr + 2] = (byte)(value >> 0);
+			}
+			else
+			{
+				_buffer[_ptr + 0] = (byte)(value >> 0);
+				_buffer[_ptr + 1] = (byte)(value >> 8);
+				_buffer[_ptr + 2] = (byte)(value >> 16);
+			}
+
+			this.UpdatePtrLength(sizeof(int) - 1);
+		}
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="endianness"></param>
+		public void WriteInt32(int value, Endianness endianness)
 		{
 			this.EnsureSpace(sizeof(int));
 
-			if (this.Endianness == Endianness.BigEndian)
+			if (endianness == Endianness.BigEndian)
 				value = IPAddress.HostToNetworkOrder(value);
 
 			for (var i = 0; i < sizeof(int); ++i)
@@ -465,13 +528,13 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteUInt(uint value) => this.WriteInt((int)value);
+		public void WriteUInt32(uint value) => this.WriteInt32((int)value);
 
 		/// <summary>
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteLong(long value)
+		public void WriteInt64(long value)
 		{
 			this.EnsureSpace(sizeof(long));
 
@@ -487,7 +550,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void WriteULong(ulong value) => this.WriteLong((long)value);
+		public void WriteUInt64(ulong value) => this.WriteInt64((long)value);
 
 		/// <summary>
 		/// Writes value to buffer.
@@ -498,6 +561,9 @@ namespace Yggdrasil.Util
 			this.EnsureSpace(sizeof(float));
 
 			var bytes = BitConverter.GetBytes(value);
+			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
+				ReverseBytes(ref bytes);
+
 			this.Write(bytes);
 		}
 
@@ -510,6 +576,9 @@ namespace Yggdrasil.Util
 			this.EnsureSpace(sizeof(double));
 
 			var bytes = BitConverter.GetBytes(value);
+			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
+				ReverseBytes(ref bytes);
+
 			this.Write(bytes);
 		}
 
@@ -517,29 +586,33 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void Write(byte[] value)
-		{
-			var length = value.Length;
+		public void Write(byte[] value) => this.Write(value, 0, value.Length);
 
+		/// <summary>
+		/// Writes value to buffer, starting at index for the given length.
+		/// </summary>
+		/// <param name="value"></param>
+		public void Write(byte[] value, int index, int length)
+		{
 			this.EnsureSpace(length);
 
-			Buffer.BlockCopy(value, 0, _buffer, _ptr, length);
+			Buffer.BlockCopy(value, index, _buffer, _ptr, length);
 			this.UpdatePtrLength(length);
 		}
 	}
 
 	/// <summary>
-	/// Describes endiannes.
+	/// Describes endianness.
 	/// </summary>
 	public enum Endianness
 	{
 		/// <summary>
-		/// Lower bits first.
+		/// Lower bits first, how most modern systems store data in memory.
 		/// </summary>
 		LittleEndian,
 
 		/// <summary>
-		/// Higher bits first.
+		/// Higher bits first, how we commenly display hex values.
 		/// </summary>
 		BigEndian,
 	}

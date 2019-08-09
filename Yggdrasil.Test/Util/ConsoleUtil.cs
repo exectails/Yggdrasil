@@ -43,7 +43,7 @@ namespace Yggdrasil.Test.Util
 			var foreColor = Console.ForegroundColor;
 			var backColor = Console.BackgroundColor;
 
-			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", ConsoleColor.Blue, Logo, Credits);
 
 			Assert.Equal(foreColor, Console.ForegroundColor);
 			Assert.Equal(backColor, Console.BackgroundColor);
@@ -131,7 +131,7 @@ namespace Yggdrasil.Test.Util
 			var cout = Console.Out;
 			Console.SetOut(sw);
 
-			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", Logo, ConsoleColor.Blue, Credits);
+			ConsoleUtil.WriteHeader("Yggdrasil", "Tests", ConsoleColor.Blue, Logo, Credits);
 			Assert.Equal("Yggdrasil : Tests", Console.Title);
 
 			ConsoleUtil.LoadingTitle();

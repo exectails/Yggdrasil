@@ -19,10 +19,10 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="consoleTitlePrefix">Software name.</param>
 		/// <param name="consoleTitle">Name of the server.</param>
-		/// <param name="logo">ASCII logo.</param>
 		/// <param name="logoColor">Color of the logo.</param>
+		/// <param name="logo">ASCII logo.</param>
 		/// <param name="credits">Credits for header footer.</param>
-		public static void WriteHeader(string consoleTitlePrefix, string consoleTitle, IList<string> logo, ConsoleColor logoColor, IList<string> credits)
+		public static void WriteHeader(string consoleTitlePrefix, string consoleTitle, ConsoleColor logoColor, IList<string> logo, IList<string> credits)
 		{
 			var foreColor = Console.ForegroundColor;
 

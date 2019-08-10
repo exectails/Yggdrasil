@@ -14,7 +14,7 @@ namespace Yggdrasil.Data.CSV
 	/// </summary>
 	public abstract class DatabaseCsvBase
 	{
-		private int _min;
+		private readonly int _min;
 
 		/// <summary>
 		/// Warnings that occurred during load.

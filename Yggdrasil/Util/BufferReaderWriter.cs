@@ -592,6 +592,8 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer, starting at index for the given length.
 		/// </summary>
 		/// <param name="value"></param>
+		/// <param name="index"></param>
+		/// <param name="length"></param>
 		public void Write(byte[] value, int index, int length)
 		{
 			this.EnsureSpace(length);

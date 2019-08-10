@@ -47,8 +47,7 @@ namespace Yggdrasil.Data.JSON
 
 					foreach (var entry in array)
 					{
-						var obj = entry as JObject;
-						if (obj == null)
+						if (!(entry is JObject obj))
 							continue;
 
 						try

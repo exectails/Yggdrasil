@@ -14,7 +14,7 @@ namespace Yggdrasil.Network.TCP
 	{
 		private const int BufferMaxSize = 4 * 1024;
 
-		private byte[] _buffer;
+		private byte[] _buffer = new byte[BufferMaxSize];
 		private Socket _socket;
 
 		/// <summary>
@@ -53,23 +53,12 @@ namespace Yggdrasil.Network.TCP
 		public Exception LastException { get; private set; }
 
 		/// <summary>
-		/// Creates new instance.
-		/// </summary>
-		public TcpClient()
-		{
-			_buffer = new byte[BufferMaxSize];
-		}
-
-		/// <summary>
 		/// Connects to host.
 		/// </summary>
 		/// <param name="host"></param>
 		/// <param name="port"></param>
 		public void Connect(string host, int port)
-		{
-			var remoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
-			this.Connect(remoteEndPoint);
-		}
+			=> this.Connect(new IPEndPoint(IPAddress.Parse(host), port));
 
 		/// <summary>
 		/// Connects to remote end point.

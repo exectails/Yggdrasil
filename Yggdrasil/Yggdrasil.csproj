@@ -56,6 +56,11 @@
     <Compile Include="Logging\Targets\ConsoleTarget.cs" />
     <Compile Include="Logging\Targets\SmtpTarget.cs" />
     <Compile Include="Logging\Targets\FileTarget.cs" />
+    <Compile Include="Network\Communication\Client.cs" />
+    <Compile Include="Network\Communication\Communicator.cs" />
+    <Compile Include="Network\Communication\CommMessage.cs" />
+    <Compile Include="Network\Communication\Connection.cs" />
+    <Compile Include="Network\Communication\Messages\HelloMessage.cs" />
     <Compile Include="Network\Framing\DoubleNewLineFramer.cs" />
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />

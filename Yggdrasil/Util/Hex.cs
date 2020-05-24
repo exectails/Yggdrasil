@@ -268,17 +268,17 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Adds ASCII representation before new lines.
 		/// </summary>
-		AsciiText = 0x40,
+		AsciiText = 0x80,
 
 		/// <summary>
 		/// Adds line numbers at the start of new lines.
 		/// </summary>
-		LineNumbers = 0x80,
+		LineNumbers = 0x100,
 
 		/// <summary>
 		/// Adds column numbers on the first line.
 		/// </summary>
-		ColNumbers = 0x100,
+		ColNumbers = 0x200,
 
 		/// <summary>
 		/// A combination of options that result in a view similar to

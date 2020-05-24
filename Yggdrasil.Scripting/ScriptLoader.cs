@@ -421,6 +421,7 @@ namespace Yggdrasil.Scripting
 				return ((PriorityAttribute)attributes[0]).Value;
 			});
 
+			var scripts = new List<IScript>();
 			foreach (var type in types)
 			{
 				var typeName = type.Name;
@@ -446,6 +447,7 @@ namespace Yggdrasil.Scripting
 						_disposable.Add(script as IDisposable);
 
 					_types.Add(typeName, type);
+					scripts.Add(script);
 
 					this.LoadedCount++;
 				}
@@ -453,10 +455,25 @@ namespace Yggdrasil.Scripting
 				{
 					this.FailCount++;
 					this.LoadingExceptions.Add(new ScriptLoadingException(typeName, ex));
+					continue;
 				}
 				finally
 				{
 					this.TotalCount++;
+				}
+			}
+
+			foreach (var script in scripts)
+			{
+				try
+				{
+					if (script is IPostInitScript postInitScript)
+						postInitScript.OnPostInit();
+				}
+				catch (Exception ex)
+				{
+					this.LoadingExceptions.Add(new ScriptLoadingException("Failed to post init script '" + script.GetType().Name + "': " + ex));
+					continue;
 				}
 			}
 		}

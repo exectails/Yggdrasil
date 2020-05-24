@@ -15,4 +15,16 @@ namespace Yggdrasil.Scripting
 		/// <returns></returns>
 		bool Init();
 	}
+
+	/// <summary>
+	/// Implemented by scripts that need to execute code after all
+	/// scripts were initialized.
+	/// </summary>
+	public interface IPostInitScript
+	{
+		/// <summary>
+		/// Called after all scripts were initialized.
+		/// </summary>
+		void OnPostInit();
+	}
 }

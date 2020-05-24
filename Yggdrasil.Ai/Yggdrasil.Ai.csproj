@@ -49,6 +49,7 @@
     <Compile Include="BehaviorTree\Leafs\Execute.cs" />
     <Compile Include="BehaviorTree\Leafs\Print.cs" />
     <Compile Include="BehaviorTree\Leafs\Wait.cs" />
+    <Compile Include="Enumerable\EnumerableAi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BehaviorTree\Routine.cs" />
     <Compile Include="BehaviorTree\RoutineState.cs" />

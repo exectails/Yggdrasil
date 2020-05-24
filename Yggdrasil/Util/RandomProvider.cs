@@ -11,6 +11,7 @@ namespace Yggdrasil.Util
 	public static class RandomProvider
 	{
 		private static readonly Random _seed = new Random();
+		private static readonly Random _rnd = new Random(_seed.Next());
 
 		[ThreadStatic]
 		private static Random _random;
@@ -37,6 +38,49 @@ namespace Yggdrasil.Util
 		{
 			lock (_seed)
 				return _seed.Next();
+		}
+
+		/// <summary>
+		/// Returns a random integer.
+		/// </summary>
+		/// <returns></returns>
+		public static int Next()
+		{
+			lock (_rnd)
+				return _rnd.Next();
+		}
+
+		/// <summary>
+		/// Returns a random integer between 0 and max - 1.
+		/// </summary>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		public static int Next(int max)
+		{
+			lock (_rnd)
+				return _rnd.Next(max);
+		}
+
+		/// <summary>
+		/// Returns a random integer between min and max - 1.
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		public static int Next(int min, int max)
+		{
+			lock (_rnd)
+				return _rnd.Next(min, max);
+		}
+
+		/// <summary>
+		/// Returns a random double between 0.0 and 1.0.
+		/// </summary>
+		/// <returns></returns>
+		public static double NextDoube()
+		{
+			lock (_rnd)
+				return _rnd.NextDouble();
 		}
 	}
 }

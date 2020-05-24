@@ -122,6 +122,21 @@ namespace Yggdrasil.Data.JSON
 		}
 
 		/// <summary>
+		/// Reads and returns single value array.
+		/// </summary>
+		/// <typeparam name="TValue"></typeparam>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public static TValue[] ReadArray<TValue>(this JObject obj, string key, TValue[] def = default(TValue[]))
+		{
+			if (!obj.ContainsKey(key))
+				return def;
+
+			return obj[key].Select(a => a.ToObject<TValue>()).ToArray();
+		}
+
+		/// <summary>
 		/// Returns true if object contains all keys.
 		/// </summary>
 		/// <param name="obj"></param>

@@ -32,6 +32,28 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Return the earlier of the two date times.
+		/// </summary>
+		/// <param name="val1"></param>
+		/// <param name="val2"></param>
+		/// <returns></returns>
+		public static DateTime Min(DateTime val1, DateTime val2)
+		{
+			return (val1 < val2 ? val1 : val2);
+		}
+
+		/// <summary>
+		/// Return the later of the two date times.
+		/// </summary>
+		/// <param name="val1"></param>
+		/// <param name="val2"></param>
+		/// <returns></returns>
+		public static DateTime Max(DateTime val1, DateTime val2)
+		{
+			return (val1 > val2 ? val1 : val2);
+		}
+
+		/// <summary>
 		/// Returns min, if val is lower than min, max, if val is
 		/// greater than max, or simply val.
 		/// </summary>
@@ -74,6 +96,23 @@ namespace Yggdrasil.Util
 		/// <param name="val"></param>
 		/// <returns></returns>
 		public static long Clamp(long min, long max, long val)
+		{
+			if (val < min)
+				return min;
+			if (val > max)
+				return max;
+			return val;
+		}
+
+		/// <summary>
+		/// Returns min, if val is lower than min, max, if val is
+		/// greater than max, or simply val.
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public static TimeSpan Clamp(TimeSpan min, TimeSpan max, TimeSpan val)
 		{
 			if (val < min)
 				return min;

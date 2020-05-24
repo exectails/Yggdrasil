@@ -35,6 +35,10 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(10.5f, Math2.Clamp(10.5f, 20.5f, 05.5f));
 			Assert.Equal(20.5f, Math2.Clamp(10.5f, 20.5f, 25.5f));
 			Assert.Equal(15.5f, Math2.Clamp(10.5f, 20.5f, 15.5f));
+
+			Assert.Equal(TimeSpan.FromSeconds(5), Math2.Clamp(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5)));
+			Assert.Equal(TimeSpan.FromSeconds(3), Math2.Clamp(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5)));
+			Assert.Equal(TimeSpan.FromSeconds(2), Math2.Clamp(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(1)));
 		}
 
 		[Fact]

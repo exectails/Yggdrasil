@@ -31,11 +31,11 @@ namespace Yggdrasil.Test.Util
 
 			buffer = new BufferReaderWriter();
 			buffer.WriteFloat(42.43f);
-			Assert.Equal(new byte[] { 0x52, 0xB8, 0x29, 0x42 }, buffer.Copy());
+			Assert.Equal(new byte[] { 0x42, 0x29, 0xB8, 0x52 }, buffer.Copy());
 
 			buffer = new BufferReaderWriter();
 			buffer.WriteDouble(42.43);
-			Assert.Equal(new byte[] { 0xD7, 0xA3, 0x70, 0x3D, 0x0A, 0x37, 0x45, 0x40 }, buffer.Copy());
+			Assert.Equal(new byte[] { 0x40, 0x45, 0x37, 0x0A, 0x3D, 0x70, 0xA3, 0xD7 }, buffer.Copy());
 
 			buffer = new BufferReaderWriter();
 			buffer.Write(new byte[] { 0x42, 0x43, 0x44, 0x45 });

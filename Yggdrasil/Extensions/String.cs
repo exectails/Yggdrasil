@@ -18,12 +18,12 @@ namespace Yggdrasil.Extensions
 		/// </remarks>
 		/// <example>
 		/// <code>
-		/// "test".LevenshteinDistance("test")       // == 0
-		/// "test1".LevenshteinDistance("test2")     // == 1
-		/// "test1".LevenshteinDistance("test1 asd") // == 4
+		/// "test".GetLevenshteinDistance("test")       // == 0
+		/// "test1".GetLevenshteinDistance("test2")     // == 1
+		/// "test1".GetLevenshteinDistance("test1 asd") // == 4
 		/// </code>
 		/// </example>
-		public static int LevenshteinDistance(this string str, string compare, bool caseSensitive = true)
+		public static int GetLevenshteinDistance(this string str, string compare, bool caseSensitive = true)
 		{
 			if (!caseSensitive)
 			{

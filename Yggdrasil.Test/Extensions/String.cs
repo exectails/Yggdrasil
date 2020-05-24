@@ -11,9 +11,9 @@ namespace Yggdrasil.Test.Extensions
 		[Fact]
 		public void LevenshteinDistance()
 		{
-			Assert.Equal(0, "test1".LevenshteinDistance("test1"));
-			Assert.Equal(1, "test2".LevenshteinDistance("test3"));
-			Assert.Equal(4, "test4".LevenshteinDistance("test4 asd"));
+			Assert.Equal(0, "test1".GetLevenshteinDistance("test1"));
+			Assert.Equal(1, "test2".GetLevenshteinDistance("test3"));
+			Assert.Equal(4, "test4".GetLevenshteinDistance("test4 asd"));
 		}
 
 		[Fact]

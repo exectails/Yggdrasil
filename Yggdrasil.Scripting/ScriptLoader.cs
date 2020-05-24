@@ -107,6 +107,16 @@ namespace Yggdrasil.Scripting
 		/// <param name="priorityFolders"></param>
 		public void LoadFromListFile(string filePath, params string[] priorityFolders)
 		{
+			// Clear cache if the list file is newer than it
+			if (_cacheFilePath != null && File.Exists(_cacheFilePath))
+			{
+				var lastListChange = File.GetLastWriteTime(filePath);
+				var lastCacheChange = File.GetLastWriteTime(_cacheFilePath);
+
+				if (lastListChange >= lastCacheChange)
+					File.Delete(_cacheFilePath);
+			}
+
 			var scriptPaths = this.ReadScriptList(filePath, priorityFolders);
 			this.LoadFromList(scriptPaths);
 		}

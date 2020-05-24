@@ -156,9 +156,9 @@ class TestScript2 : IScript, IFoobarer
 
 	public class TestPrecompiler : IPrecompiler
 	{
-		public string Precompile(string filePath, string script)
+		public bool Precompile(string filePath, ref string script)
 		{
-			return @"
+			script = @"
 using Yggdrasil.Scripting;
 using Yggdrasil.Test.Scripting;
 
@@ -170,6 +170,7 @@ class TestScript2 : IScript
 		return true;
 	}
 }";
+			return true;
 		}
 	}
 }

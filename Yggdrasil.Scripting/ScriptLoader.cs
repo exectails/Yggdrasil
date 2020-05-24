@@ -285,13 +285,15 @@ namespace Yggdrasil.Scripting
 							var tmpPath = Path.GetTempFileName();
 							var content = File.ReadAllText(filePath);
 
-							content = precompilers[j].Precompile(filePath, content);
+							var changed = precompilers[j].Precompile(filePath, ref content);
+							if (changed)
+							{
+								File.WriteAllText(tmpPath, content);
+								filePaths[i] = tmpPath;
 
-							File.WriteAllText(tmpPath, content);
-							filePaths[i] = tmpPath;
-
-							_tempFiles.AddLast(tmpPath);
-							mapFilePaths[tmpPath] = filePath;
+								_tempFiles.AddLast(tmpPath);
+								mapFilePaths[tmpPath] = filePath;
+							}
 						}
 					}
 				}

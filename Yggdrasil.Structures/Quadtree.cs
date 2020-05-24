@@ -8,49 +8,75 @@ using System.Drawing;
 
 namespace Yggdrasil.Structures
 {
+	/// <summary>
+	/// Describes an object that be put into QuadTree.
+	/// </summary>
 	public interface IQuadObject
 	{
-		RectangleF Rect { get; }
+		/// <summary>
+		/// Returns the bounding box of the object.
+		/// </summary>
+		RectangleF Bounds { get; }
+
 		//event EventHandler BoundsChanged;
 	}
 
+	/// <summary>
+	/// Specifies a direction.
+	/// </summary>
 	public enum Direction : int
 	{
+		/// <summary>
+		/// North-west.
+		/// </summary>
 		NW = 0,
+
+		/// <summary>
+		/// North-east.
+		/// </summary>
 		NE = 1,
+
+		/// <summary>
+		/// South-west.
+		/// </summary>
 		SW = 2,
+
+		/// <summary>
+		/// South-east.
+		/// </summary>
 		SE = 3
 	}
 
-	public class Quadtree<T> where T : class, IQuadObject
+	/// <summary>
+	/// A quadtree.
+	/// </summary>
+	/// <typeparam name="TQuadObject"></typeparam>
+	public class Quadtree<TQuadObject> where TQuadObject : class, IQuadObject
 	{
-		private readonly bool sort;
-		private readonly Size minLeafSize;
-		private readonly int maxObjectsPerLeaf;
-		private QuadNode root = null;
-		private Dictionary<T, QuadNode> objectToNodeLookup = new Dictionary<T, QuadNode>();
-		private Dictionary<T, int> objectSortOrder = new Dictionary<T, int>();
-		public QuadNode Root { get { return root; } }
-		private object syncLock = new object();
-		private int objectSortId = 0;
+		private readonly object _syncLock = new object();
 
+		private readonly bool _sort;
+		private readonly Size _minLeafSize;
+		private readonly int _maxObjectsPerLeaf;
+		private QuadNode _root = null;
+		private Dictionary<TQuadObject, QuadNode> _objectToNodeLookup = new Dictionary<TQuadObject, QuadNode>();
+		private Dictionary<TQuadObject, int> _objectSortOrder = new Dictionary<TQuadObject, int>();
+		private int _objectSortId = 0;
+
+		/// <summary>
+		/// Returns the tree's root node.
+		/// </summary>
+		public QuadNode Root => _root;
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
+		/// <param name="minLeafSize"></param>
+		/// <param name="maxObjectsPerLeaf"></param>
 		public Quadtree(Size minLeafSize, int maxObjectsPerLeaf)
 		{
-			this.minLeafSize = minLeafSize;
-			this.maxObjectsPerLeaf = maxObjectsPerLeaf;
-		}
-
-		public int GetSortOrder(T quadObject)
-		{
-			lock (objectSortOrder)
-			{
-				if (!objectSortOrder.ContainsKey(quadObject))
-					return -1;
-				else
-				{
-					return objectSortOrder[quadObject];
-				}
-			}
+			_minLeafSize = minLeafSize;
+			_maxObjectsPerLeaf = maxObjectsPerLeaf;
 		}
 
 		/// <summary>
@@ -62,80 +88,121 @@ namespace Yggdrasil.Structures
 		public Quadtree(Size minLeafSize, int maxObjectsPerLeaf, bool sort)
 			: this(minLeafSize, maxObjectsPerLeaf)
 		{
-			this.sort = sort;
+			_sort = sort;
 		}
 
-		public void Insert(T quadObject)
+		/// <summary>
+		/// Returns the sort order of the given object.
+		/// </summary>
+		/// <param name="quadObject"></param>
+		/// <returns></returns>
+		public int GetSortOrder(TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_objectSortOrder)
 			{
-				if (sort & !objectSortOrder.ContainsKey(quadObject))
+				if (!_objectSortOrder.ContainsKey(quadObject))
+					return -1;
+				else
 				{
-					objectSortOrder.Add(quadObject, objectSortId++);
+					return _objectSortOrder[quadObject];
 				}
-
-				RectangleF bounds = quadObject.Rect;
-				if (root == null)
-				{
-					var rootSize = new SizeF((float)Math.Ceiling(bounds.Width / minLeafSize.Width),
-											(float)Math.Ceiling(bounds.Height / minLeafSize.Height));
-					var multiplier = Math.Max(rootSize.Width, rootSize.Height);
-					rootSize = new SizeF((minLeafSize.Width * multiplier), (minLeafSize.Height * multiplier));
-					var center = new PointF(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
-					var rootOrigin = new PointF(center.X - rootSize.Width / 2, center.Y - rootSize.Height / 2);
-					root = new QuadNode(new RectangleF(rootOrigin, rootSize));
-				}
-
-				while (!root.Bounds.Contains(bounds))
-				{
-					ExpandRoot(bounds);
-				}
-
-				InsertNodeObject(root, quadObject);
 			}
 		}
 
-		public List<T> Query(RectangleF bounds)
+		/// <summary>
+		/// Adds object to the tree.
+		/// </summary>
+		/// <param name="quadObject"></param>
+		public void Insert(TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				List<T> results = new List<T>();
-				if (root != null)
-					Query(bounds, root, results);
-				if (sort)
-					results.Sort((a, b) => { return objectSortOrder[a].CompareTo(objectSortOrder[b]); });
+				if (_sort & !_objectSortOrder.ContainsKey(quadObject))
+				{
+					_objectSortOrder.Add(quadObject, _objectSortId++);
+				}
+
+				var bounds = quadObject.Bounds;
+				if (_root == null)
+				{
+					var rootSize = new SizeF((float)Math.Ceiling(bounds.Width / _minLeafSize.Width),
+											(float)Math.Ceiling(bounds.Height / _minLeafSize.Height));
+					var multiplier = Math.Max(rootSize.Width, rootSize.Height);
+					rootSize = new SizeF((_minLeafSize.Width * multiplier), (_minLeafSize.Height * multiplier));
+					var center = new PointF(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+					var rootOrigin = new PointF(center.X - rootSize.Width / 2, center.Y - rootSize.Height / 2);
+					_root = new QuadNode(new RectangleF(rootOrigin, rootSize));
+				}
+
+				while (!_root.Bounds.Contains(bounds))
+				{
+					this.ExpandRoot(bounds);
+				}
+
+				this.InsertNodeObject(_root, quadObject);
+			}
+		}
+
+		/// <summary>
+		/// Returns a list of objects that intersect with the given bounds.
+		/// </summary>
+		/// <param name="bounds"></param>
+		/// <returns></returns>
+		public List<TQuadObject> Query(RectangleF bounds)
+		{
+			lock (_syncLock)
+			{
+				var results = new List<TQuadObject>();
+
+				if (_root != null)
+					this.Query(bounds, _root, results);
+
+				if (_sort)
+					results.Sort((a, b) => { return _objectSortOrder[a].CompareTo(_objectSortOrder[b]); });
+
 				return results;
 			}
 		}
 
-		private void Query(RectangleF bounds, QuadNode node, List<T> results)
+		/// <summary>
+		/// Recursive method that writes the objects that intersect with
+		/// the given bounds in the node to the given list.
+		/// </summary>
+		/// <param name="bounds"></param>
+		/// <param name="node"></param>
+		/// <param name="results"></param>
+		private void Query(RectangleF bounds, QuadNode node, List<TQuadObject> results)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
 				if (node == null) return;
 
 				if (bounds.IntersectsWith(node.Bounds))
 				{
-					foreach (T quadObject in node.Objects)
+					foreach (var quadObject in node.Objects)
 					{
-						if (bounds.IntersectsWith(quadObject.Rect))
+						if (bounds.IntersectsWith(quadObject.Bounds))
 							results.Add(quadObject);
 					}
 
-					foreach (QuadNode childNode in node.Nodes)
+					foreach (var childNode in node.Nodes)
 					{
-						Query(bounds, childNode, results);
+						this.Query(bounds, childNode, results);
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// Expands root node.
+		/// </summary>
+		/// <param name="newChildBounds"></param>
 		private void ExpandRoot(RectangleF newChildBounds)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				bool isNorth = root.Bounds.Y < newChildBounds.Y;
-				bool isWest = root.Bounds.X < newChildBounds.X;
+				var isNorth = _root.Bounds.Y < newChildBounds.Y;
+				var isWest = _root.Bounds.X < newChildBounds.X;
 
 				Direction rootDirection;
 				if (isNorth)
@@ -148,129 +215,156 @@ namespace Yggdrasil.Structures
 				}
 
 				double newX = (rootDirection == Direction.NW || rootDirection == Direction.SW)
-								  ? root.Bounds.X
-								  : root.Bounds.X - root.Bounds.Width;
+								  ? _root.Bounds.X
+								  : _root.Bounds.X - _root.Bounds.Width;
 				double newY = (rootDirection == Direction.NW || rootDirection == Direction.NE)
-								  ? root.Bounds.Y
-								  : root.Bounds.Y - root.Bounds.Height;
-				RectangleF newRootBounds = new RectangleF((float)newX, (float)newY, root.Bounds.Width * 2, root.Bounds.Height * 2);
-				QuadNode newRoot = new QuadNode(newRootBounds);
-				SetupChildNodes(newRoot);
-				newRoot[rootDirection] = root;
-				root = newRoot;
+								  ? _root.Bounds.Y
+								  : _root.Bounds.Y - _root.Bounds.Height;
+
+				var newRootBounds = new RectangleF((float)newX, (float)newY, _root.Bounds.Width * 2, _root.Bounds.Height * 2);
+				var newRoot = new QuadNode(newRootBounds);
+				this.SetupChildNodes(newRoot);
+				newRoot[rootDirection] = _root;
+				_root = newRoot;
 			}
 		}
 
-		private void InsertNodeObject(QuadNode node, T quadObject)
+		/// <summary>
+		/// Inserts object in the node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="quadObject"></param>
+		private void InsertNodeObject(QuadNode node, TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (!node.Bounds.Contains(quadObject.Rect))
+				if (!node.Bounds.Contains(quadObject.Bounds))
 					throw new Exception("This should not happen, child does not fit within node bounds");
 
-				if (!node.HasChildNodes() && node.Objects.Count + 1 > maxObjectsPerLeaf)
+				if (!node.HasChildNodes() && node.Objects.Count + 1 > _maxObjectsPerLeaf)
 				{
-					SetupChildNodes(node);
+					this.SetupChildNodes(node);
 
-					List<T> childObjects = new List<T>(node.Objects);
-					List<T> childrenToRelocate = new List<T>();
+					var childObjects = new List<TQuadObject>(node.Objects);
+					var childrenToRelocate = new List<TQuadObject>();
 
-					foreach (T childObject in childObjects)
+					foreach (var childObject in childObjects)
 					{
-						foreach (QuadNode childNode in node.Nodes)
+						foreach (var childNode in node.Nodes)
 						{
 							if (childNode == null)
 								continue;
 
-							if (childNode.Bounds.Contains(childObject.Rect))
+							if (childNode.Bounds.Contains(childObject.Bounds))
 							{
 								childrenToRelocate.Add(childObject);
 							}
 						}
 					}
 
-					foreach (T childObject in childrenToRelocate)
+					foreach (var childObject in childrenToRelocate)
 					{
-						RemoveQuadObjectFromNode(childObject);
-						InsertNodeObject(node, childObject);
+						this.RemoveQuadObjectFromNode(childObject);
+						this.InsertNodeObject(node, childObject);
 					}
 				}
 
-				foreach (QuadNode childNode in node.Nodes)
+				foreach (var childNode in node.Nodes)
 				{
 					if (childNode != null)
 					{
-						if (childNode.Bounds.Contains(quadObject.Rect))
+						if (childNode.Bounds.Contains(quadObject.Bounds))
 						{
-							InsertNodeObject(childNode, quadObject);
+							this.InsertNodeObject(childNode, quadObject);
 							return;
 						}
 					}
 				}
 
-				AddQuadObjectToNode(node, quadObject);
+				this.AddQuadObjectToNode(node, quadObject);
 			}
 		}
 
+		/// <summary>
+		/// Removes all objects from node.
+		/// </summary>
+		/// <param name="node"></param>
 		private void ClearQuadObjectsFromNode(QuadNode node)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				List<T> quadObjects = new List<T>(node.Objects);
-				foreach (T quadObject in quadObjects)
+				var quadObjects = new List<TQuadObject>(node.Objects);
+				foreach (var quadObject in quadObjects)
 				{
-					RemoveQuadObjectFromNode(quadObject);
+					this.RemoveQuadObjectFromNode(quadObject);
 				}
 			}
 		}
 
-		private void RemoveQuadObjectFromNode(T quadObject)
+		/// <summary>
+		/// Removes object from its node.
+		/// </summary>
+		/// <param name="quadObject"></param>
+		private void RemoveQuadObjectFromNode(TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				QuadNode node = objectToNodeLookup[quadObject];
-				node.quadObjects.Remove(quadObject);
-				objectToNodeLookup.Remove(quadObject);
+				var node = _objectToNodeLookup[quadObject];
+				node._quadObjects.Remove(quadObject);
+				_objectToNodeLookup.Remove(quadObject);
 				//quadObject.BoundsChanged -= new EventHandler(quadObject_BoundsChanged);
 			}
 		}
 
-		private void AddQuadObjectToNode(QuadNode node, T quadObject)
+		/// <summary>
+		/// Adds object to node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="quadObject"></param>
+		private void AddQuadObjectToNode(QuadNode node, TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				node.quadObjects.Add(quadObject);
-				objectToNodeLookup.Add(quadObject, node);
+				node._quadObjects.Add(quadObject);
+				_objectToNodeLookup.Add(quadObject, node);
 				//quadObject.BoundsChanged += new EventHandler(quadObject_BoundsChanged);
 			}
 		}
 
-		void quadObject_BoundsChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Called when an object's bounds changed.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void QuadObject_BoundsChanged(object sender, EventArgs e)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				T quadObject = sender as T;
-				if (quadObject != null)
+				if (sender is TQuadObject quadObject)
 				{
-					QuadNode node = objectToNodeLookup[quadObject];
-					if (!node.Bounds.Contains(quadObject.Rect) || node.HasChildNodes())
+					var node = _objectToNodeLookup[quadObject];
+					if (!node.Bounds.Contains(quadObject.Bounds) || node.HasChildNodes())
 					{
-						RemoveQuadObjectFromNode(quadObject);
-						Insert(quadObject);
+						this.RemoveQuadObjectFromNode(quadObject);
+						this.Insert(quadObject);
 						if (node.Parent != null)
 						{
-							CheckChildNodes(node.Parent);
+							this.CheckChildNodes(node.Parent);
 						}
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// Creates node's child nodes.
+		/// </summary>
+		/// <param name="node"></param>
 		private void SetupChildNodes(QuadNode node)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (minLeafSize.Width <= node.Bounds.Width / 2 && minLeafSize.Height <= node.Bounds.Height / 2)
+				if (_minLeafSize.Width <= node.Bounds.Width / 2 && _minLeafSize.Height <= node.Bounds.Height / 2)
 				{
 					node[Direction.NW] = new QuadNode(node.Bounds.X, node.Bounds.Y, node.Bounds.Width / 2,
 													  node.Bounds.Height / 2);
@@ -288,42 +382,48 @@ namespace Yggdrasil.Structures
 			}
 		}
 
-		public void Remove(T quadObject)
+		/// <summary>
+		/// Removes object from tree.
+		/// </summary>
+		/// <param name="quadObject"></param>
+		public void Remove(TQuadObject quadObject)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (sort && objectSortOrder.ContainsKey(quadObject))
+				if (_sort && _objectSortOrder.ContainsKey(quadObject))
 				{
-					objectSortOrder.Remove(quadObject);
+					_objectSortOrder.Remove(quadObject);
 				}
 
-				if (!objectToNodeLookup.ContainsKey(quadObject))
+				if (!_objectToNodeLookup.ContainsKey(quadObject))
 					throw new KeyNotFoundException("QuadObject not found in dictionary for removal");
 
-				QuadNode containingNode = objectToNodeLookup[quadObject];
-				RemoveQuadObjectFromNode(quadObject);
+				var containingNode = _objectToNodeLookup[quadObject];
+				this.RemoveQuadObjectFromNode(quadObject);
 
 				if (containingNode.Parent != null)
-					CheckChildNodes(containingNode.Parent);
+					this.CheckChildNodes(containingNode.Parent);
 			}
 		}
 
-
-
+		/// <summary>
+		/// Reorganizes child nodes.
+		/// </summary>
+		/// <param name="node"></param>
 		private void CheckChildNodes(QuadNode node)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (GetQuadObjectCount(node) <= maxObjectsPerLeaf)
+				if (this.GetQuadObjectCount(node) <= _maxObjectsPerLeaf)
 				{
 					// Move child objects into this node, and delete sub nodes
-					List<T> subChildObjects = GetChildObjects(node);
-					foreach (T childObject in subChildObjects)
+					var subChildObjects = this.GetChildObjects(node);
+					foreach (var childObject in subChildObjects)
 					{
 						if (!node.Objects.Contains(childObject))
 						{
-							RemoveQuadObjectFromNode(childObject);
-							AddQuadObjectToNode(node, childObject);
+							this.RemoveQuadObjectFromNode(childObject);
+							this.AddQuadObjectToNode(node, childObject);
 						}
 					}
 					if (node[Direction.NW] != null)
@@ -348,96 +448,122 @@ namespace Yggdrasil.Structures
 					}
 
 					if (node.Parent != null)
-						CheckChildNodes(node.Parent);
+						this.CheckChildNodes(node.Parent);
 					else
 					{
 						// Its the root node, see if we're down to one quadrant, with none in local storage - if so, ditch the other three
-						int numQuadrantsWithObjects = 0;
+						var numQuadrantsWithObjects = 0;
 						QuadNode nodeWithObjects = null;
-						foreach (QuadNode childNode in node.Nodes)
+						foreach (var childNode in node.Nodes)
 						{
-							if (childNode != null && GetQuadObjectCount(childNode) > 0)
+							if (childNode != null && this.GetQuadObjectCount(childNode) > 0)
 							{
 								numQuadrantsWithObjects++;
 								nodeWithObjects = childNode;
-								if (numQuadrantsWithObjects > 1) break;
+
+								if (numQuadrantsWithObjects > 1)
+									break;
 							}
 						}
 						if (numQuadrantsWithObjects == 1)
 						{
-							foreach (QuadNode childNode in node.Nodes)
+							foreach (var childNode in node.Nodes)
 							{
 								if (childNode != nodeWithObjects)
 									childNode.Parent = null;
 							}
-							root = nodeWithObjects;
+							_root = nodeWithObjects;
 						}
 					}
 				}
 			}
 		}
 
-
-		private List<T> GetChildObjects(QuadNode node)
+		/// <summary>
+		/// Returns the node's and the node's children's node's objects.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		private List<TQuadObject> GetChildObjects(QuadNode node)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				List<T> results = new List<T>();
-				results.AddRange(node.quadObjects);
-				foreach (QuadNode childNode in node.Nodes)
+				var results = new List<TQuadObject>();
+				results.AddRange(node._quadObjects);
+				foreach (var childNode in node.Nodes)
 				{
 					if (childNode != null)
-						results.AddRange(GetChildObjects(childNode));
+						results.AddRange(this.GetChildObjects(childNode));
 				}
 				return results;
 			}
 		}
 
+		/// <summary>
+		/// Returns the number of objects in the tree.
+		/// </summary>
+		/// <returns></returns>
 		public int GetQuadObjectCount()
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (root == null)
+				if (_root == null)
 					return 0;
-				int count = GetQuadObjectCount(root);
+
+				var count = this.GetQuadObjectCount(_root);
 				return count;
 			}
 		}
 
+		/// <summary>
+		/// Returns the number of objects in the node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
 		private int GetQuadObjectCount(QuadNode node)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				int count = node.Objects.Count;
-				foreach (QuadNode childNode in node.Nodes)
+				var count = node.Objects.Count;
+				foreach (var childNode in node.Nodes)
 				{
 					if (childNode != null)
 					{
-						count += GetQuadObjectCount(childNode);
+						count += this.GetQuadObjectCount(childNode);
 					}
 				}
 				return count;
 			}
 		}
 
+		/// <summary>
+		/// Returns the number of nodes in the tree.
+		/// </summary>
+		/// <returns></returns>
 		public int GetQuadNodeCount()
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				if (root == null)
+				if (_root == null)
 					return 0;
-				int count = GetQuadNodeCount(root, 1);
+				var count = this.GetQuadNodeCount(_root, 1);
 				return count;
 			}
 		}
 
+		/// <summary>
+		/// Returns the number of child nodes in the given node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		private int GetQuadNodeCount(QuadNode node, int count)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
 				if (node == null) return count;
 
-				foreach (QuadNode childNode in node.Nodes)
+				foreach (var childNode in node.Nodes)
 				{
 					if (childNode != null)
 						count++;
@@ -446,43 +572,114 @@ namespace Yggdrasil.Structures
 			}
 		}
 
+		/// <summary>
+		/// Returns a list with all nodes in the tree.
+		/// </summary>
+		/// <returns></returns>
 		public List<QuadNode> GetAllNodes()
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				List<QuadNode> results = new List<QuadNode>();
-				if (root != null)
+				var results = new List<QuadNode>();
+				if (_root != null)
 				{
-					results.Add(root);
-					GetChildNodes(root, results);
+					results.Add(_root);
+					this.GetChildNodes(_root, results);
 				}
 				return results;
 			}
 		}
 
+		/// <summary>
+		/// Recursive method that Writes all nodes and their children in
+		/// the given node to the list.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="results"></param>
 		private void GetChildNodes(QuadNode node, ICollection<QuadNode> results)
 		{
-			lock (syncLock)
+			lock (_syncLock)
 			{
-				foreach (QuadNode childNode in node.Nodes)
+				foreach (var childNode in node.Nodes)
 				{
 					if (childNode != null)
 					{
 						results.Add(childNode);
-						GetChildNodes(childNode, results);
+						this.GetChildNodes(childNode, results);
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// Represents a note in a quad tree.
+		/// </summary>
 		public class QuadNode
 		{
-			private static int _id = 0;
-			public readonly int ID = _id++;
+			//private static int _id = 0;
+			//public readonly int ID = _id++;
 
+			private readonly QuadNode[] _nodes = new QuadNode[4];
+			internal List<TQuadObject> _quadObjects = new List<TQuadObject>();
+
+			/// <summary>
+			/// Returns the node's parent.
+			/// </summary>
 			public QuadNode Parent { get; internal set; }
 
-			private QuadNode[] _nodes = new QuadNode[4];
+			/// <summary>
+			/// Returns a list of the node's nodes.
+			/// </summary>
+			public ReadOnlyCollection<QuadNode> Nodes;
+
+			/// <summary>
+			/// Returns a list of the node's objects.
+			/// </summary>
+			public ReadOnlyCollection<TQuadObject> Objects;
+
+			/// <summary>
+			/// Returns the node's bounds.
+			/// </summary>
+			public RectangleF Bounds { get; internal set; }
+
+			/// <summary>
+			/// Creates new instace.
+			/// </summary>
+			/// <param name="bounds"></param>
+			public QuadNode(RectangleF bounds)
+			{
+				this.Bounds = bounds;
+				this.Nodes = new ReadOnlyCollection<QuadNode>(_nodes);
+				this.Objects = new ReadOnlyCollection<TQuadObject>(_quadObjects);
+			}
+
+			/// <summary>
+			/// Creates new instance.
+			/// </summary>
+			/// <param name="x"></param>
+			/// <param name="y"></param>
+			/// <param name="width"></param>
+			/// <param name="height"></param>
+			public QuadNode(double x, double y, double width, double height)
+				: this(new RectangleF((float)x, (float)y, (float)width, (float)height))
+			{
+
+			}
+
+			/// <summary>
+			/// Returns true if the node has child nodes.
+			/// </summary>
+			/// <returns></returns>
+			public bool HasChildNodes()
+			{
+				return _nodes[0] != null;
+			}
+
+			/// <summary>
+			/// Gets or sets the child node in the given direction.
+			/// </summary>
+			/// <param name="direction"></param>
+			/// <returns></returns>
 			public QuadNode this[Direction direction]
 			{
 				get
@@ -521,31 +718,6 @@ namespace Yggdrasil.Structures
 					if (value != null)
 						value.Parent = this;
 				}
-			}
-
-			public ReadOnlyCollection<QuadNode> Nodes;
-
-			internal List<T> quadObjects = new List<T>();
-			public ReadOnlyCollection<T> Objects;
-
-			public RectangleF Bounds { get; internal set; }
-
-			public bool HasChildNodes()
-			{
-				return _nodes[0] != null;
-			}
-
-			public QuadNode(RectangleF bounds)
-			{
-				Bounds = bounds;
-				Nodes = new ReadOnlyCollection<QuadNode>(_nodes);
-				Objects = new ReadOnlyCollection<T>(quadObjects);
-			}
-
-			public QuadNode(double x, double y, double width, double height)
-				: this(new RectangleF((float)x, (float)y, (float)width, (float)height))
-			{
-
 			}
 		}
 	}

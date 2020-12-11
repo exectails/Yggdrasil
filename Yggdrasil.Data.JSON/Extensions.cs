@@ -127,6 +127,7 @@ namespace Yggdrasil.Data.JSON
 		/// <typeparam name="TValue"></typeparam>
 		/// <param name="obj"></param>
 		/// <param name="key"></param>
+		/// <param name="def"></param>
 		/// <returns></returns>
 		public static TValue[] ReadArray<TValue>(this JObject obj, string key, TValue[] def = default(TValue[]))
 		{

@@ -38,8 +38,19 @@ namespace Yggrasil.Ai.BehaviorTree
 	/// </summary>
 	public enum RoutineStatus
 	{
+		/// <summary>
+		/// Routine ended successfully.
+		/// </summary>
 		Success,
+
+		/// <summary>
+		/// Routine failed to end successfully.
+		/// </summary>
 		Failure,
+
+		/// <summary>
+		/// Routine is currently running.
+		/// </summary>
 		Running,
 	}
 }

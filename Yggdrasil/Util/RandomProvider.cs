@@ -77,7 +77,7 @@ namespace Yggdrasil.Util
 		/// Returns a random double between 0.0 and 1.0.
 		/// </summary>
 		/// <returns></returns>
-		public static double NextDoube()
+		public static double NextDouble()
 		{
 			lock (_rnd)
 				return _rnd.NextDouble();

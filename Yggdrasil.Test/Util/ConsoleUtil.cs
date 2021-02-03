@@ -55,8 +55,8 @@ namespace Yggdrasil.Test.Util
 @"           / ______\___  /\___  /\____ | |__|  (____  /____  >__|____/",
 @"           \/     /_____//_____/      \/            \/     \/         ",
 @"",
-@"                     by the Yggdrasil development team",
-@"                     test line",
+@"                        by the Yggdrasil development team",
+@"                        test line",
 @"________________________________________________________________________________",
 @""}), output);
 

@@ -44,3 +44,7 @@ to accept connections from WebSockets and other related classes.
 Links
 -----------------------------------------------------------------------------
 * GitHub: https://github.com/exectails/Yggdrasil
+
+Build Status
+-----------------------------------------------------------------------------
+[![Build Status](https://travis-ci.org/exectails/Yggdrasil.png?branch=master)](https://travis-ci.org/exectails/Yggdrasil)

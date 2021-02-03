@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using Xunit;
+﻿using Xunit;
 using Yggdrasil.Security.Hashing;
 
 namespace Yggdrasil.Test.Security.Hashing

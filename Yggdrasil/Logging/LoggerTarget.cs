@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-namespace Yggdrasil.Logging
+﻿namespace Yggdrasil.Logging
 {
 	/// <summary>
 	/// A target for a Logger, that gets send all log messages passed to

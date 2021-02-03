@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using System;
+﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -23,7 +20,7 @@ namespace Yggdrasil.Test.Util
 
 		private readonly static string[] Credits = new string[]
 		{
-			@"by the Aura development team",
+			@"by the Yggdrasil development team",
 			@"test line",
 		};
 
@@ -58,7 +55,7 @@ namespace Yggdrasil.Test.Util
 @"           / ______\___  /\___  /\____ | |__|  (____  /____  >__|____/",
 @"           \/     /_____//_____/      \/            \/     \/         ",
 @"",
-@"                          by the Aura development team",
+@"                     by the Yggdrasil development team",
 @"                          test line",
 @"________________________________________________________________________________",
 @""}), output);

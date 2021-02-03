@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using Xunit;
+﻿using Xunit;
 using Yggrasil.Ai.BehaviorTree;
 using Yggrasil.Ai.BehaviorTree.Composites;
 using Yggrasil.Ai.BehaviorTree.Decorators;

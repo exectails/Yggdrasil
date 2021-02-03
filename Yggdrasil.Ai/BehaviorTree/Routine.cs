@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using System.Threading;
+﻿using System.Threading;
 
 namespace Yggrasil.Ai.BehaviorTree
 {

@@ -1,9 +1,7 @@
 Yggdrasil
 =============================================================================
 
-Future base library for the Aura Project's game servers. *Work in progress.*
-
-This basically moves current Shared classes to a dedicated library.
+Base library for server emulation development. *Work in progress.*
 
 Libraries
 -----------------------------------------------------------------------------
@@ -41,12 +39,8 @@ Structures, such as `QuadTree`.
 *Depends on: Yggdrasil*
 
 Extension for Yggdrasil.Network, adding a WebSocketConnection
-to accept connections from WebSockets, and other related classes.
+to accept connections from WebSockets and other related classes.
 
 Links
 -----------------------------------------------------------------------------
-* GitHub: https://github.com/aura-project/Yggdrasil
-
-Build Status
------------------------------------------------------------------------------
-[![Build Status](https://travis-ci.org/aura-project/Yggdrasil.png?branch=master)](https://travis-ci.org/aura-project/Yggdrasil)
+* GitHub: https://github.com/exectails/Yggdrasil

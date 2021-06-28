@@ -8,7 +8,7 @@ namespace Yggdrasil.Network.Framing
 	/// </summary>
 	public class DoubleNewLineFramer : IMessageFramer
 	{
-		private byte[] _buffer;
+		private readonly byte[] _buffer;
 		private int _bytesReceived;
 
 		/// <summary>

@@ -8,7 +8,8 @@ namespace Yggdrasil.Network.Framing
 	/// </summary>
 	public class LengthPrefixFramer : IMessageFramer
 	{
-		private byte[] _lengthBuffer, _messageBuffer;
+		private readonly byte[] _lengthBuffer;
+		private byte[] _messageBuffer;
 		private int _bytesReceived;
 
 		/// <summary>

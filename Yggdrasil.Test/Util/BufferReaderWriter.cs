@@ -142,51 +142,108 @@ namespace Yggdrasil.Test.Util
 		public void Seeking()
 		{
 			var buffer = new BufferReaderWriter(10);
+			Assert.Equal(0, buffer.Length);
+			Assert.Equal(10, buffer.Capacity);
 
 			buffer.Seek(0, SeekOrigin.Begin);
 			Assert.Equal(0, buffer.Index);
 
 			buffer.Seek(0, SeekOrigin.End);
-			Assert.Equal(9, buffer.Index);
+			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(-4, SeekOrigin.Current);
-			Assert.Equal(5, buffer.Index);
+			Assert.Equal(6, buffer.Index);
 
 			buffer.Seek(2, SeekOrigin.Current);
-			Assert.Equal(7, buffer.Index);
+			Assert.Equal(8, buffer.Index);
 
 			Assert.DoesNotThrow(() => { buffer.Seek(2, SeekOrigin.Current); });
+			Assert.Equal(10, buffer.Index);
+
 			buffer.Seek(-2, SeekOrigin.Current);
-			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(3, SeekOrigin.Current); });
+			Assert.Equal(8, buffer.Index);
+
+			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(3 /* => 11*/, SeekOrigin.Current); });
+			Assert.Equal(8, buffer.Index);
 
 			Assert.DoesNotThrow(() => { buffer.Seek(-7, SeekOrigin.Current); });
+			Assert.Equal(1, buffer.Index);
+
 			buffer.Seek(2, SeekOrigin.Current);
-			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-3, SeekOrigin.Current); });
+			Assert.Equal(3, buffer.Index);
+
+			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-4 /* => -1*/, SeekOrigin.Current); });
+			Assert.Equal(3, buffer.Index);
 
 			Assert.DoesNotThrow(() => { buffer.Seek(-1, SeekOrigin.End); });
+			Assert.Equal(9, buffer.Index);
+
 			Assert.DoesNotThrow(() => { buffer.Seek(-5, SeekOrigin.End); });
-			Assert.DoesNotThrow(() => { buffer.Seek(-9, SeekOrigin.End); });
-			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(1, SeekOrigin.End); });
+			Assert.Equal(5, buffer.Index);
+
+			Assert.DoesNotThrow(() => { buffer.Seek(-10, SeekOrigin.End); });
+			Assert.Equal(0, buffer.Index);
+
+			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(1 /* => 11*/, SeekOrigin.End); });
+			Assert.Equal(0, buffer.Index);
+
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(10, SeekOrigin.End); });
+			Assert.Equal(0, buffer.Index);
 
 			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Begin); });
+			Assert.Equal(1, buffer.Index);
+
 			Assert.DoesNotThrow(() => { buffer.Seek(5, SeekOrigin.Begin); });
+			Assert.Equal(5, buffer.Index);
+
 			Assert.DoesNotThrow(() => { buffer.Seek(9, SeekOrigin.Begin); });
+			Assert.Equal(9, buffer.Index);
+
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-1, SeekOrigin.Begin); });
-			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			Assert.Equal(9, buffer.Index);
+
+			Assert.DoesNotThrow(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			Assert.Equal(10, buffer.Index);
+
+			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(11, SeekOrigin.Begin); });
+			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
 			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Current); });
+			Assert.Equal(6, buffer.Index);
+
 			buffer.Seek(5, SeekOrigin.Begin);
 			Assert.DoesNotThrow(() => { buffer.Seek(4, SeekOrigin.Current); });
+			Assert.Equal(9, buffer.Index);
+
 			buffer.Seek(5, SeekOrigin.Begin);
 			Assert.DoesNotThrow(() => { buffer.Seek(-1, SeekOrigin.Current); });
+			Assert.Equal(4, buffer.Index);
+
 			buffer.Seek(5, SeekOrigin.Begin);
 			Assert.DoesNotThrow(() => { buffer.Seek(-5, SeekOrigin.Current); });
+			Assert.Equal(0, buffer.Index);
+
 			buffer.Seek(5, SeekOrigin.Begin);
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-6, SeekOrigin.Current); });
+			Assert.Equal(5, buffer.Index);
+
 			buffer.Seek(5, SeekOrigin.Begin);
-			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(5, SeekOrigin.Current); });
+			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(6, SeekOrigin.Current); });
+			Assert.Equal(5, buffer.Index);
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.DoesNotThrow(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			Assert.Equal(10, buffer.Index);
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.DoesNotThrow(() => { buffer.Seek(0, SeekOrigin.End); });
+			Assert.Equal(10, buffer.Index);
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.DoesNotThrow(() => { buffer.Seek(9, SeekOrigin.Begin); });
+			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Current); });
+			Assert.Equal(10, buffer.Index);
 		}
 
 		[Fact]

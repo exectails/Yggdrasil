@@ -26,7 +26,7 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Returns the buffer's current position.
 		/// </summary>
-		public int Index { get { return Math.Min(_ptr, this.Capacity - 1); } }
+		public int Index { get { return Math.Min(_ptr, this.Capacity); } }
 
 		/// <summary>
 		/// Returns the current length of the underlying array.
@@ -171,7 +171,7 @@ namespace Yggdrasil.Util
 			switch (origin)
 			{
 				case SeekOrigin.Begin:
-					if (index < 0 || index > _buffer.Length - 1)
+					if (index < 0 || index > _buffer.Length)
 						throw new InvalidOperationException("Out of buffer.");
 					_ptr = index;
 					break;
@@ -179,11 +179,11 @@ namespace Yggdrasil.Util
 				case SeekOrigin.End:
 					if (index > 0 || -index > _buffer.Length)
 						throw new InvalidOperationException("Out of buffer.");
-					_ptr = _buffer.Length - index - 1;
+					_ptr = _buffer.Length + index;
 					break;
 
 				case SeekOrigin.Current:
-					if (_ptr + index < 0 || _ptr + index > _buffer.Length - 1)
+					if (_ptr + index < 0 || _ptr + index > _buffer.Length)
 						throw new InvalidOperationException("Out of buffer.");
 					_ptr += index;
 					break;

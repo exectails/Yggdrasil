@@ -263,7 +263,7 @@ namespace Yggdrasil.Test.Util
 			Console.WriteLine("index: " + index);
 			Console.WriteLine("capac: " + buffer.Capacity);
 			buffer.Seek(index, SeekOrigin.Begin);
-			Assert.Equal(9, buffer.Index);
+			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(0, SeekOrigin.Begin);
 			Assert.Equal(0x1111, buffer.ReadInt16());
@@ -336,18 +336,18 @@ namespace Yggdrasil.Test.Util
 			buffer.Seek(0, SeekOrigin.End);
 			buffer.WriteByte(2);
 
-			var arr = new byte[10];
+			var arr = new byte[11];
 			buffer.CopyTo(arr, 0);
-			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
 
 			Assert.Throws<InvalidOperationException>(() => buffer.CopyTo(arr, -1));
 
 			arr = new byte[9];
 			Assert.Throws<InvalidOperationException>(() => buffer.CopyTo(arr, 0));
 
-			arr = new byte[12];
+			arr = new byte[13];
 			buffer.CopyTo(arr, 2);
-			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
 
 			buffer = new BufferReaderWriter(new byte[10] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 			arr = new byte[8];
@@ -398,7 +398,7 @@ namespace Yggdrasil.Test.Util
 
 			var arr = new byte[10];
 			buffer.ReadTo(arr, 0, 10);
-			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+			Assert.Equal(new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, arr);
 
 			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, -1, 0));
 			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, 0, -1));
@@ -406,10 +406,10 @@ namespace Yggdrasil.Test.Util
 			arr = new byte[9];
 			Assert.Throws<InvalidOperationException>(() => buffer.ReadTo(arr, 0, 10));
 
-			arr = new byte[12];
+			arr = new byte[13];
 			buffer.Seek(0, SeekOrigin.Begin);
-			buffer.ReadTo(arr, 2, 10);
-			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+			buffer.ReadTo(arr, 2, 11);
+			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
 		}
 	}
 }

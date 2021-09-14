@@ -142,6 +142,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public byte GetByte(TParameterType type)
 			=> this.Get<ByteParameter>(type).Value;
 
@@ -150,6 +153,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public short GetShort(TParameterType type)
 			=> this.Get<ShortParameter>(type).Value;
 
@@ -158,6 +164,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public int GetInt(TParameterType type)
 			=> this.Get<IntParameter>(type).Value;
 
@@ -166,6 +175,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public long GetLong(TParameterType type)
 			=> this.Get<LongParameter>(type).Value;
 
@@ -174,6 +186,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public float GetFloat(TParameterType type)
 			=> this.Get<FloatParameter>(type).Value;
 
@@ -182,6 +197,9 @@ namespace Yggdrasil.Parameters
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the parameter was not found.
+		/// </exception>
 		public string GetString(TParameterType type)
 			=> this.Get<StringParameter>(type).Value;
 

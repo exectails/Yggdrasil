@@ -16,6 +16,25 @@ namespace Yggdrasil.Parameters
 		private readonly Dictionary<TParameterType, IParameter> _parameters = new Dictionary<TParameterType, IParameter>();
 
 		/// <summary>
+		/// Gets or sets whether parameters are created when set is called
+		/// for them, but they don't exist yet.
+		/// </summary>
+		/// <remarks>
+		/// Not creating parameters on demand provides a kind of safety,
+		/// as you will have to create the parameters before they can
+		/// be used. Creating them when they're set, on the other hand,
+		/// allows you to address parameters without having to set them
+		/// up first.
+		/// </remarks>
+		public bool CreateParametersOnSet { get; set; } = false;
+
+		/// <summary>
+		/// Gets or sets whether parameters are created when modify is
+		/// called for them, but they don't exist yet.
+		/// </summary>
+		public bool CreateParametersOnModify { get; set; } = false;
+
+		/// <summary>
 		/// Adds parameter.
 		/// </summary>
 		/// <remarks>
@@ -172,7 +191,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public byte SetByte(TParameterType type, byte value)
-			=> (this.Get<ByteParameter>(type).Value = value);
+		{
+			if (!this.TryGet<ByteParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new ByteParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.
@@ -181,7 +210,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public short SetShort(TParameterType type, short value)
-			=> (this.Get<ShortParameter>(type).Value = value);
+		{
+			if (!this.TryGet<ShortParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new ShortParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.
@@ -190,7 +229,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public int SetInt(TParameterType type, int value)
-			=> (this.Get<IntParameter>(type).Value = value);
+		{
+			if (!this.TryGet<IntParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new IntParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.
@@ -199,7 +248,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public long SetLong(TParameterType type, long value)
-			=> (this.Get<LongParameter>(type).Value = value);
+		{
+			if (!this.TryGet<LongParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new LongParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.
@@ -208,7 +267,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public float SetFloat(TParameterType type, float value)
-			=> (this.Get<FloatParameter>(type).Value = value);
+		{
+			if (!this.TryGet<FloatParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new FloatParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.
@@ -217,7 +286,17 @@ namespace Yggdrasil.Parameters
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public string SetString(TParameterType type, string value)
-			=> (this.Get<StringParameter>(type).Value = value);
+		{
+			if (!this.TryGet<StringParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnSet)
+					throw new ArgumentException($"Parameter {type} not found.");
+
+				this.Add(type, parameter = new StringParameter());
+			}
+
+			return (parameter.Value = value);
+		}
 
 		/// <summary>
 		/// Modifies the parameter's value and returns its new value.
@@ -227,9 +306,15 @@ namespace Yggdrasil.Parameters
 		/// <returns></returns>
 		public int ModifyInt(TParameterType type, int modifier)
 		{
-			var parameter = this.Get<IntParameter>(type);
-			parameter.Value += modifier;
+			if (!this.TryGet<IntParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnModify)
+					throw new ArgumentException($"Parameter {type} not found.");
 
+				this.Add(type, parameter = new IntParameter());
+			}
+
+			parameter.Value += modifier;
 			return parameter.Value;
 		}
 
@@ -241,9 +326,15 @@ namespace Yggdrasil.Parameters
 		/// <returns></returns>
 		public float ModifyFloat(TParameterType type, float modifier)
 		{
-			var parameter = this.Get<FloatParameter>(type);
-			parameter.Value += modifier;
+			if (!this.TryGet<FloatParameter>(type, out var parameter))
+			{
+				if (!this.CreateParametersOnModify)
+					throw new ArgumentException($"Parameter {type} not found.");
 
+				this.Add(type, parameter = new FloatParameter());
+			}
+
+			parameter.Value += modifier;
 			return parameter.Value;
 		}
 

@@ -167,6 +167,16 @@ namespace Yggdrasil.Parameters
 		/// <param name="minValue"></param>
 		/// <param name="maxValue"></param>
 		public IntParameter(int value = default, int minValue = int.MinValue, int maxValue = int.MaxValue) : base(ParameterValueType.Int, value, minValue, maxValue) { }
+
+		/// <summary>
+		/// Implicitly converts parameter by returning its value.
+		/// </summary>
+		/// <param name="param"></param>
+		/// <returns></returns>
+		public static implicit operator int(IntParameter param)
+		{
+			return param.Value;
+		}
 	}
 
 	/// <summary>
@@ -205,5 +215,15 @@ namespace Yggdrasil.Parameters
 		/// <param name="minValue"></param>
 		/// <param name="maxValue"></param>
 		public FloatParameter(float value = default, float minValue = float.MinValue, float maxValue = float.MaxValue) : base(ParameterValueType.Float, value, minValue, maxValue) { }
+
+		/// <summary>
+		/// Implicitly converts parameter by returning its value.
+		/// </summary>
+		/// <param name="param"></param>
+		/// <returns></returns>
+		public static implicit operator float(FloatParameter param)
+		{
+			return param.Value;
+		}
 	}
 }

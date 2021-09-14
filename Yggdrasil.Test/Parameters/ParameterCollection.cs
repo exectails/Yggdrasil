@@ -101,6 +101,40 @@ namespace Yggdrasil.Test.Parameters
 		}
 
 		[Fact]
+		public void ImplicitConversionInt()
+		{
+			var col1 = new ParameterCollection<EnumParamId>();
+			col1.Add(EnumParamId.Bar, new IntParameter(100));
+
+			Assert.Equal(100, col1.GetInt(EnumParamId.Bar));
+
+			var param1 = col1.Get<IntParameter>(EnumParamId.Bar);
+			var val2 = 100;
+			var val3 = 150;
+
+			var result = param1 + val2 + val3;
+			col1.SetInt(EnumParamId.Bar, result);
+			Assert.Equal(350, col1.GetInt(EnumParamId.Bar));
+		}
+
+		[Fact]
+		public void ImplicitConversionFloat()
+		{
+			var col1 = new ParameterCollection<EnumParamId>();
+			col1.Add(EnumParamId.Bar, new FloatParameter(100));
+
+			Assert.Equal(100, col1.GetFloat(EnumParamId.Bar));
+
+			var param1 = col1.Get<FloatParameter>(EnumParamId.Bar);
+			var val2 = 100;
+			var val3 = 150.5f;
+
+			var result = param1 + val2 + val3;
+			col1.SetFloat(EnumParamId.Bar, result);
+			Assert.Equal(350.5f, col1.GetFloat(EnumParamId.Bar));
+		}
+
+		[Fact]
 		public void ValueChanged()
 		{
 			var col1 = new ParameterCollection<EnumParamId>();

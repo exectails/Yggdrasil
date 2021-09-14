@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Yggdrasil.Parameters
 {
@@ -183,6 +184,16 @@ namespace Yggdrasil.Parameters
 		/// <returns></returns>
 		public string GetString(TParameterType type)
 			=> this.Get<StringParameter>(type).Value;
+
+		/// <summary>
+		/// Returns a list of all parameters.
+		/// </summary>
+		/// <returns></returns>
+		public List<IParameter> GetList()
+		{
+			lock (_syncLock)
+				return _parameters.Values.ToList();
+		}
 
 		/// <summary>
 		/// Sets the parameter's value.

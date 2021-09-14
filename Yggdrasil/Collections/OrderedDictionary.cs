@@ -208,7 +208,7 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public void Add(KeyValuePair<TKey, TValue> pair)
 		{
-			Add(pair.Key, pair.Value);
+			this.Add(pair.Key, pair.Value);
 		}
 
 		/// <summary>
@@ -224,9 +224,9 @@ namespace Yggdrasil.Collections
 		/// </summary>
 		public bool Remove(KeyValuePair<TKey, TValue> pair)
 		{
-			if (Contains(pair))
+			if (this.Contains(pair))
 			{
-				Remove(pair.Key);
+				this.Remove(pair.Key);
 				return true;
 			}
 
@@ -288,12 +288,12 @@ namespace Yggdrasil.Collections
 
 		IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
 		{
-			return Enumerate().GetEnumerator();
+			return this.Enumerate().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return Enumerate().GetEnumerator();
+			return this.Enumerate().GetEnumerator();
 		}
 	}
 }

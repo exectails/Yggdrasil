@@ -62,6 +62,10 @@
     <Compile Include="Network\Communication\Connection.cs" />
     <Compile Include="Network\Communication\Messages\HelloMessage.cs" />
     <Compile Include="Network\Framing\DoubleNewLineFramer.cs" />
+    <Compile Include="Parameters\NumericParameter.cs" />
+    <Compile Include="Parameters\Parameter.cs" />
+    <Compile Include="Parameters\ParameterCollection.cs" />
+    <Compile Include="Parameters\StringParameter.cs" />
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />
     <Compile Include="Security\Hashing\MD5.cs" />

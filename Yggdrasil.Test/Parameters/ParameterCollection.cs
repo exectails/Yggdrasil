@@ -13,6 +13,7 @@ namespace Yggdrasil.Test.Parameters
 			col1.CreateParametersOnSet = false;
 
 			Assert.Throws<ArgumentException>(() => col1.SetInt(IntParamId.Foo, 100));
+			Assert.Throws<ArgumentException>(() => col1.GetInt(IntParamId.Foo));
 
 			col1.Add(IntParamId.Foo, new IntParameter());
 			col1.Add(IntParamId.Bar, new FloatParameter());
@@ -39,6 +40,7 @@ namespace Yggdrasil.Test.Parameters
 			col1.CreateParametersOnSet = false;
 
 			Assert.Throws<ArgumentException>(() => col1.SetInt(EnumParamId.Foo, 100));
+			Assert.Throws<ArgumentException>(() => col1.GetInt(EnumParamId.Foo));
 
 			col1.Add(EnumParamId.Foo, new IntParameter());
 			col1.Add(EnumParamId.Bar, new FloatParameter());
@@ -56,6 +58,22 @@ namespace Yggdrasil.Test.Parameters
 
 			Assert.DoesNotThrow(() => col1.SetInt(EnumParamId.Abc, 400));
 			Assert.Equal(400, col1.GetInt(EnumParamId.Abc));
+		}
+
+		[Fact]
+		public void GetDefault()
+		{
+			var col1 = new ParameterCollection<int>();
+			col1.CreateParametersOnSet = false;
+
+			Assert.Throws<ArgumentException>(() => col1.SetInt(IntParamId.Foo, 100));
+			Assert.Throws<ArgumentException>(() => col1.GetInt(IntParamId.Foo));
+			Assert.Equal(123, col1.GetInt(IntParamId.Foo, 123));
+
+			col1.CreateParametersOnSet = true;
+
+			col1.SetInt(IntParamId.Bar, 345);
+			Assert.Equal(345, col1.GetInt(IntParamId.Bar, 123));
 		}
 
 		[Fact]

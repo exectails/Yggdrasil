@@ -204,6 +204,96 @@ namespace Yggdrasil.Parameters
 			=> this.Get<StringParameter>(type).Value;
 
 		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public byte GetByte(TParameterType type, byte defaultValue)
+		{
+			if (!this.TryGet<ByteParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public short GetShort(TParameterType type, short defaultValue)
+		{
+			if (!this.TryGet<ShortParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public int GetInt(TParameterType type, int defaultValue)
+		{
+			if (!this.TryGet<IntParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public long GetLong(TParameterType type, long defaultValue)
+		{
+			if (!this.TryGet<LongParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public float GetFloat(TParameterType type, float defaultValue)
+		{
+			if (!this.TryGet<FloatParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
+		/// Returns the parameter's value. If the parameter doesn't
+		/// exist, the default value is returned.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public string GetString(TParameterType type, string defaultValue)
+		{
+			if (!this.TryGet<StringParameter>(type, out var parameter))
+				return defaultValue;
+
+			return parameter.Value;
+		}
+
+		/// <summary>
 		/// Returns a list of all parameters.
 		/// </summary>
 		/// <returns></returns>

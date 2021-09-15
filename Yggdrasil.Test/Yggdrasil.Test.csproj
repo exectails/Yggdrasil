@@ -62,6 +62,7 @@
     <Compile Include="Collections\OrderedDictionary.cs" />
     <Compile Include="Configuration\ConfFile.cs" />
     <Compile Include="Data\CsvReader.cs" />
+    <Compile Include="EntityComponentSystem\Components.cs" />
     <Compile Include="Extensions\GenericLists.cs" />
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />

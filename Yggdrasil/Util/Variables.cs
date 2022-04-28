@@ -355,14 +355,14 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void Set(string name, object value)
+		public object Set(string name, object value)
 		{
 			if (value == null)
 			{
 				this.Remove(name);
-				return;
 			}
-
+			else
+			{
 			lock (_syncLock)
 			{
 				_variables[name] = value;
@@ -370,14 +370,7 @@ namespace Yggdrasil.Util
 			}
 		}
 
-		/// <summary>
-		/// Sets the given variable.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
-		public void SetByte(string name, byte value)
-		{
-			this.Set(name, value);
+			return null;
 		}
 
 		/// <summary>
@@ -385,16 +378,10 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetSByte(string name, sbyte value) => this.SetByte(name, (byte)value);
-
-		/// <summary>
-		/// Sets the given variable.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
-		public void SetShort(string name, short value)
+		public byte SetByte(string name, byte value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -402,16 +389,17 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetUShort(string name, ushort value) => this.SetShort(name, (short)value);
+		public sbyte SetSByte(string name, sbyte value) => (sbyte)this.SetByte(name, (byte)value);
 
 		/// <summary>
 		/// Sets the given variable.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetInt(string name, int value)
+		public short SetShort(string name, short value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -419,16 +407,17 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetUInt(string name, uint value) => this.SetInt(name, (int)value);
+		public ushort SetUShort(string name, ushort value) => (ushort)this.SetShort(name, (short)value);
 
 		/// <summary>
 		/// Sets the given variable.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetLong(string name, long value)
+		public int SetInt(string name, int value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -436,16 +425,17 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetULong(string name, ulong value) => this.SetLong(name, (long)value);
+		public uint SetUInt(string name, uint value) => (uint)this.SetInt(name, (int)value);
 
 		/// <summary>
 		/// Sets the given variable.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetFloat(string name, float value)
+		public long SetLong(string name, long value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -453,9 +443,17 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetString(string name, string value)
+		public ulong SetULong(string name, ulong value) => (ulong)this.SetLong(name, (long)value);
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public float SetFloat(string name, float value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -463,9 +461,10 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetBytes(string name, byte[] value)
+		public string SetString(string name, string value)
 		{
 			this.Set(name, value);
+			return value;
 		}
 
 		/// <summary>
@@ -473,7 +472,18 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public void SetBool(string name, bool value)
+		public byte[] SetBytes(string name, byte[] value)
+		{
+			this.Set(name, value);
+			return value;
+		}
+
+		/// <summary>
+		/// Sets the given variable.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public bool SetBool(string name, bool value)
 		{
 			this.Set(name, value);
 		}

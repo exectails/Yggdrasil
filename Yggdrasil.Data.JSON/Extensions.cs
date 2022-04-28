@@ -104,6 +104,10 @@ namespace Yggdrasil.Data.JSON
 		/// Reads value as string and parses it into enum type.
 		/// Returns the default if key wasn't found.
 		/// </summary>
+		/// <remarks>
+		/// Parses Flags if the values are separated by commas ","
+		/// or pipes "|".
+		/// </remarks>
 		/// <param name="obj"></param>
 		/// <param name="key"></param>
 		/// <param name="def"></param>
@@ -114,6 +118,8 @@ namespace Yggdrasil.Data.JSON
 				return def;
 
 			var str = obj.ReadString(key);
+			if (str.Contains("|"))
+				str = str.Replace("|", ",");
 
 			return (TEnum)Enum.Parse(typeof(TEnum), str);
 		}

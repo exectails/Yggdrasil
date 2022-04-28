@@ -156,8 +156,7 @@ namespace Yggdrasil.Util
 
 			if (destination.Length < _length + destinationOffset - sourceOffset)
 				throw new InvalidOperationException("Destination is not long enough.");
-			Console.WriteLine("_length: " + _length);
-			Console.WriteLine("sourceOffset: " + sourceOffset);
+
 			Buffer.BlockCopy(_buffer, sourceOffset, destination, destinationOffset, _length - sourceOffset);
 		}
 

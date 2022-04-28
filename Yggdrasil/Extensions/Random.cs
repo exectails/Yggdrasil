@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Yggdrasil.Extensions
 {
@@ -41,11 +42,19 @@ namespace Yggdrasil.Extensions
 		/// <param name="rnd"></param>
 		/// <param name="values"></param>
 		public static T Rnd<T>(this Random rnd, params T[] values)
+			=> Rnd(rnd, (IList<T>)values);
+
+		/// <summary>
+		/// Returns a random value from the given ones.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <param name="values"></param>
+		public static T Rnd<T>(this Random rnd, IList<T> values)
 		{
-			if (values == null || values.Length == 0)
+			if (values == null || values.Count == 0)
 				throw new ArgumentException("Values may not be null or empty.");
 
-			return values[rnd.Next(values.Length)];
+			return values[rnd.Next(values.Count)];
 		}
 
 		/// <summary>

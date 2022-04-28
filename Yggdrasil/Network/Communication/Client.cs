@@ -40,7 +40,7 @@ namespace Yggdrasil.Network.Communication
 		/// </summary>
 		/// <param name="buffer"></param>
 		/// <param name="length"></param>
-		protected override void ReveiveData(byte[] buffer, int length)
+		protected override void ReceiveData(byte[] buffer, int length)
 			=> _framer.ReceiveData(buffer, length);
 
 		/// <summary>

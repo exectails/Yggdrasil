@@ -197,7 +197,7 @@ namespace Yggdrasil.Network.TCP
 					return;
 				}
 
-				this.ReveiveData(_buffer, length);
+				this.ReceiveData(_buffer, length);
 
 				this.BeginReceive();
 			}
@@ -236,7 +236,7 @@ namespace Yggdrasil.Network.TCP
 		/// </summary>
 		/// <param name="buffer"></param>
 		/// <param name="length"></param>
-		protected abstract void ReveiveData(byte[] buffer, int length);
+		protected abstract void ReceiveData(byte[] buffer, int length);
 
 		/// <summary>
 		/// Sends data via socket.

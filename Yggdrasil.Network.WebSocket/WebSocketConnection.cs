@@ -48,7 +48,7 @@ namespace Yggdrasil.Network.WebSocket
 		/// </summary>
 		/// <param name="buffer"></param>
 		/// <param name="length"></param>
-		protected override void ReveiveData(byte[] buffer, int length)
+		protected override void ReceiveData(byte[] buffer, int length)
 		{
 			if (!this.Upgraded)
 			{

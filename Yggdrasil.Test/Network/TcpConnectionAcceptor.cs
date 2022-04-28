@@ -154,7 +154,7 @@ namespace Yggdrasil.Test.Network
 			_framer.MessageReceived += this.OnMessageReceived;
 		}
 
-		protected override void ReveiveData(byte[] buffer, int length)
+		protected override void ReceiveData(byte[] buffer, int length)
 		{
 			_framer.ReceiveData(buffer, length);
 		}

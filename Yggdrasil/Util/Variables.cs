@@ -10,7 +10,7 @@ namespace Yggdrasil.Util
 	public class Variables
 	{
 		private readonly object _syncLock = new object();
-		private Dictionary<string, object> _variables = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
 		private string _cache = null;
 
 		/// <summary>
@@ -363,12 +363,12 @@ namespace Yggdrasil.Util
 			}
 			else
 			{
-			lock (_syncLock)
-			{
-				_variables[name] = value;
-				_cache = null;
+				lock (_syncLock)
+				{
+					_variables[name] = value;
+					_cache = null;
+				}
 			}
-		}
 
 			return null;
 		}

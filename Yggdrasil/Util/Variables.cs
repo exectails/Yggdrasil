@@ -486,6 +486,19 @@ namespace Yggdrasil.Util
 		public bool SetBool(string name, bool value)
 		{
 			this.Set(name, value);
+			return value;
+		}
+
+		/// <summary>
+		/// Toggles boolean value on or off. If the variable wasn't set
+		/// yet, it becomes true.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public bool ToggleBool(string name)
+		{
+			var value = !this.GetBool(name, false);
+			return this.SetBool(name, value);
 		}
 
 		/// <summary>

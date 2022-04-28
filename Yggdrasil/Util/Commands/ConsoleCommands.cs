@@ -119,7 +119,7 @@ namespace Yggdrasil.Util.Commands
 		/// <returns></returns>
 		protected virtual CommandResult HandleStatus(string command, Arguments args)
 		{
-			Log.Status("Memory Usage: {0:N0} KB", Math.Round(GC.GetTotalMemory(false) / 1024f));
+			Log.Info("Memory Usage: {0:N0} KB", Math.Round(GC.GetTotalMemory(false) / 1024f));
 
 			return CommandResult.Okay;
 		}

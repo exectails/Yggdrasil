@@ -11,7 +11,7 @@ namespace Yggdrasil.Network.TCP
 	{
 		private const int BufferMaxSize = 4 * 1024;
 
-		private byte[] _buffer;
+		private readonly byte[] _buffer = new byte[BufferMaxSize];
 		private Socket _socket;
 
 		private bool _raisedConnected;
@@ -35,14 +35,6 @@ namespace Yggdrasil.Network.TCP
 		/// Raised when connection was closed.
 		/// </summary>
 		public event Action<TcpConnection, ConnectionCloseType> Closed;
-
-		/// <summary>
-		/// Creates new instance.
-		/// </summary>
-		public TcpConnection()
-		{
-			_buffer = new byte[BufferMaxSize];
-		}
 
 		/// <summary>
 		/// Sets socket of this connection.

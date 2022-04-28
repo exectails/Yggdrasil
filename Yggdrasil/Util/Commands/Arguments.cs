@@ -12,28 +12,25 @@ namespace Yggdrasil.Util.Commands
 	{
 		private static readonly Regex TokenRegex = new Regex(@"((?:(?<key>[a-z0-9_]+)\:)?(?<val>(?:""[^""]+(?:""|$))|(?:[^ ]+)))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		private List<string> _indexed;
-		private Dictionary<string, string> _named;
+		private readonly List<string> _indexed = new List<string>();
+		private readonly Dictionary<string, string> _named = new Dictionary<string, string>();
 
 		/// <summary>
 		/// Returns the amount of all parameters.
 		/// </summary>
-		public int Count { get { return _indexed.Count + _named.Count; } }
+		public int Count => _indexed.Count + _named.Count;
 
 		/// <summary>
 		/// Creates new Arguments instance.
 		/// </summary>
 		public Arguments()
 		{
-			_indexed = new List<string>();
-			_named = new Dictionary<string, string>();
 		}
 
 		/// <summary>
 		/// Creates new Arguments instance and parses the given line.
 		/// </summary>
 		public Arguments(string line)
-			: this()
 		{
 			this.Parse(line);
 		}

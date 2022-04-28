@@ -61,7 +61,7 @@ namespace Yggdrasil.Data.Binary
 		/// <summary>
 		/// Reads entries from binary reader.
 		/// </summary>
-		/// <param name="br"></param>
+		/// <param name="fs"></param>
 		protected abstract void Read(FileStream fs);
 	}
 

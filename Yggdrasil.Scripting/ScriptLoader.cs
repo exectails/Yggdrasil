@@ -14,12 +14,12 @@ namespace Yggdrasil.Scripting
 	/// </summary>
 	public class ScriptLoader
 	{
-		private CodeDomProvider _compiler;
-		private List<IPrecompiler> _precompilers = new List<IPrecompiler>();
-		private HashSet<string> _filePaths = new HashSet<string>();
-		private Dictionary<string, Type> _types = new Dictionary<string, Type>();
-		private List<IDisposable> _disposable = new List<IDisposable>();
-		private LinkedList<string> _tempFiles = new LinkedList<string>();
+		private readonly CodeDomProvider _compiler;
+		private readonly List<IPrecompiler> _precompilers = new List<IPrecompiler>();
+		private readonly HashSet<string> _filePaths = new HashSet<string>();
+		private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>();
+		private readonly List<IDisposable> _disposable = new List<IDisposable>();
+		private readonly LinkedList<string> _tempFiles = new LinkedList<string>();
 		private readonly string _cacheFilePath;
 
 		private readonly string[] _defaultReferences = new string[]

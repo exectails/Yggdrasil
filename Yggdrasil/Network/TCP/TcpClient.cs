@@ -11,7 +11,7 @@ namespace Yggdrasil.Network.TCP
 	{
 		private const int BufferMaxSize = 4 * 1024;
 
-		private byte[] _buffer = new byte[BufferMaxSize];
+		private readonly byte[] _buffer = new byte[BufferMaxSize];
 		private Socket _socket;
 
 		/// <summary>

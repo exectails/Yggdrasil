@@ -36,24 +36,14 @@ namespace Yggdrasil.Data.Binary
 				this.Warnings.Clear();
 
 			var fileName = filePath.Replace("\\", "/");
-			byte[] content;
 
 			try
 			{
 				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-				using (var uncompressed = new MemoryStream())
-				using (var gzip = new GZipStream(fs, CompressionMode.Decompress))
-				{
-					gzip.CopyTo(uncompressed);
-					content = uncompressed.ToArray();
-				}
-
-				using (var ms = new MemoryStream(content))
-				using (var br = new BinaryReader(ms))
 				{
 					try
 					{
-						this.Read(br);
+						this.Read(fs);
 					}
 					catch (DatabaseWarningException ex)
 					{
@@ -72,7 +62,7 @@ namespace Yggdrasil.Data.Binary
 		/// Reads entries from binary reader.
 		/// </summary>
 		/// <param name="br"></param>
-		protected abstract void Read(BinaryReader br);
+		protected abstract void Read(FileStream fs);
 	}
 
 	/// <summary>

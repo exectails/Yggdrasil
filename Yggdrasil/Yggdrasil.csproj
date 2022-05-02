@@ -73,6 +73,8 @@
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />
     <Compile Include="Security\Hashing\MD5.cs" />
+    <Compile Include="Scheduling\ScheduledCallback.cs" />
+    <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Util\BufferReaderWriter.cs" />
     <Compile Include="Network\TCP\TcpClient.cs" />
     <Compile Include="Network\TCP\TcpConnection.cs" />

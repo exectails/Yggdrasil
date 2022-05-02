@@ -47,8 +47,10 @@
     <Compile Include="Configuration\ConfFile.cs" />
     <Compile Include="EntityComponentSystem\Component.cs" />
     <Compile Include="EntityComponentSystem\ComponentCollection.cs" />
+    <Compile Include="Extensions\DateTime.cs" />
     <Compile Include="Extensions\Dictionary.cs" />
     <Compile Include="Extensions\GenericLists.cs" />
+    <Compile Include="Extensions\Queue.cs" />
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />
     <Compile Include="Extensions\StringBuilder.cs" />

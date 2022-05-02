@@ -62,6 +62,23 @@ namespace Yggdrasil.Scheduling
 		/// <summary>
 		/// Schedules callback to be called after the given delay.
 		/// </summary>
+		/// <param name="delayMs"></param>
+		/// <param name="callback"></param>
+		public void Schedule(double delayMs, Action callback)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback);
+
+		/// <summary>
+		/// Schedules callback to be called after the given delay.
+		/// </summary>
+		/// <param name="delayMs"></param>
+		/// <param name="repeatDelayMs"></param>
+		/// <param name="callback"></param>
+		public void Schedule(double delayMs, int repeatDelayMs, Action callback)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback);
+
+		/// <summary>
+		/// Schedules callback to be called after the given delay.
+		/// </summary>
 		/// <param name="delay"></param>
 		/// <param name="callback"></param>
 		public void Schedule(TimeSpan delay, Action callback)

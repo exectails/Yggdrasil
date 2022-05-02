@@ -110,7 +110,7 @@ namespace Yggdrasil.Logging.Targets
 			{
 				mail.Body = message;
 				mail.BodyEncoding = Encoding.UTF8;
-				mail.ReplyTo = new MailAddress(this.ReplyTo);
+				mail.ReplyToList.Add(new MailAddress(this.ReplyTo));
 				mail.Subject = this.Subject;
 				mail.SubjectEncoding = Encoding.UTF8;
 				mail.Priority = MailPriority.Normal;

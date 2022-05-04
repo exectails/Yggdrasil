@@ -78,6 +78,7 @@
     <Compile Include="Network\WebSocketFramer.cs" />
     <Compile Include="Parameters\ParameterCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scripting\ScriptLoader.cs" />
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />

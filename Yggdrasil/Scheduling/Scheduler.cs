@@ -15,7 +15,7 @@ namespace Yggdrasil.Scheduling
 	/// </summary>
 	public class Scheduler : IDisposable
 	{
-		private readonly static TimeSpan HotLoopThreshold = TimeSpan.FromMilliseconds(50);
+		private readonly static TimeSpan HotLoopThreshold = TimeSpan.FromMilliseconds(32);
 
 		private readonly Thread _loopThread;
 
@@ -115,11 +115,19 @@ namespace Yggdrasil.Scheduling
 			{
 				_allowed.WaitOne();
 
-				if (nextCallback != null && timer.Elapsed >= nextCallback?.Delay)
-				{
 					var elapsed = timer.Elapsed;
 					timer.Restart();
 
+				// In the original, the elapsed time grab and the restart
+				// happened inside this if, but that caused callbacks to
+				// fire early, because if nothing was scheduled, the Stop-
+				// Watch still kept ticking, and when something was added,
+				// the full elapsed time since the last execution would be
+				// subtracted from the new callback's delay.
+				// It's almost as if you can't just copy random code from
+				// StackOverflow and expect it to work. Unbelievable!
+				if (nextCallback != null /*&& timer.Elapsed >= nextCallback.Delay*/)
+				{
 					foreach (var item in _scheduled)
 					{
 						item.Delay -= elapsed;

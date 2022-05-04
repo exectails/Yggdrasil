@@ -25,6 +25,8 @@ namespace Yggdrasil.Scheduling
 		private readonly List<ScheduledCallback> _scheduled = new List<ScheduledCallback>();
 		private readonly List<ScheduledCallback> _pending = new List<ScheduledCallback>();
 		private readonly List<ScheduledCallback> _execute = new List<ScheduledCallback>();
+		private readonly HashSet<long> _cancelled = new HashSet<long>();
+		private long _ids;
 
 		private bool _newElements;
 		private bool _disposing;
@@ -64,7 +66,7 @@ namespace Yggdrasil.Scheduling
 		/// </summary>
 		/// <param name="delayMs"></param>
 		/// <param name="callback"></param>
-		public void Schedule(double delayMs, Action callback)
+		public long Schedule(double delayMs, Action callback)
 			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback);
 
 		/// <summary>
@@ -73,7 +75,7 @@ namespace Yggdrasil.Scheduling
 		/// <param name="delayMs"></param>
 		/// <param name="repeatDelayMs"></param>
 		/// <param name="callback"></param>
-		public void Schedule(double delayMs, int repeatDelayMs, Action callback)
+		public long Schedule(double delayMs, int repeatDelayMs, Action callback)
 			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback);
 
 		/// <summary>
@@ -81,7 +83,7 @@ namespace Yggdrasil.Scheduling
 		/// </summary>
 		/// <param name="delay"></param>
 		/// <param name="callback"></param>
-		public void Schedule(TimeSpan delay, Action callback)
+		public long Schedule(TimeSpan delay, Action callback)
 			=> this.Schedule(delay, TimeSpan.Zero, callback);
 
 		/// <summary>
@@ -90,16 +92,30 @@ namespace Yggdrasil.Scheduling
 		/// <param name="delay"></param>
 		/// <param name="repeatDelay"></param>
 		/// <param name="callback"></param>
-		public void Schedule(TimeSpan delay, TimeSpan repeatDelay, Action callback)
+		public long Schedule(TimeSpan delay, TimeSpan repeatDelay, Action callback)
 		{
 			lock (_pending)
 			{
-				_pending.Add(new ScheduledCallback(delay, repeatDelay, callback));
+				var newId = ++_ids;
+
+				_pending.Add(new ScheduledCallback(newId, delay, repeatDelay, callback));
 				_newElements = true;
 
 				if (delay.TotalMilliseconds <= HotLoopThreshold.TotalMilliseconds * 2)
 					_wakeFromColdLoop.Set();
+
+				return newId;
 			}
+		}
+
+		/// <summary>
+		/// Cancels the scheduled callback with the given id.
+		/// </summary>
+		/// <param name="id"></param>
+		public void Cancel(long id)
+		{
+			lock (_cancelled)
+				_cancelled.Add(id);
 		}
 
 		/// <summary>
@@ -115,8 +131,8 @@ namespace Yggdrasil.Scheduling
 			{
 				_allowed.WaitOne();
 
-					var elapsed = timer.Elapsed;
-					timer.Restart();
+				var elapsed = timer.Elapsed;
+				timer.Restart();
 
 				// In the original, the elapsed time grab and the restart
 				// happened inside this if, but that caused callbacks to
@@ -140,6 +156,20 @@ namespace Yggdrasil.Scheduling
 					{
 						foreach (var item in _execute)
 						{
+							// What's more efficient, not meddling with the
+							// list until absolutely necessary or keeping
+							// even cancelled timers around until they fire
+							// the next time? Not sure.
+							lock (_cancelled)
+							{
+								if (_cancelled.Contains(item.Id))
+								{
+									_scheduled.Remove(item);
+									_cancelled.Remove(item.Id);
+									continue;
+								}
+							}
+
 							item.Callback?.Invoke();
 
 							if (item.RepeatDelay == TimeSpan.Zero)

@@ -9,6 +9,11 @@ namespace Yggdrasil.Scheduling
 	public class ScheduledCallback : IComparable<ScheduledCallback>, IComparable
 	{
 		/// <summary>
+		/// Gets or sets the schedule's id.
+		/// </summary>
+		public long Id { get; set; }
+
+		/// <summary>
 		/// Get sor sets the delay until the callback is executed.
 		/// </summary>
 		public TimeSpan Delay { get; set; }
@@ -26,11 +31,13 @@ namespace Yggdrasil.Scheduling
 		/// <summary>
 		/// Creates new callback.
 		/// </summary>
+		/// <param name="id"></param>
 		/// <param name="delay"></param>
 		/// <param name="repeatDelay"></param>
 		/// <param name="callback"></param>
-		public ScheduledCallback(TimeSpan delay, TimeSpan repeatDelay, Action callback)
+		public ScheduledCallback(long id, TimeSpan delay, TimeSpan repeatDelay, Action callback)
 		{
+			this.Id = id;
 			this.Delay = delay;
 			this.RepeatDelay = repeatDelay;
 			this.Callback = callback;

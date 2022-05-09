@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Yggdrasil.Scheduling
@@ -66,8 +67,9 @@ namespace Yggdrasil.Scheduling
 		/// </summary>
 		/// <param name="delayMs"></param>
 		/// <param name="callback"></param>
-		public long Schedule(double delayMs, Action callback)
-			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback);
+		/// <param name="args"></param>
+		public long Schedule(double delayMs, ScheduledCallbackFunc callback, params object[] args)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback, args);
 
 		/// <summary>
 		/// Schedules callback to be called after the given delay.
@@ -75,16 +77,18 @@ namespace Yggdrasil.Scheduling
 		/// <param name="delayMs"></param>
 		/// <param name="repeatDelayMs"></param>
 		/// <param name="callback"></param>
-		public long Schedule(double delayMs, int repeatDelayMs, Action callback)
-			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback);
+		/// <param name="args"></param>
+		public long Schedule(double delayMs, int repeatDelayMs, ScheduledCallbackFunc callback, params object[] args)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback, args);
 
 		/// <summary>
 		/// Schedules callback to be called after the given delay.
 		/// </summary>
 		/// <param name="delay"></param>
 		/// <param name="callback"></param>
-		public long Schedule(TimeSpan delay, Action callback)
-			=> this.Schedule(delay, TimeSpan.Zero, callback);
+		/// <param name="args"></param>
+		public long Schedule(TimeSpan delay, ScheduledCallbackFunc callback, params object[] args)
+			=> this.Schedule(delay, TimeSpan.Zero, callback, args);
 
 		/// <summary>
 		/// Schedules callback to be called after the given delay.
@@ -92,13 +96,14 @@ namespace Yggdrasil.Scheduling
 		/// <param name="delay"></param>
 		/// <param name="repeatDelay"></param>
 		/// <param name="callback"></param>
-		public long Schedule(TimeSpan delay, TimeSpan repeatDelay, Action callback)
+		/// <param name="args"></param>
+		public long Schedule(TimeSpan delay, TimeSpan repeatDelay, ScheduledCallbackFunc callback, params object[] args)
 		{
 			lock (_pending)
 			{
 				var newId = ++_ids;
 
-				_pending.Add(new ScheduledCallback(newId, delay, repeatDelay, callback));
+				_pending.Add(new ScheduledCallback(newId, delay, repeatDelay, callback, args));
 				_newElements = true;
 
 				if (delay.TotalMilliseconds <= HotLoopThreshold.TotalMilliseconds * 2)
@@ -147,6 +152,7 @@ namespace Yggdrasil.Scheduling
 					foreach (var item in _scheduled)
 					{
 						item.Delay -= elapsed;
+						item.Elapsed += elapsed;
 
 						if (item.Delay <= TimeSpan.Zero)
 							_execute.Add(item);
@@ -170,7 +176,8 @@ namespace Yggdrasil.Scheduling
 								}
 							}
 
-							item.Callback?.Invoke();
+							item.ExecuteCount++;
+							item.Callback?.Invoke(new CallbackState(item.Elapsed, item.ExecuteCount, item.Arguments));
 
 							if (item.RepeatDelay == TimeSpan.Zero)
 							{
@@ -179,6 +186,7 @@ namespace Yggdrasil.Scheduling
 							else
 							{
 								item.Delay = item.RepeatDelay;
+								item.Elapsed = TimeSpan.Zero;
 								_newElements = true;
 							}
 						}

@@ -29,7 +29,7 @@ namespace Yggdrasil.Test.Scheduling
 			var then = DateTime.Now;
 			var now = DateTime.Now;
 
-			scheduler.Schedule(delay, () => now = DateTime.Now);
+			scheduler.Schedule(delay, _ => now = DateTime.Now);
 			Thread.Sleep(delay + tolerance * 3);
 			Assert.InRange((now - then).TotalMilliseconds, delay - tolerance, delay + tolerance);
 		}
@@ -43,7 +43,7 @@ namespace Yggdrasil.Test.Scheduling
 			var calls = 0;
 			var tolerance = 50;
 
-			scheduler.Schedule(TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(500), () => calls++);
+			scheduler.Schedule(TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(500), _ => calls++);
 			Assert.Equal(0, calls);
 
 			Thread.Sleep(1000 + tolerance);
@@ -67,14 +67,14 @@ namespace Yggdrasil.Test.Scheduling
 			var waitTolerance = 100;
 
 			var called = false;
-			var id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), () => called = true);
+			var id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), _ => called = true);
 			Assert.Equal(false, called);
 
 			Thread.Sleep(1000 + waitTolerance);
 			Assert.Equal(true, called);
 
 			called = false;
-			id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), () => called = true);
+			id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), _ => called = true);
 			Assert.Equal(false, called);
 
 			Thread.Sleep(500);
@@ -83,6 +83,58 @@ namespace Yggdrasil.Test.Scheduling
 			Assert.Equal(false, called);
 			Thread.Sleep(1000 + waitTolerance);
 			Assert.Equal(false, called);
+
+			scheduler.Dispose();
+		}
+
+		[Fact]
+		public void Arguments()
+		{
+			var scheduler = new Scheduler();
+			scheduler.Start();
+
+			var waitTolerance = 100;
+			var x = 0;
+
+			scheduler.Schedule(1000, state =>
+			{
+				x = (int)state.Arguments[0];
+			},
+			100);
+
+			Assert.Equal(0, x);
+			Thread.Sleep(1000 + waitTolerance);
+			Assert.Equal(100, x);
+
+			scheduler.Schedule(1000, state =>
+			{
+				x = (int)state.Arguments[0] * 2;
+			},
+			200);
+
+			Assert.Equal(100, x);
+			Thread.Sleep(1000 + waitTolerance);
+			Assert.Equal(400, x);
+
+			scheduler.Dispose();
+		}
+
+		[Fact]
+		public void Counter()
+		{
+			var scheduler = new Scheduler();
+			scheduler.Start();
+
+			var waitTolerance = 50;
+			var x = 0L;
+
+			scheduler.Schedule(500, 500, state => x = state.ExecuteCount);
+
+			Assert.Equal(0, x);
+			Thread.Sleep(500 + waitTolerance);
+			Assert.Equal(1, x);
+			Thread.Sleep(1000 + waitTolerance);
+			Assert.Equal(3, x);
 
 			scheduler.Dispose();
 		}

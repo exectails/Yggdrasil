@@ -70,6 +70,7 @@
     <Compile Include="Parameters\Parameter.cs" />
     <Compile Include="Parameters\ParameterCollection.cs" />
     <Compile Include="Parameters\StringParameter.cs" />
+    <Compile Include="Scheduling\CallbackException.cs" />
     <Compile Include="Scheduling\CallbackState.cs" />
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />

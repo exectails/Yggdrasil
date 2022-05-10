@@ -138,5 +138,36 @@ namespace Yggdrasil.Test.Scheduling
 
 			scheduler.Dispose();
 		}
+
+		[Fact]
+		public void Exceptions()
+		{
+			var scheduler = new Scheduler();
+			scheduler.Start();
+
+			var waitTolerance = 50;
+			var x = 0;
+			var y = new int[] { 100 };
+
+			// This will throw an indexing exception during the callback,
+			// which means that x will stay 0.
+			scheduler.Schedule(500, state => x = y[999]);
+
+			Assert.Equal(0, x);
+			Thread.Sleep(500 + waitTolerance);
+			Assert.Equal(0, x);
+
+			// This will throw an exception during the callback, which we
+			// "handle" by subscribing to the exception event and setting
+			// x from there.
+			scheduler.CallbackException += (ex) => x = 555;
+			scheduler.Schedule(500, state => x = y[999]);
+
+			Assert.Equal(0, x);
+			Thread.Sleep(500 + waitTolerance);
+			Assert.Equal(555, x);
+
+			scheduler.Dispose();
+		}
 	}
 }

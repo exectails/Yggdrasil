@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Yggdrasil.Scheduling
@@ -36,6 +35,12 @@ namespace Yggdrasil.Scheduling
 		/// Returns true if the scheduler is actively handling timers.
 		/// </summary>
 		public bool IsActive => _allowed.WaitOne(0);
+
+		/// <summary>
+		/// Raised when an exception occurres while a scheduled callback
+		/// is executed.
+		/// </summary>
+		public event Action<CallbackException> CallbackException;
 
 		/// <summary>
 		/// Creates new scheduler.
@@ -177,7 +182,15 @@ namespace Yggdrasil.Scheduling
 							}
 
 							item.ExecuteCount++;
-							item.Callback?.Invoke(new CallbackState(item.Elapsed, item.ExecuteCount, item.Arguments));
+
+							try
+							{
+								item.Callback?.Invoke(new CallbackState(item.Elapsed, item.ExecuteCount, item.Arguments));
+							}
+							catch (Exception ex)
+							{
+								this.CallbackException?.Invoke(new CallbackException(ex));
+							}
 
 							if (item.RepeatDelay == TimeSpan.Zero)
 							{

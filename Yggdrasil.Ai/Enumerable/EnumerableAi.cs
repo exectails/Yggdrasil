@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Yggdrasil.Ai.Enumerable
 {
@@ -12,13 +14,39 @@ namespace Yggdrasil.Ai.Enumerable
 		private readonly Random _rnd = new Random(RandomSeed.Next());
 
 		private int _switchRandomN, _switchRandomM;
+
 		private IEnumerator _currentRoutine;
+		private readonly List<IEnumerator> _subRoutines = new List<IEnumerator>();
 
 		/// <summary>
 		/// Makes the AI execute once.
 		/// </summary>
 		protected void Heartbeat()
 		{
+			// Prioritize sub-routines, that were returned via yield return.
+			if (_subRoutines.Count != 0)
+			{
+				// Keep running the last sub-routine on the stack until
+				// it's over and add potential new sub-routines to the
+				// stack.
+				var subRoutine = _subRoutines.Last();
+				if (subRoutine.MoveNext())
+				{
+					if (subRoutine?.Current is IEnumerable newSubRoutine1)
+						_subRoutines.Add(newSubRoutine1.GetEnumerator());
+					return;
+				}
+
+				// Once the sub-routine is done, remove it. If there's
+				// more sub-routines on the stack, continue with those
+				// on the next tick, otherwise continue to the main
+				// routine.
+				_subRoutines.RemoveAt(_subRoutines.Count - 1);
+
+				if (_subRoutines.Count != 0)
+					return;
+			}
+
 			var prevRoutine = _currentRoutine;
 			if (_currentRoutine == null || !_currentRoutine.MoveNext())
 			{
@@ -32,6 +60,11 @@ namespace Yggdrasil.Ai.Enumerable
 					_currentRoutine?.MoveNext();
 				}
 			}
+
+			// If a sub-routine was returned, add it to the stack to get
+			// executed on the next tick.
+			if (_currentRoutine?.Current is IEnumerable newSubRoutine2)
+				_subRoutines.Add(newSubRoutine2.GetEnumerator());
 		}
 
 		/// <summary>

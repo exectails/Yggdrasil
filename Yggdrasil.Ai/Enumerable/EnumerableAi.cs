@@ -163,10 +163,10 @@ namespace Yggdrasil.Ai.Enumerable
 		//-------------------------------------------------------------------
 
 		/// <summary>
-		/// Does nothing, and idle action.
+		/// Does nothing, an idle action.
 		/// </summary>
 		/// <returns></returns>
-		private IEnumerable Nothing()
+		protected IEnumerable Nothing()
 		{
 			yield break;
 		}
@@ -207,10 +207,11 @@ namespace Yggdrasil.Ai.Enumerable
 		{
 			var endTime = DateTime.Now.AddMilliseconds(timeout);
 
-			foreach (var a in routine)
+			foreach (var _ in routine)
 			{
 				if (DateTime.Now >= endTime)
 					yield break;
+
 				yield return true;
 			}
 		}
@@ -226,10 +227,11 @@ namespace Yggdrasil.Ai.Enumerable
 		{
 			var endTime = DateTime.Now.Add(timeout);
 
-			foreach (var a in routine)
+			foreach (var _ in routine)
 			{
 				if (DateTime.Now >= endTime)
 					yield break;
+
 				yield return true;
 			}
 		}

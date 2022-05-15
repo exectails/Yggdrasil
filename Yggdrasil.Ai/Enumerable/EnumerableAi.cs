@@ -74,6 +74,7 @@ namespace Yggdrasil.Ai.Enumerable
 		protected virtual void StartRoutine(IEnumerable routine)
 		{
 			_currentRoutine = routine.GetEnumerator();
+			_subRoutines.Clear();
 		}
 
 		/// <summary>
@@ -82,6 +83,7 @@ namespace Yggdrasil.Ai.Enumerable
 		protected virtual void ClearRoutine()
 		{
 			_currentRoutine = null;
+			_subRoutines.Clear();
 		}
 
 		/// <summary>

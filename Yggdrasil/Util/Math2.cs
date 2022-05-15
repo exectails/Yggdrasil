@@ -93,6 +93,23 @@ namespace Yggdrasil.Util
 		/// <param name="max"></param>
 		/// <param name="val"></param>
 		/// <returns></returns>
+		public static double Clamp(double min, double max, double val)
+		{
+			if (val < min)
+				return min;
+			if (val > max)
+				return max;
+			return val;
+		}
+
+		/// <summary>
+		/// Returns min, if val is lower than min, max, if val is
+		/// greater than max, or simply val.
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <param name="val"></param>
+		/// <returns></returns>
 		public static long Clamp(long min, long max, long val)
 		{
 			if (val < min)

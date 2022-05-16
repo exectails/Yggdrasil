@@ -163,6 +163,21 @@ namespace Yggdrasil.Ai.Enumerable
 		}
 
 		/// <summary>
+		/// Returns true if the given percentage chance was met randomly.
+		/// </summary>
+		/// <example>
+		/// Chance(100); // Returns true in 100% of cases.
+		/// Chance(50); // Returns true in 50% of cases.
+		/// Chance(25); // Returns true in 25% of cases.
+		/// </example>
+		/// <param name="percent"></param>
+		/// <returns></returns>
+		protected bool Chance(float percent)
+		{
+			return (_rnd.NextDouble() * 100) <= percent;
+		}
+
+		/// <summary>
 		/// Returns a random number between 0 and max-1.
 		/// </summary>
 		/// <param name="max"></param>

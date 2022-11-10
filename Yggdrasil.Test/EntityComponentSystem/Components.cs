@@ -50,6 +50,35 @@ namespace Yggdrasil.Test.EntityComponentSystem
 		}
 
 		[Fact]
+		public void Has()
+		{
+			var components = new ComponentCollection();
+
+			Assert.False(components.TryGet<Component1>(out _));
+			Assert.Null(components.Get<Component1>());
+
+			Assert.False(components.Has<Component1>());
+			Assert.False(components.Has<Component2>());
+
+			components.Add(new Component1());
+			Assert.True(components.Has<Component1>());
+			Assert.False(components.Has<Component2>());
+
+			components.Remove<Component1>();
+			Assert.False(components.Has<Component1>());
+			Assert.False(components.Has<Component2>());
+			Assert.False(components.Has<Component2>());
+
+			components.Add(new Component2());
+			Assert.True(components.Has<Component2>());
+			Assert.False(components.Has<Component1>());
+
+			components.Remove<Component2>();
+			Assert.False(components.Has<Component2>());
+			Assert.False(components.Has<Component1>());
+		}
+
+		[Fact]
 		public void Update()
 		{
 			var components = new ComponentCollection();
@@ -68,6 +97,16 @@ namespace Yggdrasil.Test.EntityComponentSystem
 		private class Component1 : IUpdatableComponent
 		{
 			public int Foo { get; private set; } = 255;
+
+			public void Update(TimeSpan elapsed)
+			{
+				this.Foo++;
+			}
+		}
+
+		private class Component2 : IUpdatableComponent
+		{
+			public int Foo { get; private set; } = 32767;
 
 			public void Update(TimeSpan elapsed)
 			{

@@ -16,7 +16,7 @@ namespace Yggdrasil.Test.EntityComponentSystem
 		}
 
 		[Fact]
-		public void Remove()
+		public void RemoveByReference()
 		{
 			var components = new ComponentCollection();
 
@@ -28,6 +28,23 @@ namespace Yggdrasil.Test.EntityComponentSystem
 			Assert.Equal(255, components.Get<Component1>().Foo);
 
 			components.Remove(components.Get<Component1>());
+			Assert.False(components.TryGet<Component1>(out _));
+			Assert.Null(components.Get<Component1>());
+		}
+
+		[Fact]
+		public void RemoveByGeneric()
+		{
+			var components = new ComponentCollection();
+
+			Assert.False(components.TryGet<Component1>(out _));
+			Assert.Null(components.Get<Component1>());
+
+			components.Add(new Component1());
+			Assert.True(components.TryGet<Component1>(out _));
+			Assert.Equal(255, components.Get<Component1>().Foo);
+
+			components.Remove<Component1>();
 			Assert.False(components.TryGet<Component1>(out _));
 			Assert.Null(components.Get<Component1>());
 		}

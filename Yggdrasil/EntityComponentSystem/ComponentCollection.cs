@@ -35,18 +35,40 @@ namespace Yggdrasil.EntityComponentSystem
 		}
 
 		/// <summary>
-		/// Removes the given component.
+		/// Removes the given component, returns false if the
+		/// component didn't exist.
 		/// </summary>
 		/// <param name="component"></param>
-		public void Remove(IComponent component)
+		public bool Remove(IComponent component)
 		{
+			var removed = false;
+
 			var type = component.GetType();
 			lock (_syncLock)
 			{
-				_components.Remove(type);
+				removed = _components.Remove(type);
 
-				if (component is IUpdatableComponent updatableComponent)
+				if (removed && component is IUpdatableComponent updatableComponent)
 					_updateables.Remove(updatableComponent);
+			}
+
+			return removed;
+		}
+
+		/// <summary>
+		/// Removes component of the given type, returns false if the
+		/// component didn't exist.
+		/// </summary>
+		/// <typeparam name="TComponent"></typeparam>
+		/// <returns></returns>
+		public bool Remove<TComponent>()
+		{
+			lock (_syncLock)
+			{
+				if (!_components.TryGetValue(typeof(TComponent), out var component))
+					return false;
+
+				return this.Remove(component);
 			}
 		}
 
@@ -80,6 +102,17 @@ namespace Yggdrasil.EntityComponentSystem
 		{
 			component = this.Get<TComponent>();
 			return component != null;
+		}
+
+		/// <summary>
+		/// Returns true if a component with the given type exists.
+		/// </summary>
+		/// <typeparam name="TComponent"></typeparam>
+		/// <returns></returns>
+		public bool Has<TComponent>()
+		{
+			lock (_syncLock)
+				return _components.ContainsKey(typeof(TComponent));
 		}
 
 		/// <summary>

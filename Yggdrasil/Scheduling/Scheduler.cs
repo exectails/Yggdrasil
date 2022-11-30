@@ -68,26 +68,8 @@ namespace Yggdrasil.Scheduling
 		}
 
 		/// <summary>
-		/// Schedules callback to be called after the given delay.
-		/// </summary>
-		/// <param name="delayMs"></param>
-		/// <param name="callback"></param>
-		/// <param name="args"></param>
-		public long Schedule(double delayMs, ScheduledCallbackFunc callback, params object[] args)
-			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback, args);
-
-		/// <summary>
-		/// Schedules callback to be called after the given delay.
-		/// </summary>
-		/// <param name="delayMs"></param>
-		/// <param name="repeatDelayMs"></param>
-		/// <param name="callback"></param>
-		/// <param name="args"></param>
-		public long Schedule(double delayMs, int repeatDelayMs, ScheduledCallbackFunc callback, params object[] args)
-			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback, args);
-
-		/// <summary>
-		/// Schedules callback to be called after the given delay.
+		/// Schedules callback to be called after the given delay,
+		/// returns the callback's id.
 		/// </summary>
 		/// <param name="delay"></param>
 		/// <param name="callback"></param>
@@ -97,6 +79,16 @@ namespace Yggdrasil.Scheduling
 
 		/// <summary>
 		/// Schedules callback to be called after the given delay.
+		/// </summary>
+		/// <param name="delayMs"></param>
+		/// <param name="callback"></param>
+		/// <param name="args"></param>
+		public long Schedule(double delayMs, ScheduledCallbackFunc callback, params object[] args)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.Zero, callback, args);
+
+		/// <summary>
+		/// Schedules callback to be called after the given delay,
+		/// returns the callback's id.
 		/// </summary>
 		/// <param name="delay"></param>
 		/// <param name="repeatDelay"></param>
@@ -117,6 +109,16 @@ namespace Yggdrasil.Scheduling
 				return newId;
 			}
 		}
+
+		/// <summary>
+		/// Schedules callback to be called after the given delay.
+		/// </summary>
+		/// <param name="delayMs"></param>
+		/// <param name="repeatDelayMs"></param>
+		/// <param name="callback"></param>
+		/// <param name="args"></param>
+		public long Schedule(double delayMs, int repeatDelayMs, ScheduledCallbackFunc callback, params object[] args)
+			=> this.Schedule(TimeSpan.FromMilliseconds(delayMs), TimeSpan.FromMilliseconds(repeatDelayMs), callback, args);
 
 		/// <summary>
 		/// Cancels the scheduled callback with the given id.

@@ -3,7 +3,7 @@
 namespace Yggdrasil.Scheduling
 {
 	/// <summary>
-	/// A callback that is scheduled to be exected and potentially repeated
+	/// A callback that is scheduled to be executed and potentially repeated
 	/// after certain delays.
 	/// </summary>
 	public class ScheduledCallback : IComparable<ScheduledCallback>, IComparable

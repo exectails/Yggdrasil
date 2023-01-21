@@ -72,6 +72,7 @@
     <Compile Include="Parameters\StringParameter.cs" />
     <Compile Include="Scheduling\CallbackException.cs" />
     <Compile Include="Scheduling\CallbackState.cs" />
+    <Compile Include="Scheduling\Heartbeat.cs" />
     <Compile Include="Security\Hashing\SHA1.cs" />
     <Compile Include="Security\Hashing\SHA256.cs" />
     <Compile Include="Security\Hashing\MD5.cs" />

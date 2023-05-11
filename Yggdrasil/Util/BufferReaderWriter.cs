@@ -225,6 +225,46 @@ namespace Yggdrasil.Util
 			Array.Reverse(bytes, 0, bytes.Length);
 		}
 
+		/// <summary>
+		/// Searches for the given byte in the buffer, starting at the
+		/// current position, and returns the index of the first occurence.
+		/// If the byte is not found, -1 is returned.
+		/// </summary>
+		/// <example>
+		/// var buffer = new Buffer(Encoding.ASCII.GetBytes("foobar"));
+		/// buffer.Find((byte)'b'); // 3
+		/// </example>
+		/// <param name="val">Value to search for.</param>
+		/// <returns></returns>
+		public int IndexOf(byte val)
+			=> this.IndexOf(val, this.Index);
+
+		/// <summary>
+		/// Searches for the given byte in the buffer, starting at the
+		/// given position, and returns the index of the first occurence.
+		/// If the byte is not found, -1 is returned.
+		/// </summary>
+		/// <example>
+		/// var buffer = new Buffer(Encoding.ASCII.GetBytes("foobar"), 0);
+		/// buffer.Find((byte)'b'); // 3
+		/// 
+		/// var buffer = new Buffer(Encoding.ASCII.GetBytes("foobar"), 4);
+		/// buffer.Find((byte)'b'); // -1
+		/// </example>
+		/// <param name="val">Value to search for.</param>
+		/// <param name="startIndex">Index to start at.</param>
+		/// <returns></returns>
+		public int IndexOf(byte val, int startIndex)
+		{
+			for (var i = startIndex; i < _length; ++i)
+			{
+				if (_buffer[i] == val)
+					return i;
+			}
+
+			return -1;
+		}
+
 		// Reading
 		// ------------------------------------------------------------------
 

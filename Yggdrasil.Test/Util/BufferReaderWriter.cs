@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Xunit;
 using Yggdrasil.Util;
 
@@ -410,6 +411,46 @@ namespace Yggdrasil.Test.Util
 			buffer.Seek(0, SeekOrigin.Begin);
 			buffer.ReadTo(arr, 2, 11);
 			Assert.Equal(new byte[] { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }, arr);
+		}
+
+		[Fact]
+		public void IndexOf()
+		{
+			var foobarBytes = Encoding.UTF8.GetBytes("foobar");
+
+			var buffer = new BufferReaderWriter();
+			buffer.WriteUInt16(0xFFFF);
+			buffer.Write(foobarBytes);
+			buffer.WriteByte(0);
+			buffer.WriteUInt16(0xFFFF);
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.Equal(0xFFFF, buffer.ReadUInt16());
+			Assert.Equal(foobarBytes, buffer.Read(foobarBytes.Length));
+			Assert.Equal(0, buffer.ReadByte());
+			Assert.Equal(0xFFFF, buffer.ReadUInt16());
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.Equal(8, buffer.IndexOf(0));
+			Assert.Equal(8, buffer.IndexOf(0, 0));
+			Assert.Equal(8, buffer.IndexOf(0, 1));
+			Assert.Equal(8, buffer.IndexOf(0, 2));
+			Assert.Equal(8, buffer.IndexOf(0, 6));
+			Assert.Equal(8, buffer.IndexOf(0, 7));
+			Assert.Equal(8, buffer.IndexOf(0, 8));
+			Assert.Equal(-1, buffer.IndexOf(0, 9));
+
+			buffer.Seek(0, SeekOrigin.Begin);
+			Assert.Equal(0xFFFF, buffer.ReadUInt16());
+
+			var index = buffer.IndexOf(0);
+			Assert.Equal(8, index);
+			var len = index - buffer.Index;
+			Assert.Equal(6, len);
+			var str = Encoding.UTF8.GetString(buffer.Read(len));
+			Assert.Equal("foobar", str);
+			Assert.Equal(0, buffer.ReadByte());
+			Assert.Equal(0xFFFF, buffer.ReadUInt16());
 		}
 	}
 }

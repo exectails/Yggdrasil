@@ -38,6 +38,15 @@ namespace Yggdrasil.Data
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
+		/// <param name="msg"></param>
+		public DatabaseErrorException(string msg)
+			: this(null, msg)
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="msg"></param>
 		public DatabaseErrorException(string source, string msg)
@@ -52,7 +61,10 @@ namespace Yggdrasil.Data
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return this.Source + ": " + this.Message;
+			if (string.IsNullOrWhiteSpace(this.Source))
+				return this.Message;
+			else
+				return this.Source + ": " + this.Message;
 		}
 	}
 }

@@ -80,6 +80,24 @@ namespace Yggdrasil.Data.JSON
 		/// <param name="key"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
+		public static long ReadLong(this JObject obj, string key, long def = 0) { return (long)(obj[key] ?? def); }
+
+		/// <summary>
+		/// Reads value and returns it, or default if it was missing.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public static ulong ReadULong(this JObject obj, string key, ulong def = 0) { return (ulong)(obj[key] ?? def); }
+
+		/// <summary>
+		/// Reads value and returns it, or default if it was missing.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
 		public static float ReadFloat(this JObject obj, string key, float def = 0) { return (float)(obj[key] ?? def); }
 
 		/// <summary>

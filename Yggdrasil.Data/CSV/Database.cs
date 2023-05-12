@@ -100,6 +100,15 @@ namespace Yggdrasil.Data.CSV
 					}
 				}
 			}
+
+			this.AfterLoad();
+		}
+
+		/// <summary>
+		/// Called at the end of LoadFile.
+		/// </summary>
+		protected virtual void AfterLoad()
+		{
 		}
 
 		/// <summary>

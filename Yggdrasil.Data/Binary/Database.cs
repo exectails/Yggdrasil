@@ -56,6 +56,15 @@ namespace Yggdrasil.Data.Binary
 			{
 				throw new DatabaseErrorException(fileName, "Failed to read data, the file might be corrupted.");
 			}
+
+			this.AfterLoad();
+		}
+
+		/// <summary>
+		/// Called at the end of LoadFile.
+		/// </summary>
+		protected virtual void AfterLoad()
+		{
 		}
 
 		/// <summary>

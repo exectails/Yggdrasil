@@ -260,5 +260,22 @@ namespace Yggdrasil.Data.Binary
 			lock (this.Entries)
 				return this.Entries.TryGetValue(index, out data);
 		}
+
+		/// <summary>
+		/// Returns the first entry matching the given predicate via out.
+		/// Returns false if no matches were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public bool TryFind(Func<TData, bool> predicate, out TData data)
+		{
+			data = default;
+
+			lock (this.Entries)
+				data = this.Entries.Values.FirstOrDefault(predicate);
+
+			return data != null;
+		}
 	}
 }

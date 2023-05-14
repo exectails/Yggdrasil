@@ -246,5 +246,23 @@ namespace Yggdrasil.Data.JSON
 			foreach (JValue element in obj[key])
 				yield return (TType)element.Value;
 		}
+
+		/// <summary>
+		/// Checks if a field with the given name exists and returns it
+		/// via out. Returns false if no matching field was found.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public static bool TryGetObject(this JObject obj, string key, out JObject val)
+		{
+			val = null;
+
+			if (obj.ContainsKey(key))
+				val = obj[key] as JObject;
+
+			return (val != null);
+		}
 	}
 }

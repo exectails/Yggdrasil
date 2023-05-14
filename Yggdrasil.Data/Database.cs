@@ -103,6 +103,15 @@ namespace Yggdrasil.Data
 		bool TryFind(TIndex index, out TData data);
 
 		/// <summary>
+		/// Returns the first entry matching the given predicate via out.
+		/// Returns false if no matches were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		bool TryFind(Func<TData, bool> predicate, out TData data);
+
+		/// <summary>
 		/// Searches for entries that match the given predicate
 		/// and returns them.
 		/// </summary>

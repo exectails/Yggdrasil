@@ -248,6 +248,23 @@ namespace Yggdrasil.Data.CSV
 		}
 
 		/// <summary>
+		/// Returns the first entry matching the given predicate via out.
+		/// Returns false if no matches were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public bool TryFind(Func<TData, bool> predicate, out TData data)
+		{
+			data = default;
+
+			lock (this.Entries)
+				data = this.Entries.Values.FirstOrDefault(predicate);
+
+			return data != null;
+		}
+
+		/// <summary>
 		/// Searches for entries that match the given predicate
 		/// and returns them.
 		/// </summary>

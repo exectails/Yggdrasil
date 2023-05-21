@@ -55,6 +55,17 @@
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />
     <Compile Include="Extensions\StringBuilder.cs" />
+    <Compile Include="Geometry\Line.cs" />
+    <Compile Include="Geometry\Outline.cs" />
+    <Compile Include="Geometry\PointUtil.cs" />
+    <Compile Include="Geometry\Shapes\Circle.cs" />
+    <Compile Include="Geometry\Shapes\CompositeShape.cs" />
+    <Compile Include="Geometry\Shapes\Cone.cs" />
+    <Compile Include="Geometry\Shapes\Polygon.cs" />
+    <Compile Include="Geometry\Shapes\Rectangle.cs" />
+    <Compile Include="Geometry\Shapes\Shape.cs" />
+    <Compile Include="Geometry\Vector2.cs" />
+    <Compile Include="Geometry\Vector2F.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LoggerTarget.cs" />
     <Compile Include="Logging\LogLevel.cs" />

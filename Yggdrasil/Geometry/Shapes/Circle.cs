@@ -42,6 +42,9 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <returns></returns>
 		public bool IsInside(Vector2 pos)
 		{
+			if (this.Center == pos)
+				return true;
+
 			var distance = Math.Sqrt(Math.Pow(this.Center.X - pos.X, 2) + Math.Pow(this.Center.Y - pos.Y, 2));
 			return distance < this.Radius;
 		}

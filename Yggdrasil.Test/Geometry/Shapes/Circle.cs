@@ -1,6 +1,7 @@
 ﻿using Yggdrasil.Geometry;
 using Yggdrasil.Geometry.Shapes;
 using Xunit;
+using System;
 
 namespace Yggdrasil.Tests.Geometry.Shapes
 {
@@ -19,6 +20,18 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 			Assert.True(shape.IsInside(new Vector2(550, 550)));
 			Assert.False(shape.IsInside(new Vector2(350, 650)));
 			Assert.False(shape.IsInside(new Vector2(650, 350)));
+		}
+
+		[Fact]
+		public void GetRandomPosition()
+		{
+			var shape = new Circle(new Vector2(500, 500), 0);
+			var rnd = new Random();
+
+			var rndPos = shape.GetRandomPoint(rnd);
+			Assert.Equal(500, rndPos.X);
+			Assert.Equal(500, rndPos.Y);
+			Assert.True(shape.IsInside(rndPos));
 		}
 
 		[Fact]

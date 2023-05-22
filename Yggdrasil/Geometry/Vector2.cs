@@ -151,7 +151,7 @@ namespace Yggdrasil.Geometry
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			return obj is Vector2 && this == (Vector2)obj;
+			return obj is Vector2 vector && this == vector;
 		}
 
 		/// <summary>

@@ -59,8 +59,8 @@ namespace Yggdrasil.Structures
 		private readonly Size _minLeafSize;
 		private readonly int _maxObjectsPerLeaf;
 		private QuadNode _root = null;
-		private Dictionary<TQuadObject, QuadNode> _objectToNodeLookup = new Dictionary<TQuadObject, QuadNode>();
-		private Dictionary<TQuadObject, int> _objectSortOrder = new Dictionary<TQuadObject, int>();
+		private readonly Dictionary<TQuadObject, QuadNode> _objectToNodeLookup = new Dictionary<TQuadObject, QuadNode>();
+		private readonly Dictionary<TQuadObject, int> _objectSortOrder = new Dictionary<TQuadObject, int>();
 		private int _objectSortId = 0;
 
 		/// <summary>
@@ -282,22 +282,6 @@ namespace Yggdrasil.Structures
 				}
 
 				this.AddQuadObjectToNode(node, quadObject);
-			}
-		}
-
-		/// <summary>
-		/// Removes all objects from node.
-		/// </summary>
-		/// <param name="node"></param>
-		private void ClearQuadObjectsFromNode(QuadNode node)
-		{
-			lock (_syncLock)
-			{
-				var quadObjects = new List<TQuadObject>(node.Objects);
-				foreach (var quadObject in quadObjects)
-				{
-					this.RemoveQuadObjectFromNode(quadObject);
-				}
 			}
 		}
 

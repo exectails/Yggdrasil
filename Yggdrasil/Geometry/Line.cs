@@ -108,7 +108,7 @@
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			return obj is Line && this == (Line)obj;
+			return obj is Line line && this == line;
 		}
 
 		/// <summary>

@@ -12,7 +12,7 @@ namespace Yggdrasil.Test.Util
 		[Fact]
 		public void SetGet()
 		{
-			var vars = new Variables();
+			var vars = new Yggdrasil.Util.Variables();
 			vars.SetByte("byte", 1);
 			vars.SetShort("short", 2);
 			vars.SetInt("int", 3);

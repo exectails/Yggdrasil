@@ -22,7 +22,7 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Fired when the variable's value changed.
 			/// </summary>
-			event Action<IVariable> ValueChanged;
+			event Action<TIdent> ValueChanged;
 
 			/// <summary>
 			/// Serializes the variable's value and returns it.

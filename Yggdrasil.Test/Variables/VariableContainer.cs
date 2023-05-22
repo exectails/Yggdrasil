@@ -166,7 +166,7 @@ namespace Yggdrasil.Test.Variables
 			var i1 = container.Int("i1", 3);
 			var i2 = container.Int("i2");
 
-			i1.ValueChanged += variable => i2.Value = (variable as IntVariable).Value * 2;
+			i1.ValueChanged += ident => i2.Value = container.Int(ident).Value * 2;
 
 			Assert.Equal(3, i1.Value);
 			Assert.Equal(0, i2.Value);

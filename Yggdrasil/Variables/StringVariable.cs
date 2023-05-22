@@ -24,7 +24,7 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Fired when the variable's value changed.
 			/// </summary>
-			public event Action<IVariable> ValueChanged;
+			public event Action<TIdent> ValueChanged;
 
 			/// <summary>
 			/// Gets or sets the variable's value.
@@ -38,7 +38,7 @@ namespace Yggdrasil.Variables
 						return;
 
 					_value = value;
-					this.ValueChanged?.Invoke(this);
+					this.ValueChanged?.Invoke(this.Ident);
 				}
 			}
 

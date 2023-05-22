@@ -40,7 +40,7 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Raised when the variable's value changed.
 			/// </summary>
-			public event Action<IVariable> ValueChanged;
+			public event Action<TIdent> ValueChanged;
 
 			/// <summary>
 			/// Gets or sets the variable's value.
@@ -60,7 +60,7 @@ namespace Yggdrasil.Variables
 						_value = value;
 
 					if (!_value.Equals(valueBefore))
-						this.ValueChanged?.Invoke(this);
+						this.ValueChanged?.Invoke(this.Ident);
 				}
 			}
 
@@ -123,6 +123,12 @@ namespace Yggdrasil.Variables
 				if (_maxValue.CompareTo(_minValue) < 0)
 					_maxValue = _minValue;
 			}
+
+			/// <summary>
+			/// Raises the ValueChanged event.
+			/// </summary>
+			protected void OnValueChanged()
+				=> this.ValueChanged?.Invoke(this.Ident);
 
 			/// <summary>
 			/// Serializes the variable's value and returns it.

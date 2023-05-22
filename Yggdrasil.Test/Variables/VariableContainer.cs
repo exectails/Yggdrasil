@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Yggdrasil.Variables;
+using Yggdrasil.Variables.DefaultGetters;
 using static Yggdrasil.Variables.VariableContainer<string>;
 
 namespace Yggdrasil.Test.Variables

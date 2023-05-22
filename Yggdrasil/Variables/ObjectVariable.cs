@@ -89,48 +89,5 @@ namespace Yggdrasil.Variables
 			/// <returns></returns>
 			public override string ToString() => this.Value.ToString();
 		}
-
-		/// <summary>
-		/// Returns the variable with the given identifier.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public ObjectVariable Object(TIdent ident)
-		{
-			if (!this.TryGet<ObjectVariable>(ident, out var variable))
-			{
-				if (!this.AutoCreate)
-					return null;
-
-				variable = this.Create(new ObjectVariable(ident));
-			}
-
-			return variable;
-		}
-
-		/// <summary>
-		/// Sets the value of the variable with the given identifier.
-		/// If the variable doesn't exist yet, it will be created.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public ObjectVariable Object(TIdent ident, string value)
-		{
-			if (!this.TryGet<ObjectVariable>(ident, out var variable))
-				return this.Create(new ObjectVariable(ident, value));
-
-			variable.Value = value;
-
-			return variable;
-		}
 	}
 }

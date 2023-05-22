@@ -43,48 +43,5 @@ namespace Yggdrasil.Variables
 			/// <param name="value"></param>
 			public override void Deserialize(string value) => this.Value = short.Parse(value);
 		}
-
-		/// <summary>
-		/// Returns the variable with the given identifier.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public ShortVariable Short(TIdent ident)
-		{
-			if (!this.TryGet<ShortVariable>(ident, out var variable))
-			{
-				if (!this.AutoCreate)
-					return null;
-
-				variable = this.Create(new ShortVariable(ident));
-			}
-
-			return variable;
-		}
-
-		/// <summary>
-		/// Sets the value of the variable with the given identifier.
-		/// If the variable doesn't exist yet, it will be created.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public ShortVariable Short(TIdent ident, short value)
-		{
-			if (!this.TryGet<ShortVariable>(ident, out var variable))
-				return this.Create(new ShortVariable(ident, value));
-
-			variable.Value = value;
-
-			return variable;
-		}
 	}
 }

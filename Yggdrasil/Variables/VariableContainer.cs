@@ -33,6 +33,16 @@ namespace Yggdrasil.Variables
 		}
 
 		/// <summary>
+		/// Returns whether the given variable can be created in this
+		/// container.
+		/// </summary>
+		/// <typeparam name="TVariable"></typeparam>
+		/// <param name="variable"></param>
+		/// <returns></returns>
+		protected virtual bool CanCreate<TVariable>(TVariable variable) where TVariable : IVariable
+			=> true;
+
+		/// <summary>
 		/// Removes the variable with the given identifier from the
 		/// container.
 		/// </summary>

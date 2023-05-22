@@ -44,48 +44,5 @@ namespace Yggdrasil.Variables
 			/// <param name="value"></param>
 			public override void Deserialize(string value) => this.Value = double.Parse(value, CultureInfo.InvariantCulture);
 		}
-
-		/// <summary>
-		/// Returns the variable with the given identifier.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public DoubleVariable Double(TIdent ident)
-		{
-			if (!this.TryGet<DoubleVariable>(ident, out var variable))
-			{
-				if (!this.AutoCreate)
-					return null;
-
-				variable = this.Create(new DoubleVariable(ident));
-			}
-
-			return variable;
-		}
-
-		/// <summary>
-		/// Sets the value of the variable with the given identifier.
-		/// If the variable doesn't exist yet, it will be created.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="TypeMismatchException">
-		/// Thrown when the variable with the given identifier is of a
-		/// different type.
-		/// </exception>
-		public DoubleVariable Double(TIdent ident, double value)
-		{
-			if (!this.TryGet<DoubleVariable>(ident, out var variable))
-				return this.Create(new DoubleVariable(ident, value));
-
-			variable.Value = value;
-
-			return variable;
-		}
 	}
 }

@@ -99,6 +99,7 @@
     <Compile Include="Util\MT19937.cs" />
     <Compile Include="Util\RandomProvider.cs" />
     <Compile Include="Util\Variables.cs" />
+    <Compile Include="Variables\VariableContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yggdrasil.Ai\Yggdrasil.Ai.csproj">

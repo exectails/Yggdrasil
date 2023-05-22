@@ -114,6 +114,23 @@
     <Compile Include="Util\ObjectActivator.cs" />
     <Compile Include="Util\RandomProvider.cs" />
     <Compile Include="Util\Variables.cs" />
+    <Compile Include="Variables\DoubleVariable.cs" />
+    <Compile Include="Variables\FloatVariable.cs" />
+    <Compile Include="Variables\ByteVariable.cs" />
+    <Compile Include="Variables\SByteVariable.cs" />
+    <Compile Include="Variables\IntVariable.cs" />
+    <Compile Include="Variables\LongVariable.cs" />
+    <Compile Include="Variables\NumericVariable.cs" />
+    <Compile Include="Variables\ShortVariable.cs" />
+    <Compile Include="Variables\ObjectVariable.cs" />
+    <Compile Include="Variables\StringVariable.cs" />
+    <Compile Include="Variables\TypeMismatchException.cs" />
+    <Compile Include="Variables\UIntVariable.cs" />
+    <Compile Include="Variables\ULongVariable.cs" />
+    <Compile Include="Variables\UShortVariable.cs" />
+    <Compile Include="Variables\Variable.cs" />
+    <Compile Include="Variables\VariableContainer.cs" />
+    <Compile Include="Variables\VariableType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

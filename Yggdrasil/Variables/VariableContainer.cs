@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Yggdrasil.Variables
@@ -26,6 +27,9 @@ namespace Yggdrasil.Variables
 		/// <returns></returns>
 		public TVariable Create<TVariable>(TVariable variable) where TVariable : IVariable
 		{
+			if (!this.CanCreate(variable))
+				throw new InvalidOperationException($"Failed to create variable '{variable.Ident}' in '{this.GetType().Name}'.");
+
 			lock (_syncLock)
 				_vars[variable.Ident] = variable;
 

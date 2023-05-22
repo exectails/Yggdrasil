@@ -195,5 +195,28 @@ namespace Yggdrasil.Test.Variables
 			Assert.Throws<TypeMismatchException>(() => container.Float("str1").Value = 1);
 			Assert.Equal("1", container.String("str1").Value);
 		}
+
+		[Fact]
+		public void Compare()
+		{
+			var container = new VariableContainer<string>();
+
+			var foobarVar = container.Float("foobar", 0);
+
+			for (var i = 0; i < 21; ++i)
+				foobarVar.Value += i;
+
+			foobarVar.Value *= 2;
+
+			// Compare
+			Console.WriteLine(foobarVar < 420);
+			Console.WriteLine(foobarVar > 420);
+			Console.WriteLine(foobarVar >= 420);
+			Console.WriteLine(foobarVar <= 420);
+			Console.WriteLine(foobarVar == 420);
+			Console.WriteLine(foobarVar != 420);
+			Console.WriteLine(420 == foobarVar);
+			Console.WriteLine(420 != foobarVar);
+		}
 	}
 }

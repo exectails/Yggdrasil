@@ -218,5 +218,58 @@ namespace Yggdrasil.Test.Variables
 			Console.WriteLine(420 == foobarVar);
 			Console.WriteLine(420 != foobarVar);
 		}
+
+		[Fact]
+		public void MinMax()
+		{
+			var container = new VariableContainer<string>();
+
+			var i1 = container.Create(new IntVariable("i1", 10, 0, 50));
+			Assert.Equal(10, i1.Value);
+			Assert.Equal(0, i1.MinValue);
+			Assert.Equal(50, i1.MaxValue);
+
+			i1.Value += 100;
+			Assert.Equal(50, i1.Value);
+
+			i1.Value -= 100;
+			Assert.Equal(0, i1.Value);
+
+			i1.MinValue = 5;
+			Assert.Equal(5, i1.Value);
+			Assert.Equal(5, i1.MinValue);
+			Assert.Equal(50, i1.MaxValue);
+
+			i1.Value += 10;
+			Assert.Equal(15, i1.Value);
+
+			i1.MaxValue = 10;
+			Assert.Equal(10, i1.Value);
+			Assert.Equal(5, i1.MinValue);
+			Assert.Equal(10, i1.MaxValue);
+
+			i1.MinValue = 50;
+			i1.MaxValue = 100;
+			Assert.Equal(50, i1.Value);
+			Assert.Equal(50, i1.MinValue);
+			Assert.Equal(100, i1.MaxValue);
+
+			i1.MinValue = 100;
+			Assert.Equal(100, i1.Value);
+			Assert.Equal(100, i1.MinValue);
+			Assert.Equal(100, i1.MaxValue);
+
+			i1.MinValue = 40;
+			i1.MaxValue = 50;
+			i1.Value = 45;
+			Assert.Equal(45, i1.Value);
+			Assert.Equal(40, i1.MinValue);
+			Assert.Equal(50, i1.MaxValue);
+
+			i1.MaxValue = 20;
+			Assert.Equal(40, i1.Value);
+			Assert.Equal(40, i1.MinValue);
+			Assert.Equal(40, i1.MaxValue);
+		}
 	}
 }

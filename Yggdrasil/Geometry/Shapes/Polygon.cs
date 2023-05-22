@@ -91,6 +91,37 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Returns a polygon with 4 edge points, making up a rectangle
+		/// spanning from start to end.
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		/// <param name="width"></param>
+		/// <returns></returns>
+		public static Polygon RectangleBetween(Vector2 start, Vector2 end, int width)
+		{
+			var points = new Vector2[4];
+
+			var length = start.GetDistance(end);
+			var halfWidth = width / 2;
+			var dir = start.GetAngle(end);
+
+			var x1 = start.X - halfWidth;
+			var x2 = start.X + halfWidth;
+			var y1 = start.Y;
+			var y2 = (int)(start.Y + length);
+
+			points[0] = new Vector2(x1, y1);
+			points[1] = new Vector2(x2, y1);
+			points[2] = new Vector2(x2, y2);
+			points[3] = new Vector2(x1, y2);
+
+			PointUtil.Rotate(ref points, start, dir);
+
+			return new Polygon(points);
+		}
+
+		/// <summary>
 		/// Returns true if the given point is within this polygon.
 		/// </summary>
 		/// <param name="point"></param>

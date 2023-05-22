@@ -1,4 +1,6 @@
-﻿namespace Yggdrasil.Geometry
+﻿using System;
+
+namespace Yggdrasil.Geometry
 {
 	/// <summary>
 	/// Represents a 2-dimensional vector.
@@ -29,6 +31,37 @@
 		{
 			this.X = x;
 			this.Y = y;
+		}
+
+		/// <summary>
+		/// Returns distance between this and another vector in 2D space.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public double GetDistance(Vector2 other)
+		{
+			return Math.Sqrt(Math.Pow(this.X - other.X, 2) + Math.Pow(this.Y - other.Y, 2));
+		}
+
+		/// <summary>
+		/// Returns direction the other vetcor is in as an angle in degree.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public double GetAngle(Vector2 other)
+		{
+			var radianAngle = Math.Atan2(other.Y - this.Y, other.X - this.X);
+
+			var result = radianAngle * (180.0 / Math.PI) - 90.0;
+
+			// Normalize
+			result %= 360.0;
+			result = (result > 0 ? result : result + 360);
+
+			if (Math.Abs(result - 360) < 0.00001)
+				result = 0;
+
+			return (float)result;
 		}
 
 		/// <summary>

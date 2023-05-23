@@ -45,8 +45,8 @@
   <ItemGroup>
     <Compile Include="Collections\ListCollection.cs" />
     <Compile Include="Configuration\ConfFile.cs" />
-    <Compile Include="EntityComponentSystem\Component.cs" />
-    <Compile Include="EntityComponentSystem\ComponentCollection.cs" />
+    <Compile Include="Composition\Component.cs" />
+    <Compile Include="Composition\ComponentCollection.cs" />
     <Compile Include="Extensions\DateTime.cs" />
     <Compile Include="Extensions\Dictionary.cs" />
     <Compile Include="Extensions\GenericLists.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Yggdrasil.EntityComponentSystem
+namespace Yggdrasil.Composition
 {
 	/// <summary>
 	/// A collection of components for an entity.

@@ -68,7 +68,7 @@
     <Compile Include="Geometry\Shapes\Rectangle.cs" />
     <Compile Include="Geometry\Vector2.cs" />
     <Compile Include="Geometry\Vector2F.cs" />
-    <Compile Include="EntityComponentSystem\Components.cs" />
+    <Compile Include="Composition\Components.cs" />
     <Compile Include="Extensions\GenericLists.cs" />
     <Compile Include="Extensions\Random.cs" />
     <Compile Include="Extensions\String.cs" />

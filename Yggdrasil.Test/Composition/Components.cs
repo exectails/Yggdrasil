@@ -1,8 +1,8 @@
 ﻿using System;
 using Xunit;
-using Yggdrasil.EntityComponentSystem;
+using Yggdrasil.Composition;
 
-namespace Yggdrasil.Test.EntityComponentSystem
+namespace Yggdrasil.Test.Composition
 {
 	public class Components
 	{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Yggdrasil.Scheduling;
 
 namespace Yggdrasil.Composition
 {
@@ -11,11 +12,12 @@ namespace Yggdrasil.Composition
 	/// one component per type. For example, only one inventory, one
 	/// skill collection, etc.
 	/// </remarks>
-	public class ComponentCollection
+	public class ComponentCollection : IUpdateable
 	{
+		private readonly object _syncLock = new object();
+
 		private readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
 		private readonly HashSet<IUpdatableComponent> _updateables = new HashSet<IUpdatableComponent>();
-		private readonly object _syncLock = new object();
 
 		/// <summary>
 		/// Adds a component.

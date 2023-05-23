@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Yggdrasil.Scheduling;
 
-namespace Yggdrasil.EntityComponentSystem
+namespace Yggdrasil.Composition
 {
 	/// <summary>
 	/// Base interface for components.
@@ -12,12 +12,7 @@ namespace Yggdrasil.EntityComponentSystem
 	/// <summary>
 	/// Base interface for updatable components.
 	/// </summary>
-	public interface IUpdatableComponent : IComponent
+	public interface IUpdatableComponent : IComponent, IUpdateable
 	{
-		/// <summary>
-		/// Updates component.
-		/// </summary>
-		/// <param name="elapsed"></param>
-		void Update(TimeSpan elapsed);
 	}
 }

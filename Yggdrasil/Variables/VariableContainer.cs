@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Yggdrasil.Variables
@@ -10,8 +9,16 @@ namespace Yggdrasil.Variables
 	/// <typeparam name="TIdent"></typeparam>
 	public partial class VariableContainer<TIdent>
 	{
-		private readonly object _syncLock = new object();
-		private readonly Dictionary<TIdent, IVariable> _vars = new Dictionary<TIdent, IVariable>();
+		/// <summary>
+		/// Lock object for thread safety. Lock while accessing the
+		/// variable list.
+		/// </summary>
+		protected readonly object _syncLock = new object();
+
+		/// <summary>
+		/// List of variables.
+		/// </summary>
+		protected readonly Dictionary<TIdent, IVariable> _vars = new Dictionary<TIdent, IVariable>();
 
 		/// <summary>
 		/// Gets or sets whether variables are created automatically on
@@ -25,26 +32,13 @@ namespace Yggdrasil.Variables
 		/// <typeparam name="TVariable"></typeparam>
 		/// <param name="variable"></param>
 		/// <returns></returns>
-		public TVariable Create<TVariable>(TVariable variable) where TVariable : IVariable
+		public virtual TVariable Create<TVariable>(TVariable variable) where TVariable : IVariable
 		{
-			if (!this.CanCreate(variable))
-				throw new InvalidOperationException($"Failed to create variable '{variable.Ident}' in '{this.GetType().Name}'.");
-
 			lock (_syncLock)
 				_vars[variable.Ident] = variable;
 
 			return variable;
 		}
-
-		/// <summary>
-		/// Returns whether the given variable can be created in this
-		/// container.
-		/// </summary>
-		/// <typeparam name="TVariable"></typeparam>
-		/// <param name="variable"></param>
-		/// <returns></returns>
-		protected virtual bool CanCreate<TVariable>(TVariable variable) where TVariable : IVariable
-			=> true;
 
 		/// <summary>
 		/// Removes the variable with the given identifier from the

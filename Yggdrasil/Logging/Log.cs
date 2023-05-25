@@ -7,108 +7,128 @@ namespace Yggdrasil.Logging
 	/// </summary>
 	public static class Log
 	{
-		private static Logger _logger = Logger.Get();
+		private static Logger GlobalLogger;
 
-		static Log()
+		/// <summary>
+		/// Initiaizes global Log instance with the given name. If Init is
+		/// not called, a default logger with the name of the assembly will
+		/// be created.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static void Init(string name)
 		{
-			_logger.AddTarget(new ConsoleTarget());
-			_logger.AddTarget(new FileTarget("logs"));
+			GlobalLogger = Logger.Get(name);
+
+			GlobalLogger.AddTarget(new ConsoleTarget());
+			GlobalLogger.AddTarget(new FileTarget("logs"));
+		}
+
+		/// <summary>
+		/// Creates a logger if it doesn't exist yet.
+		/// </summary>
+		private static Logger GetLogger()
+		{
+			if (GlobalLogger == null)
+				Init(null);
+
+			return GlobalLogger;
 		}
 
 		/// <summary>
 		/// Logs an info message.
 		/// </summary>
 		/// <param name="value"></param>
-		public static void Info(string value) { _logger.Info(value); }
+		public static void Info(string value) { GetLogger().Info(value); }
 
 		/// <summary>
 		/// Logs an info message.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void Info(string format, params object[] args) { _logger.Info(format, args); }
+		public static void Info(string format, params object[] args) { GetLogger().Info(format, args); }
 
 		/// <summary>
 		/// Logs an info message.
 		/// </summary>
 		/// <param name="obj"></param>
-		public static void Info(object obj) { _logger.Info(obj); }
+		public static void Info(object obj) { GetLogger().Info(obj); }
 
 		/// <summary>
 		/// Logs a warning message.
 		/// </summary>
 		/// <param name="value"></param>
-		public static void Warning(string value) { _logger.Warning(value); }
+		public static void Warning(string value) { GetLogger().Warning(value); }
 
 		/// <summary>
 		/// Logs a warning message.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void Warning(string format, params object[] args) { _logger.Warning(format, args); }
+		public static void Warning(string format, params object[] args) { GetLogger().Warning(format, args); }
 
 		/// <summary>
 		/// Logs a warning message.
 		/// </summary>
 		/// <param name="obj"></param>
-		public static void Warning(object obj) { _logger.Warning(obj); }
+		public static void Warning(object obj) { GetLogger().Warning(obj); }
 
 		/// <summary>
 		/// Logs an error message.
 		/// </summary>
 		/// <param name="value"></param>
-		public static void Error(string value) { _logger.Error(value); }
+		public static void Error(string value) { GetLogger().Error(value); }
 
 		/// <summary>
 		/// Logs an error message.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void Error(string format, params object[] args) { _logger.Error(format, args); }
+		public static void Error(string format, params object[] args) { GetLogger().Error(format, args); }
 
 		/// <summary>
 		/// Logs an error message.
 		/// </summary>
 		/// <param name="obj"></param>
-		public static void Error(object obj) { _logger.Error(obj); }
+		public static void Error(object obj) { GetLogger().Error(obj); }
 
 		/// <summary>
 		/// Logs a debug message.
 		/// </summary>
 		/// <param name="value"></param>
-		public static void Debug(string value) { _logger.Debug(value); }
+		public static void Debug(string value) { GetLogger().Debug(value); }
 
 		/// <summary>
 		/// Logs a debug message.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void Debug(string format, params object[] args) { _logger.Debug(format, args); }
+		public static void Debug(string format, params object[] args) { GetLogger().Debug(format, args); }
 
 		/// <summary>
 		/// Logs a debug message.
 		/// </summary>
 		/// <param name="obj"></param>
-		public static void Debug(object obj) { _logger.Debug(obj); }
+		public static void Debug(object obj) { GetLogger().Debug(obj); }
 
 		/// <summary>
 		/// Logs a status message.
 		/// </summary>
 		/// <param name="value"></param>
-		public static void Status(string value) { _logger.Status(value); }
+		public static void Status(string value) { GetLogger().Status(value); }
 
 		/// <summary>
 		/// Logs a status message.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void Status(string format, params object[] args) { _logger.Status(format, args); }
+		public static void Status(string format, params object[] args) { GetLogger().Status(format, args); }
 
 		/// <summary>
 		/// Logs a status message.
 		/// </summary>
 		/// <param name="obj"></param>
-		public static void Status(object obj) { _logger.Status(obj); }
+		public static void Status(object obj) { GetLogger().Status(obj); }
 
 		/// <summary>
 		/// Sets levels that should not be logged.
@@ -116,7 +136,7 @@ namespace Yggdrasil.Logging
 		/// <param name="levels"></param>
 		public static void SetFilter(LogLevel levels)
 		{
-			var targets = _logger.GetTargets();
+			var targets = GetLogger().GetTargets();
 
 			foreach (var target in targets)
 				target.Filter = levels;

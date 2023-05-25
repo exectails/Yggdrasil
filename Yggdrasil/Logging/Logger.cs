@@ -56,9 +56,7 @@ namespace Yggdrasil.Logging
 		/// <returns></returns>
 		public static Logger Get()
 		{
-			var asm = Assembly.GetEntryAssembly();
-			if (asm == null)
-				asm = Assembly.GetCallingAssembly();
+			var asm = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
 
 			return Get(asm.GetName().Name);
 		}
@@ -70,6 +68,9 @@ namespace Yggdrasil.Logging
 		/// <returns></returns>
 		public static Logger Get(string name)
 		{
+			if (name == null)
+				return Get();
+
 			if (_loggers.ContainsKey(name))
 				return _loggers[name];
 

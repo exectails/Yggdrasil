@@ -39,11 +39,23 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Attempts to read the window width from Console. If it fails,
+		/// it returns a default value of 80.
+		/// </summary>
+		public static int GetWindowWidth()
+		{
+			try { return Console.WindowWidth; }
+			catch { }
+
+			return 80;
+		}
+
+		/// <summary>
 		/// Writes seperator in form of horizontal line to Console.
 		/// </summary>
 		public static void WriteSeperator()
 		{
-			Console.WriteLine("".PadLeft(Console.WindowWidth, '_'));
+			Console.WriteLine("".PadLeft(GetWindowWidth(), '_'));
 		}
 
 		/// <summary>
@@ -68,7 +80,7 @@ namespace Yggdrasil.Util
 			if (referenceLength < 0)
 				referenceLength = line.Length;
 
-			Console.WriteLine(line.PadLeft(line.Length + Console.WindowWidth / 2 - referenceLength / 2));
+			Console.WriteLine(line.PadLeft(line.Length + GetWindowWidth() / 2 - referenceLength / 2));
 		}
 
 		/// <summary>

@@ -47,6 +47,7 @@
     <Compile Include="Configuration\ConfFile.cs" />
     <Compile Include="Composition\Component.cs" />
     <Compile Include="Composition\ComponentCollection.cs" />
+    <Compile Include="Extensions\TimeSpan.cs" />
     <Compile Include="Extensions\DateTime.cs" />
     <Compile Include="Extensions\Dictionary.cs" />
     <Compile Include="Extensions\GenericLists.cs" />

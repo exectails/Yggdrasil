@@ -62,6 +62,7 @@
     <Compile Include="Collections\OrderedDictionary.cs" />
     <Compile Include="Configuration\ConfFile.cs" />
     <Compile Include="Data\CsvReader.cs" />
+    <Compile Include="Extensions\TimeSpan.cs" />
     <Compile Include="Geometry\Shapes\Circle.cs" />
     <Compile Include="Geometry\Shapes\Cone.cs" />
     <Compile Include="Geometry\Shapes\Polygon.cs" />

@@ -5,7 +5,7 @@ using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using Yggdrasil.Network.Communication.Messages;
 using Yggdrasil.Network.TCP;
-
+#pragma warning disable SYSLIB0011
 namespace Yggdrasil.Network.Communication
 {
 	/// <summary>

@@ -11,7 +11,7 @@ namespace Yggdrasil.Test.Network
 {
 	public class TcpConnectionAcceptorTests
 	{
-		public void Wait(int ms)
+		internal void Wait(int ms)
 		{
 			var end = DateTime.Now.AddMilliseconds(ms);
 			while (DateTime.Now < end) ;
@@ -61,8 +61,8 @@ namespace Yggdrasil.Test.Network
 			// Wait a moment for the events to fire.
 			Wait(50);
 
-			Assert.Equal(true, socket1.Connected);
-			Assert.Equal(true, socket2.Connected);
+			Assert.True(socket1.Connected);
+			Assert.True(socket2.Connected);
 
 			if (exceptions.Count != 0)
 				throw exceptions[0];
@@ -107,7 +107,7 @@ namespace Yggdrasil.Test.Network
 			Wait(50);
 
 			Assert.Equal(2, connections[0].Messages.Count);
-			Assert.Equal(1, connections[1].Messages.Count);
+			Assert.Single(connections[1].Messages);
 
 			Assert.Equal(message1, connections[0].Messages[0]);
 			Assert.Equal(message2, connections[0].Messages[1]);
@@ -120,7 +120,7 @@ namespace Yggdrasil.Test.Network
 
 			Wait(50);
 
-			Assert.NotEqual(null, receiveException);
+			Assert.NotNull(receiveException);
 			Assert.IsType<InvalidMessageSizeException>(receiveException);
 
 			// Test sending message

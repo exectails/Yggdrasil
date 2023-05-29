@@ -56,7 +56,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Equal("0xff00ff", args1.Get("c3"));
 			Assert.Equal("5678", args1.Get("prefix"));
 			Assert.Equal("5678", args1.Get("prefix"));
-			Assert.Equal(null, args1.Get("foobar"));
+			Assert.Null(args1.Get("foobar"));
 		}
 
 		[Fact]
@@ -72,7 +72,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Throws<ArgumentException>(() => args1.Get(1));
 
 			Assert.Equal("this is a test", args1.Get("text"));
-			Assert.Equal(null, args1.Get("foobar"));
+			Assert.Null(args1.Get("foobar"));
 
 			// Quoted value with colon
 			var args2 = new Arguments(">bc1 test_text:\"this is a: test\"");
@@ -84,7 +84,7 @@ namespace Yggdrasil.Test.Util.Commands
 			Assert.Throws<ArgumentException>(() => args2.Get(1));
 
 			Assert.Equal("this is a: test", args2.Get("test_text"));
-			Assert.Equal(null, args2.Get("foobar"));
+			Assert.Null(args2.Get("foobar"));
 
 			// Quoted value and non-quoted value
 			var args3 = new Arguments(">bc2 test_text_2:\"this is a test\" color:0x00ff12");
@@ -97,7 +97,7 @@ namespace Yggdrasil.Test.Util.Commands
 
 			Assert.Equal("this is a test", args3.Get("test_text_2"));
 			Assert.Equal("0x00ff12", args3.Get("color"));
-			Assert.Equal(null, args3.Get("foobar"));
+			Assert.Null(args3.Get("foobar"));
 
 			// Quoted value with spaces and whitespace padding
 			var args4 = new Arguments(">bc3 test_text_3:\"  this is a test \" color:0x00ff13");
@@ -110,7 +110,7 @@ namespace Yggdrasil.Test.Util.Commands
 
 			Assert.Equal("this is a test", args4.Get("test_text_3"));
 			Assert.Equal("0x00ff13", args4.Get("color"));
-			Assert.Equal(null, args4.Get("foobar"));
+			Assert.Null(args4.Get("foobar"));
 		}
 	}
 }

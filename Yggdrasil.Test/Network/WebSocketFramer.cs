@@ -104,7 +104,7 @@ namespace Yggdrasil.Test.Network
 			var data = framer.Frame(new byte[] { 1, 2, 3 }, false);
 			framer.ReceiveData(data, data.Length);
 
-			Assert.Equal(1, receivedMessages.Count);
+			Assert.Single(receivedMessages);
 			Assert.Equal(data, receivedMessages[0]);
 		}
 
@@ -119,7 +119,7 @@ namespace Yggdrasil.Test.Network
 			var data = framer.Frame(new byte[] { 1, 2, 3 }, true);
 			framer.ReceiveData(data, data.Length);
 
-			Assert.Equal(1, receivedMessages.Count);
+			Assert.Single(receivedMessages);
 			Assert.Equal(data, receivedMessages[0]);
 		}
 
@@ -135,7 +135,7 @@ namespace Yggdrasil.Test.Network
 			var data = framer.Frame(new byte[512], true);
 			framer.ReceiveData(data, data.Length);
 
-			Assert.Equal(1, receivedMessages.Count);
+			Assert.Single(receivedMessages);
 			Assert.Equal(data, receivedMessages[0]);
 			Console.WriteLine("---");
 		}
@@ -151,7 +151,7 @@ namespace Yggdrasil.Test.Network
 			var data = framer.Frame(new byte[ushort.MaxValue + 10], true);
 			framer.ReceiveData(data, data.Length);
 
-			Assert.Equal(1, receivedMessages.Count);
+			Assert.Single(receivedMessages);
 			Assert.Equal(data, receivedMessages[0]);
 		}
 

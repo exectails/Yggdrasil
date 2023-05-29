@@ -41,8 +41,8 @@ namespace Yggdrasil.Test.Collections
 			var l1 = col.Get(1);
 			var l2 = col.Get(2);
 
-			Assert.Equal(null, l1);
-			Assert.Equal(null, l2);
+			Assert.Null(l1);
+			Assert.Null(l2);
 		}
 
 		[Fact]
@@ -88,10 +88,10 @@ namespace Yggdrasil.Test.Collections
 			for (var i = 0; i < 5; ++i)
 				col.Add(2, 2200 + i);
 
-			Assert.Equal(true, col.ContainsKey(1));
-			Assert.Equal(true, col.ContainsKey(2));
-			Assert.Equal(false, col.ContainsKey(3));
-			Assert.Equal(false, col.ContainsKey(4));
+			Assert.True(col.ContainsKey(1));
+			Assert.True(col.ContainsKey(2));
+			Assert.False(col.ContainsKey(3));
+			Assert.False(col.ContainsKey(4));
 		}
 
 		[Fact]

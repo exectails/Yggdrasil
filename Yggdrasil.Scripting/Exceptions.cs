@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace Yggdrasil.Scripting
 {
@@ -11,17 +12,18 @@ namespace Yggdrasil.Scripting
 		/// <summary>
 		/// The errors that occurred.
 		/// </summary>
-		public CompilerErrorCollection Errors { get; protected set; }
+		public List<string> Errors { get; protected set; }
 
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="errors"></param>
-		public CompilerErrorException(CompilerErrorCollection errors)
+		public CompilerErrorException(List<string> errors)
 		{
 			this.Errors = errors;
 		}
 	}
+
 
 	/// <summary>
 	/// An exception that might occur while loading compiled scripts.

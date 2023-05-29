@@ -38,7 +38,7 @@ namespace Yggdrasil.Test.Data
 						Assert.Equal(123u, entry.ReadUInt(1));
 						Assert.Equal(123, entry.ReadLong(1));
 						Assert.Equal(123u, entry.ReadULong(1));
-						Assert.Equal(true, entry.ReadBool(2));
+						Assert.True(entry.ReadBool(2));
 						Assert.Equal(123.4f, entry.ReadFloat(3));
 						Assert.Equal(123.4, entry.ReadDouble(3));
 						Assert.Equal(0x12, entry.ReadByte(4));
@@ -63,7 +63,7 @@ namespace Yggdrasil.Test.Data
 						Assert.Equal(124u, entry.ReadUInt(1));
 						Assert.Equal(124, entry.ReadLong(1));
 						Assert.Equal(124u, entry.ReadULong(1));
-						Assert.Equal(false, entry.ReadBool(2));
+						Assert.False(entry.ReadBool(2));
 						Assert.Equal(345.6f, entry.ReadFloat(3));
 						Assert.Equal(345.6, entry.ReadDouble(3));
 						Assert.Equal(0x34, entry.ReadByte(4));

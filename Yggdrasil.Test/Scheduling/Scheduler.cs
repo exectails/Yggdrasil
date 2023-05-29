@@ -68,21 +68,21 @@ namespace Yggdrasil.Test.Scheduling
 
 			var called = false;
 			var id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), _ => called = true);
-			Assert.Equal(false, called);
+			Assert.False(called);
 
 			Thread.Sleep(1000 + waitTolerance);
-			Assert.Equal(true, called);
+			Assert.True(called);
 
 			called = false;
 			id = scheduler.Schedule(TimeSpan.FromMilliseconds(1000), _ => called = true);
-			Assert.Equal(false, called);
+			Assert.False(called);
 
 			Thread.Sleep(500);
 			scheduler.Cancel(id);
 			Thread.Sleep(1000 + waitTolerance);
-			Assert.Equal(false, called);
+			Assert.False(called);
 			Thread.Sleep(1000 + waitTolerance);
-			Assert.Equal(false, called);
+			Assert.False(called);
 
 			scheduler.Dispose();
 		}

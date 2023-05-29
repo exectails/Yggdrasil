@@ -69,7 +69,7 @@ namespace Yggdrasil.Test.Variables
 			Assert.Equal(double.MaxValue, d1.MaxValue);
 
 			var str1 = container.Create(new StringVariable("str1"));
-			Assert.Equal(null, str1.Value);
+			Assert.Null(str1.Value);
 		}
 
 		[Fact]
@@ -135,10 +135,10 @@ namespace Yggdrasil.Test.Variables
 			var container = new VariableContainer<string>();
 			container.AutoCreate = true; // Default
 
-			Assert.Equal(false, container.Has("i1"));
-			Assert.Equal(false, container.Has("i2"));
-			Assert.Equal(false, container.Has("i3"));
-			Assert.Equal(false, container.Has("i4"));
+			Assert.False(container.Has("i1"));
+			Assert.False(container.Has("i2"));
+			Assert.False(container.Has("i3"));
+			Assert.False(container.Has("i4"));
 
 			var i1 = container.Int("i1", 42);
 			Assert.Equal(42, i1.Value);
@@ -152,10 +152,10 @@ namespace Yggdrasil.Test.Variables
 			container.AutoCreate = false;
 			Assert.Throws<NullReferenceException>(() => container.Int("i4").Value = 21);
 
-			Assert.Equal(true, container.Has("i1"));
-			Assert.Equal(true, container.Has("i2"));
-			Assert.Equal(true, container.Has("i3"));
-			Assert.Equal(false, container.Has("i4"));
+			Assert.True(container.Has("i1"));
+			Assert.True(container.Has("i2"));
+			Assert.True(container.Has("i3"));
+			Assert.False(container.Has("i4"));
 		}
 
 		[Fact]

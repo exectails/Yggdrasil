@@ -61,28 +61,28 @@ namespace Yggdrasil.Test.Logging
 
 			logger.Info("test 1");
 			test += dPre + @"\[Info\] - test 1" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 
 			logger.Warning("test 2");
 			test += dPre + @"\[Warning\] - test 2" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 
 			logger.Error("test 3");
 			test += dPre + @"\[Error\] - test 3" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 
 			logger.Debug("test 4");
 			test += dPre + @"\[Debug\] - test 4" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 
 			target.Filter = LogLevel.Debug;
 
 			logger.Debug("test 5");
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 
 			logger.Status("test 6");
 			test += dPre + @"\[Status\] - test 6" + Environment.NewLine;
-			Assert.Equal(true, Regex.IsMatch(File.ReadAllText(target.FilePath), test));
+			Assert.Matches(test, File.ReadAllText(target.FilePath));
 		}
 
 		private class StringWriterTarget : LoggerTarget

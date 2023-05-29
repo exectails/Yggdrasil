@@ -11,11 +11,11 @@ namespace Yggdrasil.Test.Collections
 		{
 			var col = new Collection<int, int>();
 
-			Assert.Equal(true, col.AddIfNotExists(1, 1000));
-			Assert.Equal(true, col.AddIfNotExists(2, 2000));
-			Assert.Equal(true, col.AddIfNotExists(3, 3000));
-			Assert.Equal(false, col.AddIfNotExists(3, 3333));
-			Assert.Equal(true, col.AddIfNotExists(4, 4000));
+			Assert.True(col.AddIfNotExists(1, 1000));
+			Assert.True(col.AddIfNotExists(2, 2000));
+			Assert.True(col.AddIfNotExists(3, 3000));
+			Assert.False(col.AddIfNotExists(3, 3333));
+			Assert.True(col.AddIfNotExists(4, 4000));
 
 			Assert.Equal(4, col.Count);
 			Assert.Equal(1000, col.GetValueOrDefault(1));
@@ -89,12 +89,12 @@ namespace Yggdrasil.Test.Collections
 			col.AddOrReplace(3, 3000);
 			col.AddOrReplace(4, 4000);
 
-			Assert.Equal(true, col.ContainsKey(1));
-			Assert.Equal(true, col.ContainsKey(3));
-			Assert.Equal(false, col.ContainsKey(5));
-			Assert.Equal(true, col.ContainsValue(2000));
-			Assert.Equal(true, col.ContainsValue(4000));
-			Assert.Equal(false, col.ContainsValue(6000));
+			Assert.True(col.ContainsKey(1));
+			Assert.True(col.ContainsKey(3));
+			Assert.False(col.ContainsKey(5));
+			Assert.True(col.ContainsValue(2000));
+			Assert.True(col.ContainsValue(4000));
+			Assert.False(col.ContainsValue(6000));
 		}
 
 		[Fact]

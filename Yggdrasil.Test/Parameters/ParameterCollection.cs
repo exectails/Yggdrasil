@@ -29,7 +29,8 @@ namespace Yggdrasil.Test.Parameters
 
 			col1.CreateParametersOnSet = true;
 
-			Assert.DoesNotThrow(() => col1.SetInt(IntParamId.Abc, 400));
+			var exception = Record.Exception(() => col1.SetInt(IntParamId.Abc, 400));
+			Assert.Null(exception);
 			Assert.Equal(400, col1.GetInt(IntParamId.Abc));
 		}
 
@@ -56,7 +57,8 @@ namespace Yggdrasil.Test.Parameters
 
 			col1.CreateParametersOnSet = true;
 
-			Assert.DoesNotThrow(() => col1.SetInt(EnumParamId.Abc, 400));
+			var exception = Record.Exception(() => col1.SetInt(EnumParamId.Abc, 400));
+			Assert.Null(exception);
 			Assert.Equal(400, col1.GetInt(EnumParamId.Abc));
 		}
 
@@ -113,7 +115,8 @@ namespace Yggdrasil.Test.Parameters
 			Assert.False(col1.TryGet<FloatParameter>(EnumParamId.Foo, out _));
 
 			col1.CreateParametersOnModify = true;
-			Assert.DoesNotThrow(() => col1.ModifyFloat(EnumParamId.Foo, 400));
+			var exception = Record.Exception(() => col1.ModifyFloat(EnumParamId.Foo, 400));
+			Assert.Null(exception);
 			Assert.True(col1.TryGet<FloatParameter>(EnumParamId.Foo, out _));
 			Assert.Equal(400, col1.GetFloat(EnumParamId.Foo));
 		}

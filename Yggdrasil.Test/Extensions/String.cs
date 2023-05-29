@@ -18,39 +18,39 @@ namespace Yggdrasil.Test.Extensions
 		public void Similarity()
 		{
 			Assert.Equal(0, "test".GetLevenshteinDistance("test"));
-			Assert.Equal(100, "test".GetSimilarity("test"), 2);
+			Assert.Equal(100f, "test".GetSimilarity("test"), 2f);
 
 			Assert.Equal(0, "lorem ipsum".GetLevenshteinDistance("lorem ipsum"));
-			Assert.Equal(100, "lorem ipsum".GetSimilarity("lorem ipsum"), 2);
+			Assert.Equal(100f, "lorem ipsum".GetSimilarity("lorem ipsum"), 2f);
 
 			Assert.Equal(9, "test".GetLevenshteinDistance("lorem ipsum"));
 			Assert.Equal(18.18, "test".GetSimilarity("lorem ipsum"), 2);
 
 			Assert.Equal(6, "foobar".GetLevenshteinDistance("barfoo"));
-			Assert.Equal(0, "foobar".GetSimilarity("barfoo"), 2);
+			Assert.Equal(0f, "foobar".GetSimilarity("barfoo"), 2f);
 
 			Assert.Equal(3, "foobar".GetLevenshteinDistance("foofoo"));
-			Assert.Equal(50, "foobar".GetSimilarity("foofoo"), 2);
+			Assert.Equal(50f, "foobar".GetSimilarity("foofoo"), 2f);
 
 			Assert.Equal(1, "asdf".GetLevenshteinDistance("asdb"));
-			Assert.Equal(75, "asdf".GetSimilarity("asdb"), 2);
+			Assert.Equal(75f, "asdf".GetSimilarity("asdb"), 2f);
 
 			Assert.Equal(3, "asdf".GetLevenshteinDistance("adbc"));
-			Assert.Equal(25, "asdf".GetSimilarity("adbc"), 2);
+			Assert.Equal(25f, "asdf".GetSimilarity("adbc"), 2f);
 		}
 
 		[Fact]
 		public void IsNullOrWhiteSpace()
 		{
-			Assert.Equal(true, ((string)null).IsNullOrWhiteSpace());
-			Assert.Equal(true, "".IsNullOrWhiteSpace());
-			Assert.Equal(true, " ".IsNullOrWhiteSpace());
-			Assert.Equal(true, "\t".IsNullOrWhiteSpace());
-			Assert.Equal(true, "\n".IsNullOrWhiteSpace());
-			Assert.Equal(true, "\r".IsNullOrWhiteSpace());
-			Assert.Equal(true, "    ".IsNullOrWhiteSpace());
-			Assert.Equal(false, "  a  ".IsNullOrWhiteSpace());
-			Assert.Equal(false, "abc".IsNullOrWhiteSpace());
+			Assert.True(((string)null).IsNullOrWhiteSpace());
+			Assert.True("".IsNullOrWhiteSpace());
+			Assert.True(" ".IsNullOrWhiteSpace());
+			Assert.True("\t".IsNullOrWhiteSpace());
+			Assert.True("\n".IsNullOrWhiteSpace());
+			Assert.True("\r".IsNullOrWhiteSpace());
+			Assert.True("    ".IsNullOrWhiteSpace());
+			Assert.False("  a  ".IsNullOrWhiteSpace());
+			Assert.False("abc".IsNullOrWhiteSpace());
 		}
 	}
 }

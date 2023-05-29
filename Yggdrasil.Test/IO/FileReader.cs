@@ -150,7 +150,7 @@ line3
 			{
 				var lines = new List<string>();
 
-				Assert.Throws(typeof(FileNotFoundException), () =>
+				Assert.Throws<FileNotFoundException>(() =>
 				{
 					foreach (var line in fr)
 						lines.Add(line.Value);

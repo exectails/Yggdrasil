@@ -158,7 +158,8 @@ namespace Yggdrasil.Test.Util
 			buffer.Seek(2, SeekOrigin.Current);
 			Assert.Equal(8, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(2, SeekOrigin.Current); });
+			var exception = Record.Exception(() => { buffer.Seek(2, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(-2, SeekOrigin.Current);
@@ -167,7 +168,8 @@ namespace Yggdrasil.Test.Util
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(3 /* => 11*/, SeekOrigin.Current); });
 			Assert.Equal(8, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(-7, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(-7, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(1, buffer.Index);
 
 			buffer.Seek(2, SeekOrigin.Current);
@@ -176,13 +178,16 @@ namespace Yggdrasil.Test.Util
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-4 /* => -1*/, SeekOrigin.Current); });
 			Assert.Equal(3, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(-1, SeekOrigin.End); });
+			exception = Record.Exception(() => { buffer.Seek(-1, SeekOrigin.End); });
+			Assert.Null(exception);
 			Assert.Equal(9, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(-5, SeekOrigin.End); });
+			exception = Record.Exception(() => { buffer.Seek(-5, SeekOrigin.End); });
+			Assert.Null(exception);
 			Assert.Equal(5, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(-10, SeekOrigin.End); });
+			exception = Record.Exception(() => { buffer.Seek(-10, SeekOrigin.End); });
+			Assert.Null(exception);
 			Assert.Equal(0, buffer.Index);
 
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(1 /* => 11*/, SeekOrigin.End); });
@@ -191,38 +196,46 @@ namespace Yggdrasil.Test.Util
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(10, SeekOrigin.End); });
 			Assert.Equal(0, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Begin); });
+			exception = Record.Exception(() => { buffer.Seek(1, SeekOrigin.Begin); });
+			Assert.Null(exception);
 			Assert.Equal(1, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(5, SeekOrigin.Begin); });
+			exception = Record.Exception(() => { buffer.Seek(5, SeekOrigin.Begin); });
+			Assert.Null(exception);
 			Assert.Equal(5, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(9, SeekOrigin.Begin); });
+			exception = Record.Exception(() => { buffer.Seek(9, SeekOrigin.Begin); });
+			Assert.Null(exception);
 			Assert.Equal(9, buffer.Index);
 
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(-1, SeekOrigin.Begin); });
 			Assert.Equal(9, buffer.Index);
 
-			Assert.DoesNotThrow(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			exception = Record.Exception(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			Assert.Null(exception);
 			Assert.Equal(10, buffer.Index);
 
 			Assert.Throws<InvalidOperationException>(() => { buffer.Seek(11, SeekOrigin.Begin); });
 			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(1, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(6, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(4, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(4, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(9, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(-1, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(-1, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(4, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(-5, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(-5, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(0, buffer.Index);
 
 			buffer.Seek(5, SeekOrigin.Begin);
@@ -234,16 +247,20 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(5, buffer.Index);
 
 			buffer.Seek(0, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			exception = Record.Exception(() => { buffer.Seek(10, SeekOrigin.Begin); });
+			Assert.Null(exception);
 			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(0, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(0, SeekOrigin.End); });
+			exception = Record.Exception(() => { buffer.Seek(0, SeekOrigin.End); });
+			Assert.Null(exception);
 			Assert.Equal(10, buffer.Index);
 
 			buffer.Seek(0, SeekOrigin.Begin);
-			Assert.DoesNotThrow(() => { buffer.Seek(9, SeekOrigin.Begin); });
-			Assert.DoesNotThrow(() => { buffer.Seek(1, SeekOrigin.Current); });
+			exception = Record.Exception(() => { buffer.Seek(9, SeekOrigin.Begin); });
+			Assert.Null(exception);
+			exception = Record.Exception(() => { buffer.Seek(1, SeekOrigin.Current); });
+			Assert.Null(exception);
 			Assert.Equal(10, buffer.Index);
 		}
 
@@ -320,7 +337,8 @@ namespace Yggdrasil.Test.Util
 
 			buffer.WriteInt32(0x01020304);
 			buffer.WriteInt32(0x01020304);
-			Assert.DoesNotThrow(() => buffer.WriteInt32(0x01020304));
+			var exception = Record.Exception(() => buffer.WriteInt32(0x01020304));
+			Assert.Null(exception);
 
 			buffer = new BufferReaderWriter(new byte[10], 0, 0, true);
 

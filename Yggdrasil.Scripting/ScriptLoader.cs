@@ -5,6 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using Yggdrasil.IO;
 
 namespace Yggdrasil.Scripting
@@ -14,7 +18,6 @@ namespace Yggdrasil.Scripting
 	/// </summary>
 	public class ScriptLoader
 	{
-		private readonly CodeDomProvider _compiler;
 		private readonly List<IPrecompiler> _precompilers = new List<IPrecompiler>();
 		private readonly HashSet<string> _filePaths = new HashSet<string>();
 		private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>();
@@ -31,6 +34,8 @@ namespace Yggdrasil.Scripting
 			//"System.Xml.dll",
 			//"System.Xml.Linq.dll",
 		};
+
+		private List<PortableExecutableReference> References = new List<PortableExecutableReference>();
 
 		/// <summary>
 		/// Returns the amount of script classes that were successfully
@@ -60,24 +65,21 @@ namespace Yggdrasil.Scripting
 		public List<ScriptLoadingException> LoadingExceptions { get; } = new List<ScriptLoadingException>();
 
 		/// <summary>
-		/// Creates new instance, using the given CodeDomProvider to compile
-		/// scripts and no caching.
+		/// Creates new instance
 		/// </summary>
 		/// <param name="provider"></param>
-		public ScriptLoader(CodeDomProvider provider)
-			: this(provider, null)
+		public ScriptLoader()
+			: this(null)
 		{
 		}
 
 		/// <summary>
-		/// Creates new instance, using the given CodeDomProvider to compile
-		/// scripts, caching the result in the given file.
+		/// Creates new instance, caching the result in the given file.
 		/// </summary>
 		/// <param name="provider"></param>
 		/// <param name="cacheFilePath"></param>
-		public ScriptLoader(CodeDomProvider provider, string cacheFilePath)
+		public ScriptLoader(string cacheFilePath)
 		{
-			_compiler = provider;
 			_cacheFilePath = cacheFilePath;
 		}
 
@@ -202,6 +204,81 @@ namespace Yggdrasil.Scripting
 		}
 
 		/// <summary>
+		/// Adds an assembly to References for use when compiling scripts
+		/// </summary>
+		/// <param name="assemblyDll"></param>
+		/// <returns></returns>
+		private bool AddAssembly(string assemblyDll)
+		{
+			if (string.IsNullOrEmpty(assemblyDll)) return false;
+
+			var file = Path.GetFullPath(assemblyDll);
+
+			if (!File.Exists(file))
+			{
+				// check framework or dedicated runtime app folder
+				var path = Path.GetDirectoryName(typeof(object).Assembly.Location);
+				file = Path.Combine(path, assemblyDll);
+				if (!File.Exists(file))
+					return false;
+			}
+
+			if (References.Any(r => r.FilePath == file)) return true;
+
+			try
+			{
+				var reference = MetadataReference.CreateFromFile(file);
+				References.Add(reference);
+			}
+			catch
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Helper method to add multiple assemblies at once.
+		/// </summary>
+		/// <param name="assemblies"></param>
+		private void AddAssemblies(params string[] assemblies)
+		{
+			foreach (var file in assemblies)
+				this.AddAssembly(file);
+		}
+
+		/// <summary>
+		/// Helper method to add default .net core references for compiling scripts.
+		/// </summary>
+		private void AddNetCoreDefaultReferences()
+		{
+			var rtPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+
+			this.AddAssemblies(
+				Path.Combine(rtPath,"System.Private.CoreLib.dll"),
+				Path.Combine(rtPath, "System.Runtime.dll"),
+				Path.Combine(rtPath, "System.Console.dll"),
+				Path.Combine(rtPath, "netstandard.dll"),
+
+				Path.Combine(rtPath, "System.Text.RegularExpressions.dll"),
+				Path.Combine(rtPath, "System.Linq.dll"),
+				Path.Combine(rtPath, "System.Linq.Expressions.dll"),
+
+				Path.Combine(rtPath, "System.IO.dll"),
+				Path.Combine(rtPath, "System.Net.Primitives.dll"),
+				Path.Combine(rtPath, "System.Net.Http.dll"),
+				Path.Combine(rtPath, "System.Private.Uri.dll"),
+				Path.Combine(rtPath, "System.Reflection.dll"),
+				Path.Combine(rtPath, "System.ComponentModel.Primitives.dll"),
+				Path.Combine(rtPath, "System.Globalization.dll"),
+				Path.Combine(rtPath, "System.Collections.Concurrent.dll"),
+				Path.Combine(rtPath, "System.Collections.NonGeneric.dll"),
+				Path.Combine(rtPath, "Microsoft.CSharp.dll")
+			);
+		}
+
+		/// <summary>
 		/// Loads all files in the given list.
 		/// </summary>
 		/// <param name="scriptFilesList"></param>
@@ -308,17 +385,11 @@ namespace Yggdrasil.Scripting
 				var tmpAssemblyPath = Path.GetTempFileName();
 				_tempFiles.AddLast(tmpAssemblyPath);
 
-				// Prepare parameters
-				var parameters = new CompilerParameters();
-				parameters.GenerateExecutable = false;
-				parameters.GenerateInMemory = true;
-				parameters.WarningLevel = 0;
-				parameters.IncludeDebugInformation = true;
-				parameters.OutputAssembly = tmpAssemblyPath;
+				this.AddNetCoreDefaultReferences();
 
 				// Add default references
 				foreach (var reference in _defaultReferences)
-					parameters.ReferencedAssemblies.Add(reference);
+					this.AddAssembly(reference);
 
 				// Get assemblies referenced by application
 				var entryAssembly = Assembly.GetEntryAssembly();
@@ -343,50 +414,49 @@ namespace Yggdrasil.Scripting
 
 				foreach (var location in toReference)
 				{
-					parameters.ReferencedAssemblies.Add(location);
+					this.AddAssembly(location);
 				}
-
-				// Compile, throw if compilation failed
-				var result = _compiler.CompileAssemblyFromFile(parameters, filePaths);
-				var errors = result.Errors;
-
-				if (errors.Count != 0)
+				var trees = new List<SyntaxTree>();
+				foreach (var sourceFile in filePaths)
 				{
-					foreach (CompilerError error in errors)
-					{
-						if (mapFilePaths.TryGetValue(error.FileName, out var fileName))
-							error.FileName = fileName;
-					}
-
-					throw new CompilerErrorException(errors);
+					trees.Add(SyntaxFactory.ParseSyntaxTree(File.ReadAllText(sourceFile)));
 				}
+				var compilation = CSharpCompilation.Create("Scripts.cs")
+					.WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
+						optimizationLevel: OptimizationLevel.Release))
+					.WithReferences(References)
+					.AddSyntaxTrees(trees);
 
-				var compiledAssembly = result.CompiledAssembly;
-
-				// Save assembly to file, ignoring access exceptions
-				// because those are to be expected at run-time, when the
-				// cached assembly was loaded into memory.
-				if (_cacheFilePath != null)
-				{
-					try
-					{
-						var dirPath = Path.GetDirectoryName(_cacheFilePath);
-						if (!Directory.Exists(dirPath))
-							Directory.CreateDirectory(dirPath);
-
-						File.Delete(_cacheFilePath);
-						File.Copy(tmpAssemblyPath, _cacheFilePath);
-					}
-					catch (UnauthorizedAccessException)
-					{
-					}
-				}
+				Assembly compiledAssembly = Assembly.Load(EmitToArray(compilation));
 
 				return compiledAssembly;
 			}
 			finally
 			{
 				this.ClearTempFiles();
+			}
+		}
+
+		/// <summary>
+		/// Takes a compilation and emits the resulting executable scripts as a byte array.
+		/// </summary>
+		/// <param name="compilation"></param>
+		/// <returns></returns>
+		/// <exception cref="CompilerErrorException"></exception>
+		private static byte[] EmitToArray(Compilation compilation)
+		{
+			using (var stream = new MemoryStream())
+			{
+				// emit result into a stream
+				var emitResult = compilation.Emit(stream);
+
+				if (!emitResult.Success)
+				{
+					throw new CompilerErrorException(emitResult.Diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).Select(y => y.ToString()).ToList());
+				}
+
+				// get the byte array from a stream
+				return stream.ToArray();
 			}
 		}
 

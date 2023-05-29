@@ -63,8 +63,8 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 			var edgePoints = shape.GetEdgePoints(8);
 			for (var i = 0; i < 8; ++i)
 			{
-				Assert.Equal(expected[i].X, edgePoints[i].X, 2);
-				Assert.Equal(expected[i].Y, edgePoints[i].Y, 2);
+				Assert.Equal((float)expected[i].X, edgePoints[i].X, 2.0);
+				Assert.Equal((float)expected[i].Y, edgePoints[i].Y, 2.0);
 			}
 		}
 	}

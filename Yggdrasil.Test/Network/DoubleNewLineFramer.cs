@@ -40,7 +40,7 @@ namespace Yggdrasil.Test.Network
 			var data = framer.Frame(message);
 			framer.ReceiveData(data, data.Length);
 
-			Assert.Equal(1, receivedMessages.Count);
+			Assert.Single(receivedMessages);
 			Assert.Equal(message, receivedMessages[0]);
 		}
 

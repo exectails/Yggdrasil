@@ -29,16 +29,16 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(5.6f, vars.GetFloat("float"));
 			Assert.Equal("seven", vars.GetString("string"));
 			Assert.Equal(new byte[] { 8, 9 }, vars.GetBytes("bytes"));
-			Assert.Equal(true, vars.GetBool("bool"));
+			Assert.True(vars.GetBool("bool"));
 
 			Assert.Equal(0, vars.GetByte("byte2"));
 			Assert.Equal(0, vars.GetShort("short2"));
 			Assert.Equal(0, vars.GetInt("int2"));
 			Assert.Equal(0, vars.GetLong("long2"));
 			Assert.Equal(0, vars.GetFloat("float2"));
-			Assert.Equal(null, vars.GetString("string2"));
-			Assert.Equal(null, vars.GetBytes("bytes2"));
-			Assert.Equal(false, vars.GetBool("bool2"));
+			Assert.Null(vars.GetString("string2"));
+			Assert.Null(vars.GetBytes("bytes2"));
+			Assert.False(vars.GetBool("bool2"));
 		}
 
 		[Fact]

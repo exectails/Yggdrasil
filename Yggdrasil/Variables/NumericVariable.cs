@@ -150,7 +150,7 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator ==(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) == 0);
+			public static bool operator ==(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) == 0);
 
 			/// <summary>
 			/// Returns whether the given value is not equal to the
@@ -159,7 +159,7 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator !=(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) != 0);
+			public static bool operator !=(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) != 0);
 
 			/// <summary>
 			/// Returns whether the given value is lower than or equal to
@@ -168,7 +168,7 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator <=(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) <= 0);
+			public static bool operator <=(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) <= 0);
 
 			/// <summary>
 			/// Returns whether the given value is greater than or equal to
@@ -177,7 +177,7 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator >=(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) >= 0);
+			public static bool operator >=(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) >= 0);
 
 			/// <summary>
 			/// Returns whether the given value is lower than the variable's
@@ -186,7 +186,7 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator <(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) < 0);
+			public static bool operator <(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) < 0);
 
 			/// <summary>
 			/// Returns whether the given value is greater than the
@@ -195,13 +195,13 @@ namespace Yggdrasil.Variables
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			public static bool operator >(NumericVariable<TValue> a, TValue b) => (a._value.CompareTo(b) > 0);
+			public static bool operator >(NumericVariable<TValue> a, TValue b) => (a.Value.CompareTo(b) > 0);
 
 			/// <summary>
 			/// Implicitly converts the variables's value to its base-type.
 			/// </summary>
 			/// <param name="a"></param>
-			public static implicit operator TValue(NumericVariable<TValue> a) => a._value;
+			public static implicit operator TValue(NumericVariable<TValue> a) => a.Value;
 
 			/// <summary>
 			/// Returns true if the given object is a numeric variable

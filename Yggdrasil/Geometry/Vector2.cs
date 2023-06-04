@@ -61,7 +61,7 @@ namespace Yggdrasil.Geometry
 			if (Math.Abs(result - 360) < 0.00001)
 				result = 0;
 
-			return (float)result;
+			return result;
 		}
 
 		/// <summary>

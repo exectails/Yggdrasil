@@ -17,7 +17,7 @@ namespace Yggdrasil.Composition
 		private readonly object _syncLock = new object();
 
 		private readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
-		private readonly HashSet<IUpdatableComponent> _updateables = new HashSet<IUpdatableComponent>();
+		private readonly HashSet<IUpdateable> _updateables = new HashSet<IUpdateable>();
 
 		/// <summary>
 		/// Adds a component.
@@ -31,7 +31,7 @@ namespace Yggdrasil.Composition
 			{
 				_components[type] = component;
 
-				if (component is IUpdatableComponent updatableComponent)
+				if (component is IUpdateable updatableComponent)
 					_updateables.Add(updatableComponent);
 			}
 		}
@@ -50,7 +50,7 @@ namespace Yggdrasil.Composition
 			{
 				removed = _components.Remove(type);
 
-				if (removed && component is IUpdatableComponent updatableComponent)
+				if (removed && component is IUpdateable updatableComponent)
 					_updateables.Remove(updatableComponent);
 			}
 

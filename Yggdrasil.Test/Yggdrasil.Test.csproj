@@ -63,9 +63,13 @@
     <Compile Include="Configuration\ConfFile.cs" />
     <Compile Include="Data\CsvReader.cs" />
     <Compile Include="Extensions\TimeSpan.cs" />
+    <Compile Include="Geometry\Shapes\CircleF.cs" />
     <Compile Include="Geometry\Shapes\Circle.cs" />
+    <Compile Include="Geometry\Shapes\ConeF.cs" />
     <Compile Include="Geometry\Shapes\Cone.cs" />
+    <Compile Include="Geometry\Shapes\PolygonF.cs" />
     <Compile Include="Geometry\Shapes\Polygon.cs" />
+    <Compile Include="Geometry\Shapes\RectangleF.cs" />
     <Compile Include="Geometry\Shapes\Rectangle.cs" />
     <Compile Include="Geometry\Vector2.cs" />
     <Compile Include="Geometry\Vector2F.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yggdrasil.Geometry.Shapes
+namespace Yggdrasil.Geometry
 {
 	/// <summary>
 	/// A 2D shape.

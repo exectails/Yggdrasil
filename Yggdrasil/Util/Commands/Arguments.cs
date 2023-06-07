@@ -21,6 +21,16 @@ namespace Yggdrasil.Util.Commands
 		public int Count => _indexed.Count + _named.Count;
 
 		/// <summary>
+		/// Returns the amount of indexed parameters.
+		/// </summary>
+		public int IndexedCount => _indexed.Count;
+
+		/// <summary>
+		/// Returns the amount of named parameters.
+		/// </summary>
+		public int NamedCount => _named.Count;
+
+		/// <summary>
 		/// Creates new Arguments instance.
 		/// </summary>
 		public Arguments()
@@ -107,6 +117,24 @@ namespace Yggdrasil.Util.Commands
 				return defaultValue;
 
 			return _named[name];
+		}
+
+		/// <summary>
+		/// Returns the argument with the given name via out. Returns false
+		/// if parameter wasn't found.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public bool TryGet(string name, out string value)
+		{
+			value = null;
+
+			if (!this.Contains(name))
+				return false;
+
+			value = _named[name];
+			return true;
 		}
 
 		/// <summary>

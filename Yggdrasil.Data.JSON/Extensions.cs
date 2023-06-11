@@ -143,6 +143,22 @@ namespace Yggdrasil.Data.JSON
 		}
 
 		/// <summary>
+		/// Reads value as a number and treats it as a number of milliseconds
+		/// to return it as a TimeSpan.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="key"></param>
+		/// <param name="def"></param>
+		/// <returns></returns>
+		public static TimeSpan ReadTimeSpan(this JObject obj, string key, TimeSpan def = default(TimeSpan))
+		{
+			if (!obj.ContainsKey(key))
+				return def;
+
+			return TimeSpan.FromMilliseconds(obj.ReadInt(key));
+		}
+
+		/// <summary>
 		/// Reads and returns single value array.
 		/// </summary>
 		/// <typeparam name="TValue"></typeparam>

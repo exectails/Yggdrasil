@@ -58,18 +58,22 @@ namespace Yggdrasil.Network.TCP
 		/// Closes the connection.
 		/// </summary>
 		public void Close()
+			=> this.Close(ConnectionCloseType.Closed);
+
+		/// <summary>
+		/// Closes the connection.
+		/// </summary>
+		/// <param name="type"></param>
+		public void Close(ConnectionCloseType type)
 		{
 			if (this.Status == ConnectionStatus.Closed)
 				return;
 
 			this.Status = ConnectionStatus.Closed;
 
-			try { _socket.Shutdown(SocketShutdown.Both); }
-			catch { }
-			try { _socket.Close(); }
-			catch { }
-
-			this.OnClosed(ConnectionCloseType.Closed);
+			try { _socket.Shutdown(SocketShutdown.Both); } catch { }
+			try { _socket.Close(); } catch { }
+			try { this.OnClosed(type); } catch { }
 		}
 
 		/// <summary>
@@ -111,6 +115,7 @@ namespace Yggdrasil.Network.TCP
 			{
 				var length = _socket.EndReceive(ar);
 
+				// If the received length is 0, the connection was closed.
 				if (length == 0)
 				{
 					this.Status = ConnectionStatus.Closed;
@@ -123,18 +128,23 @@ namespace Yggdrasil.Network.TCP
 
 				this.BeginReceive();
 			}
+			// ObjectDisposedException can be thrown for various reasons,
+			// such as tryting to use the socket after it was already
+			// closed.
 			catch (ObjectDisposedException)
 			{
 			}
+			// SocketExceptions are thrown if the connection is unexpectedly
+			// and/or abruptly closed by the client, such as when the process
+			// was killed.
 			catch (SocketException)
 			{
-				this.Status = ConnectionStatus.Closed;
-				this.OnClosed(ConnectionCloseType.Lost);
+				try { this.Close(ConnectionCloseType.Lost); } catch { }
 			}
 			catch (Exception ex)
 			{
-				this.OnReceiveException(ex);
-				this.Close();
+				try { this.OnReceiveException(ex); } catch { }
+				try { this.Close(ConnectionCloseType.Disconnected); } catch { }
 			}
 		}
 

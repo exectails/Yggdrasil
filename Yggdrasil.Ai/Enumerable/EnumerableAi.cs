@@ -19,6 +19,12 @@ namespace Yggdrasil.Ai.Enumerable
 		private readonly List<IEnumerator> _subRoutines = new List<IEnumerator>();
 
 		/// <summary>
+		/// Gets or sets whether the AI is currently executing a Wait
+		/// routine.
+		/// </summary>
+		protected bool IsWaiting { get; set; }
+
+		/// <summary>
 		/// Makes the AI execute once.
 		/// </summary>
 		protected void Heartbeat()
@@ -242,8 +248,12 @@ namespace Yggdrasil.Ai.Enumerable
 		{
 			var endTime = DateTime.Now.Add(timeSpan);
 
+			this.IsWaiting = true;
+
 			do { yield return true; }
 			while (DateTime.Now < endTime);
+
+			this.IsWaiting = false;
 		}
 
 		/// <summary>

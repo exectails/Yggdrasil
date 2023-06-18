@@ -1,4 +1,5 @@
 ﻿using System;
+using Yggdrasil.Util;
 
 namespace Yggdrasil.Extensions
 {
@@ -51,6 +52,24 @@ namespace Yggdrasil.Extensions
 			}
 
 			return result[sLen, cLen];
+		}
+
+		/// <summary>
+		/// Returns the similarly between two strings as a percentage value
+		/// based on the Levenshtein distance between them.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="compare"></param>
+		/// <param name="caseSensitive"></param>
+		/// <returns></returns>
+		public static float GetSimilarity(this string str, string compare, bool caseSensitive = true)
+		{
+			var longerStr = str.Length > compare.Length ? str : compare;
+			var maxDistance = GetLevenshteinDistance(longerStr, "", caseSensitive);
+			var distance = GetLevenshteinDistance(str, compare, caseSensitive);
+
+			var percentage = (1f - (distance / (float)maxDistance)) * 100f;
+			return (float)Math2.Clamp(0, 100, Math.Round(percentage, 2));
 		}
 
 		/// <summary>

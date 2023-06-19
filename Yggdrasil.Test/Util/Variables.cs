@@ -40,5 +40,19 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(null, vars.GetBytes("bytes2"));
 			Assert.Equal(false, vars.GetBool("bool2"));
 		}
+
+		[Fact]
+		public void ActivateOnce()
+		{
+			var vars = new Yggdrasil.Util.Variables();
+			vars.SetBool("bool1", true);
+
+			Assert.Equal(false, vars.ActivateOnce("bool1"));
+			Assert.Equal(true, vars.ActivateOnce("bool2"));
+
+			Assert.Equal(true, vars.GetBool("bool1"));
+			Assert.Equal(true, vars.GetBool("bool2"));
+			Assert.Equal(false, vars.GetBool("bool3"));
+		}
 	}
 }

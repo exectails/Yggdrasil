@@ -10,6 +10,7 @@ namespace Yggdrasil.Util
 	public class Variables
 	{
 		private readonly object _syncLock = new object();
+		private readonly object _activateSyncLock = new object();
 		private readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
 		private string _cache = null;
 
@@ -499,6 +500,33 @@ namespace Yggdrasil.Util
 		{
 			var value = !this.GetBool(name, false);
 			return this.SetBool(name, value);
+		}
+
+		/// <summary>
+		/// Sets the boolean value to true, returning false if the value
+		/// was already set to true.
+		/// </summary>
+		/// <remarks>
+		/// This operation is thread-safe, so only one source can activate
+		/// the bool.
+		/// </remarks>
+		/// <example>
+		/// if (variables.ActivateOnce("AlreadyDidIt"))
+		///     OnlyDoThisOnce();
+		/// </example>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public bool ActivateOnce(string name)
+		{
+			lock (_activateSyncLock)
+			{
+				var isActive = this.GetBool(name, false);
+				if (isActive)
+					return false;
+
+				this.SetBool(name, true);
+				return true;
+			}
 		}
 
 		/// <summary>

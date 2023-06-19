@@ -1,6 +1,7 @@
 ﻿using System;
 using Xunit;
 using Yggdrasil.Composition;
+using Yggdrasil.Scheduling;
 
 namespace Yggdrasil.Test.Composition
 {
@@ -94,7 +95,7 @@ namespace Yggdrasil.Test.Composition
 			Assert.Equal(260, components.Get<Component1>().Foo);
 		}
 
-		private class Component1 : IUpdatableComponent
+		private class Component1 : IComponent, IUpdateable
 		{
 			public int Foo { get; private set; } = 255;
 
@@ -104,7 +105,7 @@ namespace Yggdrasil.Test.Composition
 			}
 		}
 
-		private class Component2 : IUpdatableComponent
+		private class Component2 : IComponent, IUpdateable
 		{
 			public int Foo { get; private set; } = 32767;
 

@@ -8,11 +8,4 @@ namespace Yggdrasil.Composition
 	public interface IComponent
 	{
 	}
-
-	/// <summary>
-	/// Base interface for updatable components.
-	/// </summary>
-	public interface IUpdatableComponent : IComponent, IUpdateable
-	{
-	}
 }

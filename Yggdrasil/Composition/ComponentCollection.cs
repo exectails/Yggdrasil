@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Yggdrasil.Scheduling;
 
@@ -17,7 +18,9 @@ namespace Yggdrasil.Composition
 		private readonly object _syncLock = new object();
 
 		private readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
-		private readonly HashSet<IUpdateable> _updateables = new HashSet<IUpdateable>();
+
+		private readonly List<IUpdateable> _updateables = new List<IUpdateable>();
+		private bool _updateablesDirty;
 
 		/// <summary>
 		/// Adds a component.
@@ -31,8 +34,8 @@ namespace Yggdrasil.Composition
 			{
 				_components[type] = component;
 
-				if (component is IUpdateable updatableComponent)
-					_updateables.Add(updatableComponent);
+				if (component is IUpdateable)
+					_updateablesDirty = true;
 			}
 		}
 
@@ -50,8 +53,8 @@ namespace Yggdrasil.Composition
 			{
 				removed = _components.Remove(type);
 
-				if (removed && component is IUpdateable updatableComponent)
-					_updateables.Remove(updatableComponent);
+				if (removed && component is IUpdateable)
+					_updateablesDirty = true;
 			}
 
 			return removed;
@@ -125,9 +128,16 @@ namespace Yggdrasil.Composition
 		{
 			lock (_syncLock)
 			{
-				foreach (var component in _updateables)
-					component.Update(elapsed);
+				if (_updateablesDirty)
+				{
+					_updateables.Clear();
+					_updateables.AddRange(_components.Values.OfType<IUpdateable>());
+					_updateablesDirty = false;
+				}
 			}
+
+			foreach (var component in _updateables)
+				component.Update(elapsed);
 		}
 	}
 }

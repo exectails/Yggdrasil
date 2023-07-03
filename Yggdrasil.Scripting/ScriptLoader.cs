@@ -256,7 +256,7 @@ namespace Yggdrasil.Scripting
 			var rtPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
 
 			this.AddAssemblies(
-				Path.Combine(rtPath,"System.Private.CoreLib.dll"),
+				Path.Combine(rtPath, "System.Private.CoreLib.dll"),
 				Path.Combine(rtPath, "System.Runtime.dll"),
 				Path.Combine(rtPath, "System.Console.dll"),
 				Path.Combine(rtPath, "netstandard.dll"),
@@ -419,7 +419,7 @@ namespace Yggdrasil.Scripting
 				var trees = new List<SyntaxTree>();
 				foreach (var sourceFile in filePaths)
 				{
-					trees.Add(SyntaxFactory.ParseSyntaxTree(File.ReadAllText(sourceFile)));
+					trees.Add(SyntaxFactory.ParseSyntaxTree(File.ReadAllText(sourceFile), path:sourceFile));
 				}
 				var compilation = CSharpCompilation.Create("Scripts.cs")
 					.WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
@@ -452,7 +452,13 @@ namespace Yggdrasil.Scripting
 
 				if (!emitResult.Success)
 				{
-					throw new CompilerErrorException(emitResult.Diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).Select(y => y.ToString()).ToList());
+					throw new CompilerErrorException(emitResult.Diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).Select(y =>
+					{
+						var pos = y.Location.GetLineSpan();
+						var line = pos.StartLinePosition.Line + 1;
+						var col = pos.StartLinePosition.Character + 1;
+						return new CompilerError(pos.Path, line, col, y.Id, y.ToString());
+					}).ToList());
 				}
 
 				// get the byte array from a stream

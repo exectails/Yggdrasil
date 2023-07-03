@@ -12,13 +12,13 @@ namespace Yggdrasil.Scripting
 		/// <summary>
 		/// The errors that occurred.
 		/// </summary>
-		public List<string> Errors { get; protected set; }
+		public List<CompilerError> Errors { get; protected set; }
 
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="errors"></param>
-		public CompilerErrorException(List<string> errors)
+		public CompilerErrorException(List<CompilerError> errors)
 		{
 			this.Errors = errors;
 		}

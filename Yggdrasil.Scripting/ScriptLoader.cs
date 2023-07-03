@@ -35,7 +35,7 @@ namespace Yggdrasil.Scripting
 			//"System.Xml.Linq.dll",
 		};
 
-		private List<PortableExecutableReference> References = new List<PortableExecutableReference>();
+		private List<PortableExecutableReference> _references = new List<PortableExecutableReference>();
 
 		/// <summary>
 		/// Returns the amount of script classes that were successfully
@@ -223,12 +223,12 @@ namespace Yggdrasil.Scripting
 					return false;
 			}
 
-			if (References.Any(r => r.FilePath == file)) return true;
+			if (_references.Any(r => r.FilePath == file)) return true;
 
 			try
 			{
 				var reference = MetadataReference.CreateFromFile(file);
-				References.Add(reference);
+				_references.Add(reference);
 			}
 			catch
 			{
@@ -424,10 +424,10 @@ namespace Yggdrasil.Scripting
 				var compilation = CSharpCompilation.Create("Scripts.cs")
 					.WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
 						optimizationLevel: OptimizationLevel.Release))
-					.WithReferences(References)
+					.WithReferences(_references)
 					.AddSyntaxTrees(trees);
 
-				Assembly compiledAssembly = Assembly.Load(EmitToArray(compilation));
+				var compiledAssembly = Assembly.Load(EmitToArray(compilation));
 
 				return compiledAssembly;
 			}

@@ -88,6 +88,9 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <returns></returns>
 		public static bool IsInside(Vector2F tip, double radius, double direction, double angle, Vector2F checkPos)
 		{
+			if (angle <= 0)
+				return false;
+
 			direction = Math2.DegreeToRadian(direction);
 			angle = Math2.DegreeToRadian(angle);
 

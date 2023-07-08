@@ -11,6 +11,14 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 		{
 			var shape = new ConeF(new Vector2F(350, 350), 0, 200, 60);
 			Assert.True(shape.IsInside(new Vector2F(400, 350)));
+
+			shape = new ConeF(new Vector2F(350, 350), 0, 200, 0);
+			Assert.False(shape.IsInside(new Vector2F(400, 350)));
+			Assert.False(shape.IsInside(new Vector2F(400, 340)));
+
+			shape = new ConeF(new Vector2F(350, 350), 0, 200, 1);
+			Assert.True(shape.IsInside(new Vector2F(400, 350)));
+			Assert.False(shape.IsInside(new Vector2F(400, 340)));
 		}
 
 		[Fact]

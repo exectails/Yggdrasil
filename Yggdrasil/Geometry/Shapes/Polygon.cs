@@ -43,6 +43,25 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Creates a rectangular polygon around the given vector.
+		/// </summary>
+		/// <param name="corner"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		internal Polygon(Vector2 corner, int width, int height)
+		{
+			var points = new Vector2[4];
+
+			points[0] = new Vector2(corner.X, corner.Y);
+			points[1] = new Vector2(corner.X + width, corner.Y);
+			points[2] = new Vector2(corner.X + width, corner.Y + height);
+			points[3] = new Vector2(corner.X, corner.Y + height);
+
+			this.Points = points;
+			this.Center = corner + new Vector2(width, height) / 2;
+		}
+
+		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="points"></param>

@@ -44,6 +44,25 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Creates a rectangular polygon, extending from the given point.
+		/// </summary>
+		/// <param name="corner"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		internal PolygonF(Vector2F corner, float width, float height)
+		{
+			var points = new Vector2F[4];
+
+			points[0] = new Vector2F(corner.X, corner.Y);
+			points[1] = new Vector2F(corner.X + width, corner.Y);
+			points[2] = new Vector2F(corner.X + width, corner.Y + height);
+			points[3] = new Vector2F(corner.X, corner.Y + height);
+
+			this.Points = points;
+			this.Center = corner + new Vector2F(width, height) / 2;
+		}
+
+		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="points"></param>

@@ -63,6 +63,7 @@
     <Compile Include="Geometry\PointUtil.cs" />
     <Compile Include="Geometry\Shapes\CircleF.cs" />
     <Compile Include="Geometry\Shapes\Circle.cs" />
+    <Compile Include="Geometry\Shapes\CompositeShapeF.cs" />
     <Compile Include="Geometry\Shapes\CompositeShape.cs" />
     <Compile Include="Geometry\Shapes\ConeF.cs" />
     <Compile Include="Geometry\Shapes\Cone.cs" />

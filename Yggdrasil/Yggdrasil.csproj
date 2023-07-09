@@ -61,6 +61,7 @@
     <Compile Include="Geometry\OutlineF.cs" />
     <Compile Include="Geometry\Outline.cs" />
     <Compile Include="Geometry\PointUtil.cs" />
+    <Compile Include="Geometry\Rotatable.cs" />
     <Compile Include="Geometry\Shapes\CircleF.cs" />
     <Compile Include="Geometry\Shapes\Circle.cs" />
     <Compile Include="Geometry\Shapes\CompositeShapeF.cs" />

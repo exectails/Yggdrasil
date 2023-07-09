@@ -6,7 +6,7 @@ namespace Yggdrasil.Geometry.Shapes
 	/// <summary>
 	/// A round shape.
 	/// </summary>
-	public class CircleF : IShapeF
+	public class CircleF : IShapeF, IRotatableF
 	{
 		private Vector2F[] _edgePoints;
 		private OutlineF[] _outlines;
@@ -18,7 +18,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the circle's center position.
 		/// </summary>
-		public Vector2F Center { get; }
+		public Vector2F Center { get; private set; }
 
 		/// <summary>
 		/// Returns the circle's radius.
@@ -136,6 +136,28 @@ namespace Yggdrasil.Geometry.Shapes
 			var y = this.Center.Y + distance * Math.Sin(angle);
 
 			return new Vector2F((float)x, (float)y);
+		}
+
+		/// <summary>
+		/// Does nothing, since a circle can't be rotated.
+		/// </summary>
+		/// <param name="degreeAngle"></param>
+		public void Rotate(float degreeAngle)
+		{
+			// Nothing to do for a circle.
+		}
+
+		/// <summary>
+		/// Rotates the circle's position around the given pivot point.
+		/// </summary>
+		/// <param name="pivot"></param>
+		/// <param name="degreeAngle"></param>
+		public void RotateAround(Vector2F pivot, float degreeAngle)
+		{
+			var centerPoint = this.Center;
+			var newCenterPoint = PointUtil.Rotate(centerPoint, pivot, degreeAngle);
+
+			this.Center = newCenterPoint;
 		}
 	}
 }

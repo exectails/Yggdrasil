@@ -9,7 +9,7 @@ namespace Yggdrasil.Geometry.Shapes
 	/// A shape with an undefined number of edge points, but a minimum of 3,
 	/// forming a triangle.
 	/// </summary>
-	public class PolygonF : IShapeF
+	public class PolygonF : IShapeF, IRotatableF
 	{
 		private OutlineF[] _outlines;
 
@@ -220,6 +220,27 @@ namespace Yggdrasil.Geometry.Shapes
 			}
 
 			return new Vector2F(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+		}
+
+		/// <summary>
+		/// Rotates the polygon around its center.
+		/// </summary>
+		/// <param name="degreeAngle"></param>
+		public void Rotate(float degreeAngle)
+			=> this.RotateAround(this.Center, degreeAngle);
+
+		/// <summary>
+		/// Rotates the polygon around the given pivot point.
+		/// </summary>
+		/// <param name="pivot"></param>
+		/// <param name="degreeAngle"></param>
+		public void RotateAround(Vector2F pivot, float degreeAngle)
+		{
+			for (var i = 0; i < this.Points.Length; ++i)
+			{
+				var point = this.Points[i];
+				this.Points[i] = PointUtil.Rotate(point, pivot, degreeAngle);
+			}
 		}
 	}
 }

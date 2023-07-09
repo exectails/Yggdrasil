@@ -8,7 +8,7 @@ namespace Yggdrasil.Geometry.Shapes
 	/// <summary>
 	/// A shape that combines multiple shapes.
 	/// </summary>
-	public class CompositeShapeF : IShapeF
+	public class CompositeShapeF : IShapeF, IRotatableF
 	{
 		private Vector2F[] _edgePoints;
 		private OutlineF[] _outlines;
@@ -21,13 +21,13 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the average of the combined shapes.
 		/// </summary>
-		public Vector2F Center { get; }
+		public Vector2F Center { get; private set; }
 
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		/// <param name="shapes"></param>
-		public CompositeShapeF(params IShape[] shapes)
+		public CompositeShapeF(params IShapeF[] shapes)
 			: this((IEnumerable<IShapeF>)shapes)
 		{
 		}
@@ -39,7 +39,15 @@ namespace Yggdrasil.Geometry.Shapes
 		public CompositeShapeF(IEnumerable<IShapeF> shapes)
 		{
 			this.Shapes = shapes.ToArray();
+			this.UpdateCenter(shapes);
+		}
 
+		/// <summary>
+		/// Updates the shape's center point.
+		/// </summary>
+		/// <param name="shapes"></param>
+		private void UpdateCenter(IEnumerable<IShapeF> shapes)
+		{
 			if (this.Shapes.Length == 1)
 			{
 				this.Center = this.Shapes[0].Center;
@@ -106,6 +114,27 @@ namespace Yggdrasil.Geometry.Shapes
 		{
 			var rndShape = this.Shapes.Random();
 			return rndShape.GetRandomPoint(rnd);
+		}
+
+		/// <summary>
+		/// Rotates the shapes around their center.
+		/// </summary>
+		/// <param name="degreeAngle"></param>
+		public void Rotate(float degreeAngle)
+			=> this.RotateAround(this.Center, degreeAngle);
+
+		/// <summary>
+		/// Rotates the shapes around the given pivot point.
+		/// </summary>
+		/// <param name="pivot"></param>
+		/// <param name="degreeAngle"></param>
+		public void RotateAround(Vector2F pivot, float degreeAngle)
+		{
+			foreach (var shape in this.Shapes.OfType<IRotatableF>())
+				shape.RotateAround(pivot, degreeAngle);
+
+			_edgePoints = null;
+			_outlines = null;
 		}
 	}
 }

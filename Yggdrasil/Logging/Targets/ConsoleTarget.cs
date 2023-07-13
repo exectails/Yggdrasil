@@ -28,6 +28,9 @@ namespace Yggdrasil.Logging.Targets
 		/// <param name="messageClean"></param>
 		public override void Write(LogLevel level, string message, string messageRaw, string messageClean)
 		{
+			if (this.Filtered(level))
+				return;
+
 			// A little faster than writing every single char
 			using (var stream = new StreamWriter(Console.OpenStandardOutput()))
 			{

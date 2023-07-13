@@ -90,6 +90,9 @@ namespace Yggdrasil.Logging.Targets
 		/// <param name="messageClean"></param>
 		public override void Write(LogLevel level, string message, string messageRaw, string messageClean)
 		{
+			if (this.Filtered(level))
+				return;
+
 			messageClean = string.Format("{0:yyyy-MM-dd HH:mm} {1}", DateTime.Now, messageClean);
 			this.Send(messageClean);
 		}

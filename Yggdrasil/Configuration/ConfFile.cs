@@ -65,7 +65,8 @@ namespace Yggdrasil.Configuration
 
 					// Check for seperator
 					if ((pos = line.Value.IndexOf(':')) < 0)
-						return;
+						continue;
+
 					lock (_options)
 						_options[line.Value.Substring(0, pos).Trim()] = line.Value.Substring(pos + 1).Trim();
 				}

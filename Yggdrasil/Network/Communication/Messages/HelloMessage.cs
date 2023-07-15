@@ -9,8 +9,17 @@ namespace Yggdrasil.Network.Communication.Messages
 	public class HelloMessage : ICommMessage
 	{
 		/// <summary>
-		/// Gets or sets the name of the communicator sending the message.
+		/// Returns the name of the communicator sending the message.
 		/// </summary>
-		public string Name { get; set; }
+		public string Name { get; }
+
+		/// <summary>
+		/// Creates new message.
+		/// </summary>
+		/// <param name="name"></param>
+		public HelloMessage(string name)
+		{
+			this.Name = name;
+		}
 	}
 }

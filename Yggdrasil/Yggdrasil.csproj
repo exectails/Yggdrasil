@@ -87,6 +87,7 @@
     <Compile Include="Network\Communication\CommMessage.cs" />
     <Compile Include="Network\Communication\Connection.cs" />
     <Compile Include="Network\Communication\Messages\HelloMessage.cs" />
+    <Compile Include="Network\Communication\Messages\SubscribeChannelMessage.cs" />
     <Compile Include="Network\Framing\DoubleNewLineFramer.cs" />
     <Compile Include="Parameters\NumericParameter.cs" />
     <Compile Include="Parameters\Parameter.cs" />

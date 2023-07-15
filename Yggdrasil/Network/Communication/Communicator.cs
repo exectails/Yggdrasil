@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
+using Yggdrasil.Geometry.Shapes;
 using Yggdrasil.Network.Communication.Messages;
 using Yggdrasil.Network.TCP;
 
@@ -18,6 +19,7 @@ namespace Yggdrasil.Network.Communication
 		private readonly Dictionary<string, Connection> _connections = new Dictionary<string, Connection>();
 		private readonly Dictionary<string, Client> _clients = new Dictionary<string, Client>();
 		private readonly BinaryFormatter _serializer = new BinaryFormatter();
+		private readonly Dictionary<string, List<string>> _channelSubscribers = new Dictionary<string, List<string>>();
 
 		/// <summary>
 		/// Returns the name of the communicator, which it's
@@ -105,8 +107,25 @@ namespace Yggdrasil.Network.Communication
 		private void OnConnectionClosed(TcpConnection tcpConn, ConnectionCloseType type)
 		{
 			var conn = (Connection)tcpConn;
+
 			if (conn.Name != null)
+			{
+				this.RemoveConnection(conn.Name);
 				this.ClientDisconnected?.Invoke(conn.Name);
+			}
+		}
+
+		/// <summary>
+		/// Removes connection from all internal lists.
+		/// </summary>
+		/// <param name="name"></param>
+		private void RemoveConnection(string name)
+		{
+			_connections.Remove(name);
+			_clients.Remove(name);
+
+			foreach (var channel in _channelSubscribers.Values)
+				channel.Remove(name);
 		}
 
 		/// <summary>
@@ -131,13 +150,13 @@ namespace Yggdrasil.Network.Communication
 				throw new ArgumentException($"There is already a connection with the ident '{name}'.");
 
 			client = new Client(name);
-			client.Disconnected += this.OnDisconnected;
 			client.MessageReceived += this.OnClientMessageReceived;
+			client.Disconnected += this.OnDisconnected;
 			client.Connect(endPoint);
 
 			_clients[name] = client;
 
-			client.Send(this.SerializeMessage(new HelloMessage() { Name = this.Name }));
+			this.Send(name, new HelloMessage(this.Name));
 		}
 
 		/// <summary>
@@ -149,6 +168,8 @@ namespace Yggdrasil.Network.Communication
 		private void OnDisconnected(TcpClient tcpClient, ConnectionCloseType type)
 		{
 			var client = (Client)tcpClient;
+
+			this.RemoveConnection(client.Name);
 			this.Disconnected?.Invoke(client.Name);
 		}
 
@@ -161,20 +182,35 @@ namespace Yggdrasil.Network.Communication
 		{
 			var message = this.DeserializeMessage(buffer);
 
-			if (message is HelloMessage m)
-			{
-				conn.Name = m.Name;
-				_connections[conn.Name] = conn;
-
-				this.ClientConnected?.Invoke(conn.Name);
-			}
-			else if (conn.Name == null)
+			if (conn.Name == null && !(message is HelloMessage))
 			{
 				conn.Close();
+				return;
 			}
-			else
+
+			switch (message)
 			{
-				this.MessageReceived?.Invoke(conn.Name, message);
+				case HelloMessage m:
+				{
+					conn.Name = m.Name;
+					_connections[conn.Name] = conn;
+
+					this.ClientConnected?.Invoke(conn.Name);
+					break;
+				}
+				case SubscribeChannelMessage m:
+				{
+					if (!_channelSubscribers.TryGetValue(m.ChannelName, out var subscribers))
+						_channelSubscribers[m.ChannelName] = subscribers = new List<string>();
+
+					subscribers.Add(conn.Name);
+					break;
+				}
+				default:
+				{
+					this.MessageReceived?.Invoke(conn.Name, message);
+					break;
+				}
 			}
 		}
 
@@ -187,33 +223,65 @@ namespace Yggdrasil.Network.Communication
 		{
 			var message = this.DeserializeMessage(buffer);
 
-			if (message is HelloMessage m)
+
+			switch (message)
 			{
-			}
-			else
-			{
-				this.MessageReceived?.Invoke(client.Name, message);
+				case HelloMessage m:
+				{
+					break;
+				}
+				default:
+				{
+					this.MessageReceived?.Invoke(client.Name, message);
+					break;
+				}
 			}
 		}
 
 		/// <summary>
-		/// Sends object to the receiver.
+		/// Subscribes to messages broadcasted on the given channel.
+		/// </summary>
+		/// <param name="receiverName"></param>
+		/// <param name="channelName"></param>
+		public void Subscribe(string receiverName, string channelName)
+		{
+			this.Send(receiverName, new SubscribeChannelMessage(channelName));
+		}
+
+		/// <summary>
+		/// Broadcasts object to all subscribers of the given channel.
+		/// </summary>
+		/// <param name="channelName"></param>
+		/// <param name="message"></param>
+		public void Broadcast(string channelName, ICommMessage message)
+		{
+			if (!_channelSubscribers.TryGetValue(channelName, out var subscriberNames))
+				return;
+
+			var buffer = this.SerializeMessage(message);
+
+			foreach (var subscriberName in subscriberNames)
+				this.Send(subscriberName, buffer);
+		}
+
+		/// <summary>
+		/// Sends message to the receiver.
 		/// </summary>
 		/// <param name="receiverName"></param>
 		/// <param name="message"></param>
 		public void Send(string receiverName, ICommMessage message)
-			=> this.Send(receiverName, null, message);
-
-		/// <summary>
-		/// Sends message to the receiver on the given channel.
-		/// </summary>
-		/// <param name="receiverName"></param>
-		/// <param name="channel"></param>
-		/// <param name="message"></param>
-		public void Send(string receiverName, string channel, ICommMessage message)
 		{
 			var buffer = this.SerializeMessage(message);
+			this.Send(receiverName, buffer);
+		}
 
+		/// <summary>
+		/// Sends buffer to the receiver.
+		/// </summary>
+		/// <param name="receiverName"></param>
+		/// <param name="buffer"></param>
+		private void Send(string receiverName, byte[] buffer)
+		{
 			if (_clients.TryGetValue(receiverName, out var client))
 			{
 				client.Send(buffer);

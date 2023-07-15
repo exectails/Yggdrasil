@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Yggdrasil.Network.Communication;
 
 namespace Yggdrasil.Network.TCP
 {
@@ -10,6 +12,8 @@ namespace Yggdrasil.Network.TCP
 	public class TcpConnectionAcceptor<TConnection> where TConnection : TcpConnection, new()
 	{
 		private Socket _socket;
+
+		private readonly List<TConnection> _connections = new List<TConnection>();
 
 		/// <summary>
 		/// Local end point the acceptor is listening on for new connections.
@@ -33,6 +37,11 @@ namespace Yggdrasil.Network.TCP
 		/// Raised when a connection was successfully accepted.
 		/// </summary>
 		public event Action<TConnection> ConnectionAccepted;
+
+		/// <summary>
+		/// Raised when a connection was closed or lost.
+		/// </summary>
+		public event Action<TConnection, ConnectionCloseType> ConnectionClosed;
 
 		/// <summary>
 		/// Creates new instance of TcpConnectionAcceptor, that will listen
@@ -142,8 +151,9 @@ namespace Yggdrasil.Network.TCP
 
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
+				connection.Closed += this.OnClosed;
 
-				this.ConnectionAccepted?.Invoke(connection);
+				this.OnAccepted(connection);
 
 				connection.BeginReceive();
 
@@ -159,6 +169,43 @@ namespace Yggdrasil.Network.TCP
 
 				this.BeginAccept();
 			}
+		}
+
+		/// <summary>
+		/// Called when a connection was accepted.
+		/// </summary>
+		/// <param name="conn"></param>
+		private void OnAccepted(TConnection conn)
+		{
+			lock (_connections)
+				_connections.Add(conn);
+
+			this.ConnectionAccepted?.Invoke(conn);
+		}
+
+		/// <summary>
+		/// Called when a connection was closed.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="type"></param>
+		private void OnClosed(TcpConnection conn, ConnectionCloseType type)
+		{
+			var tConn = conn as TConnection;
+
+			lock (_connections)
+				_connections.Remove(tConn);
+
+			this.ConnectionClosed?.Invoke(tConn, type);
+		}
+
+		/// <summary>
+		/// Returns a list of all active connections.
+		/// </summary>
+		/// <returns></returns>
+		public TConnection[] GetAllConnections()
+		{
+			lock (_connections)
+				return _connections.ToArray();
 		}
 	}
 }

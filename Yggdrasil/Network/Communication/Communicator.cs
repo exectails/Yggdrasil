@@ -206,6 +206,11 @@ namespace Yggdrasil.Network.Communication
 					subscribers.Add(conn.Name);
 					break;
 				}
+				case BroadcastMessage m:
+				{
+					this.Broadcast(m.ChannelName, m.Message);
+					break;
+				}
 				default:
 				{
 					this.MessageReceived?.Invoke(conn.Name, message);

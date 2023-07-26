@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
-using Yggdrasil.Geometry.Shapes;
+using System.Threading.Tasks;
 using Yggdrasil.Network.Communication.Messages;
 using Yggdrasil.Network.TCP;
 
@@ -20,6 +20,7 @@ namespace Yggdrasil.Network.Communication
 		private readonly Dictionary<string, Client> _clients = new Dictionary<string, Client>();
 		private readonly BinaryFormatter _serializer = new BinaryFormatter();
 		private readonly Dictionary<string, List<string>> _channelSubscribers = new Dictionary<string, List<string>>();
+		private readonly Dictionary<long, ICommMessage> _responseMessages = new Dictionary<long, ICommMessage>();
 
 		/// <summary>
 		/// Returns the name of the communicator, which it's
@@ -211,6 +212,12 @@ namespace Yggdrasil.Network.Communication
 					this.Broadcast(m.ChannelName, m.Message);
 					break;
 				}
+				case ResponseMessage m:
+				{
+					lock (_responseMessages)
+						_responseMessages[m.Id] = m.Message;
+					break;
+				}
 				default:
 				{
 					this.MessageReceived?.Invoke(conn.Name, message);
@@ -228,11 +235,16 @@ namespace Yggdrasil.Network.Communication
 		{
 			var message = this.DeserializeMessage(buffer);
 
-
 			switch (message)
 			{
 				case HelloMessage m:
 				{
+					break;
+				}
+				case ResponseMessage m:
+				{
+					lock (_responseMessages)
+						_responseMessages[m.Id] = m.Message;
 					break;
 				}
 				default:
@@ -299,6 +311,38 @@ namespace Yggdrasil.Network.Communication
 			{
 				throw new ArgumentException($"There is no communicator with the name '{receiverName}'.");
 			}
+		}
+
+		/// <summary>
+		/// Sends a request to the receiver and waits for a response.
+		/// Returns either the response or null if the request failed.
+		/// </summary>
+		/// <typeparam name="TResMessage"></typeparam>
+		/// <param name="receiver"></param>
+		/// <param name="reqMessage"></param>
+		/// <returns></returns>
+		public async Task<TResMessage> RequestResponse<TResMessage>(string receiver, ICommMessage reqMessage) where TResMessage : ICommMessage
+		{
+			var message = new RequestMessage(reqMessage);
+
+			var resMessage = default(ICommMessage);
+			var timeout = DateTime.Now.AddSeconds(5);
+
+			this.Send(receiver, message);
+
+			do
+			{
+				await Task.Delay(1);
+
+				lock (_responseMessages)
+				{
+					if (_responseMessages.TryGetValue(message.Id, out resMessage))
+						_responseMessages.Remove(message.Id);
+				}
+			}
+			while (resMessage == null && DateTime.Now < timeout);
+
+			return (TResMessage)resMessage;
 		}
 
 		/// <summary>

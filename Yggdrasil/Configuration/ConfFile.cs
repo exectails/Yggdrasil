@@ -217,7 +217,7 @@ namespace Yggdrasil.Configuration
 					return defaultValue;
 			}
 
-			if (float.TryParse(value, out var ret))
+			if (float.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var ret))
 				return ret;
 
 			return defaultValue;
@@ -233,7 +233,7 @@ namespace Yggdrasil.Configuration
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		public DateTime GetDateTime(string option, DateTime defaultValue = default(DateTime))
+		public DateTime GetDateTime(string option, DateTime defaultValue = default)
 		{
 			string value;
 			lock (_options)
@@ -257,7 +257,7 @@ namespace Yggdrasil.Configuration
 		/// <param name="option"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		public T GetEnum<T>(string option, T defaultValue = default(T)) where T : struct
+		public T GetEnum<T>(string option, T defaultValue = default) where T : struct
 		{
 			var type = typeof(T);
 

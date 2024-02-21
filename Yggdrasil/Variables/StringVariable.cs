@@ -29,7 +29,7 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Gets or sets the variable's value.
 			/// </summary>
-			public string Value
+			public virtual string Value
 			{
 				get => _value;
 				set

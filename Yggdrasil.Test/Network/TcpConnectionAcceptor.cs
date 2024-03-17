@@ -11,7 +11,7 @@ namespace Yggdrasil.Test.Network
 {
 	public class TcpConnectionAcceptorTests
 	{
-		public void Wait(int ms)
+		private static void Wait(int ms)
 		{
 			var end = DateTime.Now.AddMilliseconds(ms);
 			while (DateTime.Now < end) ;
@@ -144,9 +144,9 @@ namespace Yggdrasil.Test.Network
 
 	public class TestConnection : TcpConnection
 	{
-		private LengthPrefixFramer _framer;
+		private readonly LengthPrefixFramer _framer;
 
-		public List<byte[]> Messages = new List<byte[]>();
+		public List<byte[]> Messages = [];
 
 		public TestConnection()
 		{

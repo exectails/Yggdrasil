@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 using Yggdrasil.Collections;
 
@@ -12,7 +10,7 @@ namespace Yggdrasil.Test.Collections
 		[Fact]
 		public void IntKeying()
 		{
-			Assert.Throws(typeof(NotSupportedException), () => { new OrderedDictionary<int, int>(); });
+			Assert.Throws<NotSupportedException>(() => { new OrderedDictionary<int, int>(); });
 		}
 
 		[Fact]
@@ -25,15 +23,15 @@ namespace Yggdrasil.Test.Collections
 			dict.Add("3", 3000);
 
 			Assert.Equal(3, dict.Count);
-			Assert.Equal(dict["1"], 1000);
-			Assert.Equal(dict["2"], 2000);
-			Assert.Equal(dict["3"], 3000);
-			Assert.Throws(typeof(KeyNotFoundException), () => { Assert.Equal(dict["4"], 4000); });
+			Assert.Equal(1000, dict["1"]);
+			Assert.Equal(2000, dict["2"]);
+			Assert.Equal(3000, dict["3"]);
+			Assert.Throws<KeyNotFoundException>(() => { Assert.Equal(4000, dict["4"]); });
 
-			Assert.Equal(dict[0], 1000);
-			Assert.Equal(dict[1], 2000);
-			Assert.Equal(dict[2], 3000);
-			Assert.Throws(typeof(ArgumentOutOfRangeException), () => { Assert.Equal(dict[3], 4000); });
+			Assert.Equal(1000, dict[0]);
+			Assert.Equal(2000, dict[1]);
+			Assert.Equal(3000, dict[2]);
+			Assert.Throws<ArgumentOutOfRangeException>(() => { Assert.Equal(4000, dict[3]); });
 		}
 
 		[Fact]
@@ -56,11 +54,11 @@ namespace Yggdrasil.Test.Collections
 			dict.Add("1", 1100);
 
 			Assert.Equal(5, dict.Count);
-			Assert.Equal(dict[0], 2000);
-			Assert.Equal(dict[1], 5000);
-			Assert.Equal(dict[2], 3300);
-			Assert.Equal(dict[3], 4400);
-			Assert.Equal(dict[4], 1100);
+			Assert.Equal(2000, dict[0]);
+			Assert.Equal(5000, dict[1]);
+			Assert.Equal(3300, dict[2]);
+			Assert.Equal(4400, dict[3]);
+			Assert.Equal(1100, dict[4]);
 		}
 
 		[Fact]

@@ -8,7 +8,7 @@ namespace Yggdrasil.Test.IO
 {
 	public class FileReaderTests
 	{
-		private static int _tmp;
+		private static int Tmp;
 
 		/// <summary>
 		/// Creates a temp file to be used by a test and returns
@@ -17,7 +17,7 @@ namespace Yggdrasil.Test.IO
 		/// <returns></returns>
 		private static string GetTempFileName()
 		{
-			var result = "tmp" + _tmp++;
+			var result = "tmp" + Tmp++;
 
 			File.WriteAllText(result, "");
 
@@ -150,7 +150,7 @@ line3
 			{
 				var lines = new List<string>();
 
-				Assert.Throws(typeof(FileNotFoundException), () =>
+				Assert.Throws<FileNotFoundException>(() =>
 				{
 					foreach (var line in fr)
 						lines.Add(line.Value);

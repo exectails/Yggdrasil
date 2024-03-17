@@ -49,27 +49,27 @@ namespace Yggdrasil.Test.Configuration
 		[Fact]
 		public void Include()
 		{
-			var path = GetTestFile();
+			var path = this.GetTestFile();
 			var conf = new ConfFile();
 
-			Assert.DoesNotThrow(() => conf.Include(path));
-			Assert.DoesNotThrow(() => conf.Include("some_imaginary_file_that_doesnt exist.nope"));
+			AssertEx.DoesNotThrow(() => conf.Include(path));
+			AssertEx.DoesNotThrow(() => conf.Include("some_imaginary_file_that_doesnt exist.nope"));
 		}
 
 		[Fact]
 		public void Require()
 		{
-			var path = GetTestFile();
+			var path = this.GetTestFile();
 			var conf = new ConfFile();
 
-			Assert.DoesNotThrow(() => conf.Require(path));
+			AssertEx.DoesNotThrow(() => conf.Require(path));
 			Assert.Throws<FileNotFoundException>(() => conf.Require("some_imaginary_file_that_doesnt exist.nope"));
 		}
 
 		[Fact]
 		public void GetByInclude()
 		{
-			var path = GetTestFile();
+			var path = this.GetTestFile();
 			var conf = new ConfFile();
 			conf.Include(path);
 
@@ -79,14 +79,14 @@ namespace Yggdrasil.Test.Configuration
 		[Fact]
 		public void GetByRequire()
 		{
-			var path = GetTestFile();
+			var path = this.GetTestFile();
 			var conf = new ConfFile();
 			conf.Require(path);
 
 			Get(conf);
 		}
 
-		public void Get(ConfFile conf)
+		private static void Get(ConfFile conf)
 		{
 			Assert.Equal(10, conf.GetByte("test1"));
 			Assert.Equal(20, conf.GetByte("test1.1", 20));

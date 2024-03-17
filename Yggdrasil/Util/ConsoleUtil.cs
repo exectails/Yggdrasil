@@ -126,10 +126,12 @@ namespace Yggdrasil.Util
 		/// </summary>
 		public static bool CheckAdmin()
 		{
-			var id = WindowsIdentity.GetCurrent();
-			var principal = new WindowsPrincipal(id);
+			//var id = WindowsIdentity.GetCurrent();
+			//var principal = new WindowsPrincipal(id);
 
-			return principal.IsInRole(WindowsBuiltInRole.Administrator);
+			//return principal.IsInRole(WindowsBuiltInRole.Administrator);
+
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

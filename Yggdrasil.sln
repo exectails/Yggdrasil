@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Structures", "Ygg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data.JSON", "Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj", "{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Data.JSON", "Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj", "{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Network.WebSocket", "Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj", "{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}"
 EndProject

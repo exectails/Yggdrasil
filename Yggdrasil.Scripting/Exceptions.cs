@@ -1,5 +1,5 @@
 ﻿using System;
-using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace Yggdrasil.Scripting
 {
@@ -44,6 +44,28 @@ namespace Yggdrasil.Scripting
 		/// <param name="innerException"></param>
 		public ScriptLoadingException(string typeName, Exception innerException)
 			: base($"Failed to initialize '{typeName}'.", innerException)
+		{
+		}
+	}
+
+	/// <summary>
+	/// A collection of compiler errors.
+	/// </summary>
+	public class CompilerErrorCollection : List<CompilerError>
+	{
+		/// <summary>
+		/// Creates new, empty instance.
+		/// </summary>
+		public CompilerErrorCollection()
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance and adds the given errors.
+		/// </summary>
+		/// <param name="errors"></param>
+		public CompilerErrorCollection(IEnumerable<CompilerError> errors)
+			: base(errors)
 		{
 		}
 	}

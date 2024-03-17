@@ -1,10 +1,10 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Yggdrasil.IO;
 
 namespace Yggdrasil.Scripting
@@ -14,7 +14,6 @@ namespace Yggdrasil.Scripting
 	/// </summary>
 	public class ScriptLoader
 	{
-		private readonly CodeDomProvider _compiler;
 		private readonly List<IPrecompiler> _precompilers = new List<IPrecompiler>();
 		private readonly HashSet<string> _filePaths = new HashSet<string>();
 		private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>();
@@ -22,15 +21,7 @@ namespace Yggdrasil.Scripting
 		private readonly LinkedList<string> _tempFiles = new LinkedList<string>();
 		private readonly string _cacheFilePath;
 
-		private readonly string[] _defaultReferences = new string[]
-		{
-			//"System.dll",
-			//"System.Core.dll",
-			//"System.Data.dll",
-			//"Microsoft.CSharp.dll",
-			//"System.Xml.dll",
-			//"System.Xml.Linq.dll",
-		};
+		public List<string> References { get; } = new List<string>();
 
 		/// <summary>
 		/// Returns the amount of script classes that were successfully
@@ -60,24 +51,20 @@ namespace Yggdrasil.Scripting
 		public List<ScriptLoadingException> LoadingExceptions { get; } = new List<ScriptLoadingException>();
 
 		/// <summary>
-		/// Creates new instance, using the given CodeDomProvider to compile
-		/// scripts and no caching.
+		/// Creates new instance.
 		/// </summary>
 		/// <param name="provider"></param>
-		public ScriptLoader(CodeDomProvider provider)
-			: this(provider, null)
+		public ScriptLoader()
+			: this(null)
 		{
 		}
 
 		/// <summary>
-		/// Creates new instance, using the given CodeDomProvider to compile
-		/// scripts, caching the result in the given file.
+		/// Creates a new instance that caches the result in the given file.
 		/// </summary>
-		/// <param name="provider"></param>
 		/// <param name="cacheFilePath"></param>
-		public ScriptLoader(CodeDomProvider provider, string cacheFilePath)
+		public ScriptLoader(string cacheFilePath)
 		{
-			_compiler = provider;
 			_cacheFilePath = cacheFilePath;
 		}
 
@@ -223,7 +210,9 @@ namespace Yggdrasil.Scripting
 			if (!_filePaths.Any())
 				return;
 
-			var assembly = this.Compile(_filePaths.Where(a => a.EndsWith(".cs")));
+			var csFiles = _filePaths.Where(a => a.EndsWith(".cs"));
+			var assembly = this.Compile(csFiles);
+
 			this.InitAssembly(assembly);
 		}
 
@@ -281,7 +270,7 @@ namespace Yggdrasil.Scripting
 				var mapFilePaths = filePaths.ToDictionary(a => a);
 				var precompilers = _precompilers;
 
-				if (_precompilers.Any())
+				if (precompilers.Any())
 				{
 					for (var i = 0; i < filePaths.Length; ++i)
 					{
@@ -308,81 +297,142 @@ namespace Yggdrasil.Scripting
 				var tmpAssemblyPath = Path.GetTempFileName();
 				_tempFiles.AddLast(tmpAssemblyPath);
 
-				// Prepare parameters
-				var parameters = new CompilerParameters();
-				parameters.GenerateExecutable = false;
-				parameters.GenerateInMemory = true;
-				parameters.WarningLevel = 0;
-				parameters.IncludeDebugInformation = true;
-				parameters.OutputAssembly = tmpAssemblyPath;
+				// Parse scripts
+				var syntaxTrees = new List<SyntaxTree>();
 
-				// Add default references
-				foreach (var reference in _defaultReferences)
-					parameters.ReferencedAssemblies.Add(reference);
-
-				// Get assemblies referenced by application
-				var entryAssembly = Assembly.GetEntryAssembly();
-				var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-				var toReference = new HashSet<string>();
-
-				if (entryAssembly != null)
+				foreach (var filePath in filePaths)
 				{
-					toReference.Add(entryAssembly.Location);
+					var displayFilePath = filePath;
 
-					foreach (var assemblyName in entryAssembly.GetReferencedAssemblies())
+					if (mapFilePaths.TryGetValue(displayFilePath, out var mappedFilePath))
+						displayFilePath = mappedFilePath;
+
+					var source = File.ReadAllText(filePath);
+					var syntaxTree = CSharpSyntaxTree.ParseText(source, path: displayFilePath);
+
+					syntaxTrees.Add(syntaxTree);
+				}
+
+				// Prepare references
+
+				// First we get some defaults necessary to compile a
+				// standard library. Next we go through the references
+				// added by the user, which might be necessary in some
+				// cases. We also add assemblies referenced by the
+				// explicit references, so the user doesn't have to
+				// manage these manually. And finally we try to add
+				// all references that the assemblies calling this
+				// function may be using. All this is an effort to
+				// reduce the number of references we have to add
+				// manually and explicitly. Ideally we don't want
+				// to have to think about them at all.
+
+				var runTimePath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+				var netStandardPath = Path.Combine(runTimePath, "netstandard.dll");
+
+				var toReference = new HashSet<string>
+				{
+					netStandardPath,
+					typeof(object).Assembly.Location,
+				};
+
+				foreach (var userReferences in this.References)
+				{
+					toReference.Add(userReferences);
+
+					var userAssembly = Assembly.LoadFile(userReferences);
+					foreach (var reference in userAssembly.GetReferencedAssemblies())
 					{
-						var assembly = Assembly.Load(assemblyName);
-						toReference.Add(assembly.Location);
+						var refAssembly = Assembly.Load(reference);
+						toReference.Add(refAssembly.Location);
 					}
 				}
 
-				foreach (var assembly in loadedAssemblies.Where(a => !a.IsDynamic))
+				var parentAssemblies = new[]
 				{
+					Assembly.GetEntryAssembly(),
+					//Assembly.GetCallingAssembly(),
+					//Assembly.GetExecutingAssembly(),
+				};
+
+				foreach (var assembly in parentAssemblies)
+				{
+					if (assembly == null)
+						continue;
+
 					toReference.Add(assembly.Location);
-				}
 
-				foreach (var location in toReference)
-				{
-					parameters.ReferencedAssemblies.Add(location);
-				}
-
-				// Compile, throw if compilation failed
-				var result = _compiler.CompileAssemblyFromFile(parameters, filePaths);
-				var errors = result.Errors;
-
-				if (errors.Count != 0)
-				{
-					foreach (CompilerError error in errors)
+					foreach (var reference in assembly.GetReferencedAssemblies())
 					{
-						if (mapFilePaths.TryGetValue(error.FileName, out var fileName))
-							error.FileName = fileName;
-					}
-
-					throw new CompilerErrorException(errors);
-				}
-
-				var compiledAssembly = result.CompiledAssembly;
-
-				// Save assembly to file, ignoring access exceptions
-				// because those are to be expected at run-time, when the
-				// cached assembly was loaded into memory.
-				if (_cacheFilePath != null)
-				{
-					try
-					{
-						var dirPath = Path.GetDirectoryName(_cacheFilePath);
-						if (!Directory.Exists(dirPath))
-							Directory.CreateDirectory(dirPath);
-
-						File.Delete(_cacheFilePath);
-						File.Copy(tmpAssemblyPath, _cacheFilePath);
-					}
-					catch (UnauthorizedAccessException)
-					{
+						var refAssembly = Assembly.Load(reference);
+						toReference.Add(refAssembly.Location);
 					}
 				}
 
-				return compiledAssembly;
+				var references = toReference.Select(a => MetadataReference.CreateFromFile(a));
+
+				// Compile scripts
+				var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+				var compilation = CSharpCompilation.Create("scripts.compiled", syntaxTrees, references, options);
+
+				var compiledAssembly = null as Assembly;
+
+				using (var ms = new MemoryStream())
+				{
+					var compilationResult = compilation.Emit(ms);
+
+					if (!compilationResult.Success)
+					{
+						var errors = new CompilerErrorCollection();
+
+						foreach (var diagnostic in compilationResult.Diagnostics)
+						{
+							var isWarning = diagnostic.Severity == DiagnosticSeverity.Warning;
+
+							if (diagnostic.Location == Location.None)
+							{
+								errors.Add(new CompilerError(null, 0, 0, diagnostic.ToString(), isWarning));
+								continue;
+							}
+
+							var fileName = diagnostic.Location.SourceTree.FilePath;
+							var lineSpan = diagnostic.Location.GetLineSpan();
+							var line = lineSpan.StartLinePosition.Line + 1;
+							var column = lineSpan.StartLinePosition.Character + 1;
+
+							if (mapFilePaths.TryGetValue(fileName, out var mappedFileName))
+								fileName = mappedFileName;
+
+							errors.Add(new CompilerError(fileName, line, column, diagnostic.GetMessage(), isWarning));
+						}
+
+						throw new CompilerErrorException(errors);
+					}
+
+					ms.Seek(0, SeekOrigin.Begin);
+					compiledAssembly = Assembly.Load(ms.ToArray());
+
+					// Save assembly to file, ignoring access exceptions
+					// because those are to be expected at run-time, when the
+					// cached assembly was loaded into memory.
+					if (_cacheFilePath != null)
+					{
+						try
+						{
+							var dirPath = Path.GetDirectoryName(_cacheFilePath);
+							if (!Directory.Exists(dirPath))
+								Directory.CreateDirectory(dirPath);
+
+							File.Delete(_cacheFilePath);
+							File.Copy(tmpAssemblyPath, _cacheFilePath);
+						}
+						catch (UnauthorizedAccessException)
+						{
+						}
+					}
+
+					return compiledAssembly;
+				}
 			}
 			finally
 			{

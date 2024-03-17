@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Ai", "Yggdrasil.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Structures", "Yggdrasil.Structures\Yggdrasil.Structures.csproj", "{D82C3CEB-CE11-4340-AC10-9D95D9977203}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Data", "Yggdrasil.Data\Yggdrasil.Data.csproj", "{EB1F3E6E-C578-4C29-8A26-7B77434B5861}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Data.JSON", "Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj", "{BD1C2BA1-E280-4FE3-B1C1-EFFC4779563E}"
 EndProject

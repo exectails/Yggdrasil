@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Data.JSON", "Yggd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Network.WebSocket", "Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj", "{337EF6CB-4B91-4F2C-9893-D0F77E9FAC4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Scripting", "Yggdrasil.Scripting\Yggdrasil.Scripting.csproj", "{F7007FE7-566D-45F3-A69B-4620A0232EF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Scripting", "Yggdrasil.Scripting\Yggdrasil.Scripting.csproj", "{F7007FE7-566D-45F3-A69B-4620A0232EF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

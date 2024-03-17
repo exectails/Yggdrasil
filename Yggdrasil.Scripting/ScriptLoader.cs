@@ -294,9 +294,6 @@ namespace Yggdrasil.Scripting
 					}
 				}
 
-				var tmpAssemblyPath = Path.GetTempFileName();
-				_tempFiles.AddLast(tmpAssemblyPath);
-
 				// Parse scripts
 				var syntaxTrees = new List<SyntaxTree>();
 
@@ -410,7 +407,9 @@ namespace Yggdrasil.Scripting
 					}
 
 					ms.Seek(0, SeekOrigin.Begin);
-					compiledAssembly = Assembly.Load(ms.ToArray());
+
+					var assemblyBytes = ms.ToArray();
+					compiledAssembly = Assembly.Load(assemblyBytes);
 
 					// Save assembly to file, ignoring access exceptions
 					// because those are to be expected at run-time, when the
@@ -424,7 +423,7 @@ namespace Yggdrasil.Scripting
 								Directory.CreateDirectory(dirPath);
 
 							File.Delete(_cacheFilePath);
-							File.Copy(tmpAssemblyPath, _cacheFilePath);
+							File.WriteAllBytes(_cacheFilePath, assemblyBytes);
 						}
 						catch (UnauthorizedAccessException)
 						{

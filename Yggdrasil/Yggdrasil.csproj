@@ -1,169 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4BB8DF19-7D20-429A-AF5F-5D1232538E08}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Yggdrasil</RootNamespace>
-    <AssemblyName>Yggdrasil</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyTitle>Yggdrasil</AssemblyTitle>
+    <Company>Microsoft</Company>
+    <Product>Yggdrasil</Product>
+    <Copyright>Copyright © Microsoft 2016</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Debug\Yggdrasil.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Release\Yggdrasil.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Collections\ListCollection.cs" />
-    <Compile Include="Configuration\ConfFile.cs" />
-    <Compile Include="Composition\Component.cs" />
-    <Compile Include="Composition\ComponentCollection.cs" />
-    <Compile Include="Extensions\TimeSpan.cs" />
-    <Compile Include="Extensions\DateTime.cs" />
-    <Compile Include="Extensions\Dictionary.cs" />
-    <Compile Include="Extensions\GenericLists.cs" />
-    <Compile Include="Extensions\IpAddress.cs" />
-    <Compile Include="Extensions\Queue.cs" />
-    <Compile Include="Extensions\Random.cs" />
-    <Compile Include="Extensions\String.cs" />
-    <Compile Include="Extensions\StringBuilder.cs" />
-    <Compile Include="Geometry\LineF.cs" />
-    <Compile Include="Geometry\Line.cs" />
-    <Compile Include="Geometry\OutlineF.cs" />
-    <Compile Include="Geometry\Outline.cs" />
-    <Compile Include="Geometry\PointUtil.cs" />
-    <Compile Include="Geometry\Rotatable.cs" />
-    <Compile Include="Geometry\Shapes\CircleF.cs" />
-    <Compile Include="Geometry\Shapes\Circle.cs" />
-    <Compile Include="Geometry\Shapes\CompositeShapeF.cs" />
-    <Compile Include="Geometry\Shapes\CompositeShape.cs" />
-    <Compile Include="Geometry\Shapes\ConeF.cs" />
-    <Compile Include="Geometry\Shapes\Cone.cs" />
-    <Compile Include="Geometry\Shapes\PolygonF.cs" />
-    <Compile Include="Geometry\Shapes\Polygon.cs" />
-    <Compile Include="Geometry\Shapes\RectangleF.cs" />
-    <Compile Include="Geometry\Shapes\Rectangle.cs" />
-    <Compile Include="Geometry\ShapeF.cs" />
-    <Compile Include="Geometry\Shape.cs" />
-    <Compile Include="Geometry\Vector2.cs" />
-    <Compile Include="Geometry\Vector2F.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LoggerTarget.cs" />
-    <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Logging\Targets\ConsoleTarget.cs" />
-    <Compile Include="Logging\Targets\SmtpTarget.cs" />
-    <Compile Include="Logging\Targets\FileTarget.cs" />
-    <Compile Include="Network\Communication\Client.cs" />
-    <Compile Include="Network\Communication\Communicator.cs" />
-    <Compile Include="Network\Communication\CommMessage.cs" />
-    <Compile Include="Network\Communication\Connection.cs" />
-    <Compile Include="Network\Communication\Messages\BroadcastMessage.cs" />
-    <Compile Include="Network\Communication\Messages\HelloMessage.cs" />
-    <Compile Include="Network\Communication\Messages\RequestMessage.cs" />
-    <Compile Include="Network\Communication\Messages\ResponseMessage.cs" />
-    <Compile Include="Network\Communication\Messages\SubscribeChannelMessage.cs" />
-    <Compile Include="Network\Framing\DoubleNewLineFramer.cs" />
-    <Compile Include="Parameters\NumericParameter.cs" />
-    <Compile Include="Parameters\Parameter.cs" />
-    <Compile Include="Parameters\ParameterCollection.cs" />
-    <Compile Include="Parameters\StringParameter.cs" />
-    <Compile Include="Scheduling\CallbackException.cs" />
-    <Compile Include="Scheduling\CallbackState.cs" />
-    <Compile Include="Scheduling\Heartbeat.cs" />
-    <Compile Include="Security\Hashing\SHA1.cs" />
-    <Compile Include="Security\Hashing\SHA256.cs" />
-    <Compile Include="Security\Hashing\MD5.cs" />
-    <Compile Include="Scheduling\ScheduledCallback.cs" />
-    <Compile Include="Scheduling\Scheduler.cs" />
-    <Compile Include="Util\BufferReaderWriter.cs" />
-    <Compile Include="Network\TCP\TcpClient.cs" />
-    <Compile Include="Network\TCP\TcpConnection.cs" />
-    <Compile Include="Network\Framing\MessageFramer.cs" />
-    <Compile Include="Network\Framing\NullTerminationFramer.cs" />
-    <Compile Include="Network\TCP\TcpConnectionAcceptor.cs" />
-    <Compile Include="Network\Framing\LengthPrefixFramer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\Hashing\BCrypt.cs" />
-    <Compile Include="Util\ConsoleUtil.cs" />
-    <Compile Include="Collections\Collection.cs" />
-    <Compile Include="Util\Commands\Arguments.cs" />
-    <Compile Include="Util\Commands\Command.cs" />
-    <Compile Include="Util\Commands\CommandManager.cs" />
-    <Compile Include="Util\Commands\ConsoleCommands.cs" />
-    <Compile Include="IO\FileReader.cs" />
-    <Compile Include="Logging\Log.cs" />
-    <Compile Include="Util\Hex.cs" />
-    <Compile Include="Util\Math2.cs" />
-    <Compile Include="Collections\OrderedDictionary.cs" />
-    <Compile Include="Util\MT19937.cs" />
-    <Compile Include="Util\ObjectActivator.cs" />
-    <Compile Include="Util\RandomProvider.cs" />
-    <Compile Include="Util\Variables.cs" />
-    <Compile Include="Variables\DefaultAccessors\IntVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\LongVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\FloatVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\DoubleVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\ObjectVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\StringVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\ULongVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\UIntVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\UShortVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\ShortVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\SByteVariable.cs" />
-    <Compile Include="Variables\DefaultAccessors\ByteVariable.cs" />
-    <Compile Include="Variables\DoubleVariable.cs" />
-    <Compile Include="Variables\FloatVariable.cs" />
-    <Compile Include="Variables\ByteVariable.cs" />
-    <Compile Include="Variables\SByteVariable.cs" />
-    <Compile Include="Variables\IntVariable.cs" />
-    <Compile Include="Variables\LongVariable.cs" />
-    <Compile Include="Variables\NumericVariable.cs" />
-    <Compile Include="Variables\ShortVariable.cs" />
-    <Compile Include="Variables\ObjectVariable.cs" />
-    <Compile Include="Variables\StringVariable.cs" />
-    <Compile Include="Variables\TypeMismatchException.cs" />
-    <Compile Include="Variables\UIntVariable.cs" />
-    <Compile Include="Variables\ULongVariable.cs" />
-    <Compile Include="Variables\UShortVariable.cs" />
-    <Compile Include="Variables\Variable.cs" />
-    <Compile Include="Variables\VariableContainer.cs" />
-    <Compile Include="Variables\VariableType.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

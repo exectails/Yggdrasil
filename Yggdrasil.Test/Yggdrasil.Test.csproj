@@ -1,151 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Yggdrasil.Test</RootNamespace>
-    <AssemblyName>Yggdrasil.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyTitle>Yggdrasil.Test</AssemblyTitle>
+    <Company>Microsoft</Company>
+    <Product>Yggdrasil.Test</Product>
+    <Copyright>Copyright © Microsoft 2016</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="xunit, Version=1.9.2.1705, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AI\BehaviorTree\Composites\Selector.cs" />
-    <Compile Include="AI\BehaviorTree\Composites\Sequence.cs" />
-    <Compile Include="AI\BehaviorTree\Composites\Conditional.cs" />
-    <Compile Include="AI\BehaviorTree\Decorators\Succeeder.cs" />
-    <Compile Include="AI\BehaviorTree\Decorators\Repeater.cs" />
-    <Compile Include="AI\BehaviorTree\Decorators\Inverter.cs" />
-    <Compile Include="AI\BehaviorTree\Leafs\Print.cs" />
-    <Compile Include="AI\BehaviorTree\Leafs\Execute.cs" />
-    <Compile Include="AI\BehaviorTree\Leafs\Wait.cs" />
-    <Compile Include="Collections\Collection.cs" />
-    <Compile Include="Collections\ListCollection.cs" />
-    <Compile Include="Collections\OrderedDictionary.cs" />
-    <Compile Include="Configuration\ConfFile.cs" />
-    <Compile Include="Data\CsvReader.cs" />
-    <Compile Include="Extensions\TimeSpan.cs" />
-    <Compile Include="Geometry\Shapes\CircleF.cs" />
-    <Compile Include="Geometry\Shapes\Circle.cs" />
-    <Compile Include="Geometry\Shapes\ConeF.cs" />
-    <Compile Include="Geometry\Shapes\Cone.cs" />
-    <Compile Include="Geometry\Shapes\PolygonF.cs" />
-    <Compile Include="Geometry\Shapes\Polygon.cs" />
-    <Compile Include="Geometry\Shapes\RectangleF.cs" />
-    <Compile Include="Geometry\Shapes\Rectangle.cs" />
-    <Compile Include="Geometry\Vector2.cs" />
-    <Compile Include="Geometry\Vector2F.cs" />
-    <Compile Include="Composition\Components.cs" />
-    <Compile Include="Extensions\GenericLists.cs" />
-    <Compile Include="Extensions\Random.cs" />
-    <Compile Include="Extensions\String.cs" />
-    <Compile Include="IO\FileReader.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Network\HttpResponse.cs" />
-    <Compile Include="Network\HttpRequest.cs" />
-    <Compile Include="Network\LengthPrefixFramer.cs" />
-    <Compile Include="Network\DoubleNewLineFramer.cs" />
-    <Compile Include="Network\NullTerminationFramer.cs" />
-    <Compile Include="Network\TcpConnectionAcceptor.cs" />
-    <Compile Include="Network\WebSocketFrame.cs" />
-    <Compile Include="Network\WebSocketFramer.cs" />
-    <Compile Include="Parameters\ParameterCollection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduling\Scheduler.cs" />
-    <Compile Include="Scripting\ScriptLoader.cs" />
-    <Compile Include="Security\Hashing\SHA1.cs" />
-    <Compile Include="Security\Hashing\SHA256.cs" />
-    <Compile Include="Security\Hashing\MD5.cs" />
-    <Compile Include="Security\Hashing\BCrypt.cs" />
-    <Compile Include="Util\BufferReaderWriter.cs" />
-    <Compile Include="Util\ConsoleUtil.cs" />
-    <Compile Include="Util\Commands\Arguments.cs" />
-    <Compile Include="Util\Commands\CommandManager.cs" />
-    <Compile Include="Util\Hex.cs" />
-    <Compile Include="Util\Math2.cs" />
-    <Compile Include="Util\MT19937.cs" />
-    <Compile Include="Util\RandomProvider.cs" />
-    <Compile Include="Util\Variables.cs" />
-    <Compile Include="Variables\VariableContainer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Yggdrasil.Ai\Yggdrasil.Ai.csproj">
-      <Project>{eefda46b-1503-4381-b1f5-40805549a925}</Project>
-      <Name>Yggdrasil.Ai</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Yggdrasil.Data\Yggdrasil.Data.csproj">
-      <Project>{eb1f3e6e-c578-4c29-8a26-7b77434b5861}</Project>
-      <Name>Yggdrasil.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj">
-      <Project>{337ef6cb-4b91-4f2c-9893-d0f77e9fac4c}</Project>
-      <Name>Yggdrasil.Network.WebSocket</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Yggdrasil.Scripting\Yggdrasil.Scripting.csproj">
-      <Project>{f7007fe7-566d-45f3-a69b-4620a0232ef7}</Project>
-      <Name>Yggdrasil.Scripting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj">
-      <Project>{4bb8df19-7d20-429a-af5f-5d1232538e08}</Project>
-      <Name>Yggdrasil</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Yggdrasil.Ai\Yggdrasil.Ai.csproj" />
+    <ProjectReference Include="..\Yggdrasil.Data\Yggdrasil.Data.csproj" />
+    <ProjectReference Include="..\Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj" />
+    <ProjectReference Include="..\Yggdrasil.Scripting\Yggdrasil.Scripting.csproj" />
+    <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+  </ItemGroup>
 </Project>

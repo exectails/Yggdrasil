@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil", "Yggdrasil\Yggdrasil.csproj", "{4BB8DF19-7D20-429A-AF5F-5D1232538E08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Test", "Yggdrasil.Test\Yggdrasil.Test.csproj", "{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Test", "Yggdrasil.Test\Yggdrasil.Test.csproj", "{F3325FCA-7533-49C4-9243-8EAA92C8AFBF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Ai", "Yggdrasil.Ai\Yggdrasil.Ai.csproj", "{EEFDA46B-1503-4381-B1F5-40805549A925}"
 EndProject

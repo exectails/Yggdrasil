@@ -6,10 +6,35 @@
 	/// </summary>
 	public readonly struct CompilerError
 	{
+		/// <summary>
+		/// The name of the file where the error occurred in.
+		/// </summary>
+		/// <remarks>
+		/// This may be null or empty if the error is not related to a
+		/// specific file.
+		/// </remarks>
 		public readonly string FileName;
+
+		/// <summary>
+		/// Returns the number of the line where the error occurred,
+		/// starting at 1.
+		/// </summary>
 		public readonly int Line;
+
+		/// <summary>
+		/// Returns the number of the column where the error occurred,
+		/// starting at 1.
+		/// </summary>
 		public readonly int Column;
+
+		/// <summary>
+		/// Returns the error message.
+		/// </summary>
 		public readonly string ErrorText;
+
+		/// <summary>
+		/// Returns true if the error was a warning.
+		/// </summary>
 		public readonly bool IsWarning;
 
 		/// <summary>

@@ -21,6 +21,17 @@ namespace Yggdrasil.Scripting
 		private readonly LinkedList<string> _tempFiles = new LinkedList<string>();
 		private readonly string _cacheFilePath;
 
+		/// <summary>
+		/// Contains references to be used when compiling scripts.
+		/// </summary>
+		/// <remarks>
+		/// In most cases it should not be necessary to add any
+		/// references to this list, as the script loader gets
+		/// all references from the executing assembly automatically.
+		/// There are some edge cases though, like during unit tests,
+		/// where the executing assembly is not the one the scripts
+		/// need.
+		/// </remarks>
 		public List<string> References { get; } = new List<string>();
 
 		/// <summary>
@@ -53,7 +64,6 @@ namespace Yggdrasil.Scripting
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
-		/// <param name="provider"></param>
 		public ScriptLoader()
 			: this(null)
 		{

@@ -9,6 +9,7 @@
     <Copyright>Copyright © Microsoft 2016</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <BaseOutputPath>..\bin\</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DocumentationFile>bin\Debug\Yggdrasil.xml</DocumentationFile>

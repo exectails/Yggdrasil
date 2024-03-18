@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Yggdrasil.Network.Communication.Messages;
 using Yggdrasil.Network.TCP;
@@ -18,7 +19,6 @@ namespace Yggdrasil.Network.Communication
 		private TcpConnectionAcceptor<Connection> _acceptor;
 		private readonly Dictionary<string, Connection> _connections = new Dictionary<string, Connection>();
 		private readonly Dictionary<string, Client> _clients = new Dictionary<string, Client>();
-		private readonly BinaryFormatter _serializer = new BinaryFormatter();
 		private readonly Dictionary<string, List<string>> _channelSubscribers = new Dictionary<string, List<string>>();
 		private readonly Dictionary<long, ICommMessage> _responseMessages = new Dictionary<long, ICommMessage>();
 
@@ -353,8 +353,15 @@ namespace Yggdrasil.Network.Communication
 		private byte[] SerializeMessage(ICommMessage message)
 		{
 			using (var ms = new MemoryStream())
+			using (var bw = new BinaryWriter(ms))
 			{
-				_serializer.Serialize(ms, message);
+				var type = message.GetType();
+				var typeName = type.AssemblyQualifiedName;
+				var json = JsonSerializer.Serialize(message, type);
+
+				bw.Write(typeName);
+				bw.Write(json);
+
 				return ms.ToArray();
 			}
 		}
@@ -367,8 +374,14 @@ namespace Yggdrasil.Network.Communication
 		private ICommMessage DeserializeMessage(byte[] buffer)
 		{
 			using (var ms = new MemoryStream(buffer))
+			using (var br = new BinaryReader(ms))
 			{
-				var obj = _serializer.Deserialize(ms);
+				var typeName = br.ReadString();
+				var json = br.ReadString();
+
+				var type = Type.GetType(typeName);
+				var obj = JsonSerializer.Deserialize(json, type);
+
 				if (!(obj is ICommMessage message))
 					throw new ArgumentException("Buffer did not contain a comunicator message.");
 

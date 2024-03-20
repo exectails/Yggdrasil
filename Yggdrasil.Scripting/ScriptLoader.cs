@@ -382,8 +382,6 @@ namespace Yggdrasil.Scripting
 				var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 				var compilation = CSharpCompilation.Create("scripts.compiled", syntaxTrees, references, options);
 
-				var compiledAssembly = null as Assembly;
-
 				using (var ms = new MemoryStream())
 				{
 					var compilationResult = compilation.Emit(ms);
@@ -419,7 +417,7 @@ namespace Yggdrasil.Scripting
 					ms.Seek(0, SeekOrigin.Begin);
 
 					var assemblyBytes = ms.ToArray();
-					compiledAssembly = Assembly.Load(assemblyBytes);
+					var compiledAssembly = Assembly.Load(assemblyBytes);
 
 					// Save assembly to file, ignoring access exceptions
 					// because those are to be expected at run-time, when the

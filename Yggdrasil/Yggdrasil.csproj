@@ -4,12 +4,24 @@
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>Yggdrasil</AssemblyTitle>
-    <Company>Microsoft</Company>
+    <Company>exec</Company>
     <Product>Yggdrasil</Product>
-    <Copyright>Copyright © Microsoft 2016</Copyright>
+    <Copyright>Copyright © exec 2016</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <BaseOutputPath>..\bin\</BaseOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>$(AssemblyName)</Title>
+    <Version>1.0.0-alpha</Version>
+    <Authors>exec</Authors>
+    <Description>Game server and emulation library.</Description>
+    <RepositoryUrl>https://github.com/exectails/Yggdrasil</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>utility;server</PackageTags>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/exectails/Yggdrasil</PackageProjectUrl>
+    <PackageId>ExecTails.$(AssemblyName)</PackageId>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
@@ -18,6 +30,20 @@
     <DebugType>none</DebugType>
     <DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.3" />

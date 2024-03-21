@@ -56,6 +56,11 @@ namespace Yggdrasil.Scripting
 		public int FileCount => _filePaths.Count;
 
 		/// <summary>
+		/// A list of exceptions thrown while resolving references.
+		/// </summary>
+		public List<ScriptLoadingException> ReferenceExceptions { get; } = new List<ScriptLoadingException>();
+
+		/// <summary>
 		/// A list of exceptions thrown while initializing the compiled
 		/// scripts.
 		/// </summary>
@@ -371,8 +376,15 @@ namespace Yggdrasil.Scripting
 
 					foreach (var reference in assembly.GetReferencedAssemblies())
 					{
-						var refAssembly = Assembly.Load(reference);
-						toReference.Add(refAssembly.Location);
+						try
+						{
+							var refAssembly = Assembly.Load(reference);
+							toReference.Add(refAssembly.Location);
+						}
+						catch (Exception ex)
+						{
+							this.ReferenceExceptions.Add(new ScriptLoadingException($"Failed to load reference '{reference.FullName}': {ex}"));
+						}
 					}
 				}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Yggdrasil.Network.TCP
 {
@@ -10,6 +11,8 @@ namespace Yggdrasil.Network.TCP
 	public abstract class TcpConnection
 	{
 		private const int BufferMaxSize = 4 * 1024;
+
+		private readonly object _firstConnectSyncLock = new object();
 
 		private readonly byte[] _buffer = new byte[BufferMaxSize];
 		private Socket _socket;
@@ -98,10 +101,13 @@ namespace Yggdrasil.Network.TCP
 
 			_socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, this.OnReceive, null);
 
-			if (!_raisedConnected)
+			lock (_firstConnectSyncLock)
 			{
-				this.OnConnected();
-				_raisedConnected = true;
+				if (!_raisedConnected)
+				{
+					this.OnConnected();
+					_raisedConnected = true;
+				}
 			}
 		}
 

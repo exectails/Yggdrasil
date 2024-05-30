@@ -76,15 +76,16 @@ namespace Yggdrasil.Network.TCP
 
 			try { _socket.Shutdown(SocketShutdown.Both); } catch { }
 			try { _socket.Close(); } catch { }
-			try { this.OnClosed(type); } catch { }
+			try { this.NotifyClosed(type); } catch { }
 		}
 
 		/// <summary>
-		/// Called when the connection was closed, raises Closed event.
+		/// Calls OnClosed method and raises Closed event.
 		/// </summary>
 		/// <param name="type"></param>
-		protected virtual void OnClosed(ConnectionCloseType type)
+		private void NotifyClosed(ConnectionCloseType type)
 		{
+			this.OnClosed(type);
 			this.Closed?.Invoke(this, type);
 		}
 
@@ -125,7 +126,7 @@ namespace Yggdrasil.Network.TCP
 				if (length == 0)
 				{
 					this.Status = ConnectionStatus.Closed;
-					this.OnClosed(ConnectionCloseType.Disconnected);
+					this.NotifyClosed(ConnectionCloseType.Disconnected);
 
 					return;
 				}
@@ -159,6 +160,14 @@ namespace Yggdrasil.Network.TCP
 		/// and it's ready to be used.
 		/// </summary>
 		protected virtual void OnConnected()
+		{
+		}
+
+		/// <summary>
+		/// Called when the connection was closed, raises Closed event.
+		/// </summary>
+		/// <param name="type"></param>
+		protected virtual void OnClosed(ConnectionCloseType type)
 		{
 		}
 

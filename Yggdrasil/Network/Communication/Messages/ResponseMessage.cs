@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Yggdrasil.Network.Communication.Messages
 {
@@ -16,6 +17,7 @@ namespace Yggdrasil.Network.Communication.Messages
 		/// <summary>
 		/// Returns the actual response message.
 		/// </summary>
+		[JsonConverter(typeof(InterfaceConverter<ICommMessage>))]
 		public ICommMessage Message { get; }
 
 		/// <summary>

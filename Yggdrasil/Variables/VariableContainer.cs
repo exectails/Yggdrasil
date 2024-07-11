@@ -142,5 +142,17 @@ namespace Yggdrasil.Variables
 			lock (_syncLock)
 				return _vars.ContainsKey(ident);
 		}
+
+		/// <summary>
+		/// Removes the variable with the given identifier. Returns false
+		/// if no matching variable was found.
+		/// </summary>
+		/// <param name="ident"></param>
+		/// <returns></returns>
+		public bool Remove(TIdent ident)
+		{
+			lock (_syncLock)
+				return _vars.Remove(ident);
+		}
 	}
 }

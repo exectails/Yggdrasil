@@ -49,5 +49,32 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 
 			Assert.Equal(expected, shape.GetEdgePoints());
 		}
+
+		[Fact]
+		public void UpdatePosition()
+		{
+			var shape = Rectangle.Centered(new Vector2(500, 500), new Vector2(200, 200));
+			shape.UpdatePosition(new Vector2(1000, 1000));
+
+			var expected = new Vector2[4]
+			{
+				new Vector2(900, 900),
+				new Vector2(1100, 900),
+				new Vector2(1100, 1100),
+				new Vector2(900, 1100),
+			};
+
+			Assert.Equal(expected, shape.GetEdgePoints());
+
+			Assert.True(shape.IsInside(new Vector2(1000, 1000)));
+			Assert.True(shape.IsInside(new Vector2(950, 950)));
+			Assert.True(shape.IsInside(new Vector2(900, 900)));
+			Assert.True(shape.IsInside(new Vector2(1050, 1050)));
+			Assert.True(shape.IsInside(new Vector2(1000, 1000)));
+			Assert.False(shape.IsInside(new Vector2(899, 899)));
+			Assert.False(shape.IsInside(new Vector2(510, 510)));
+			Assert.False(shape.IsInside(new Vector2(1101, 1101)));
+			Assert.False(shape.IsInside(new Vector2(1500, 1200)));
+		}
 	}
 }

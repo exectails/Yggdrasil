@@ -33,5 +33,29 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 
 			Assert.Equal(expected, shape.GetEdgePoints());
 		}
+
+		[Fact]
+		public void UpdatePosition()
+		{
+			// Triangle
+			var shape = new Polygon(new Vector2(500, 500), new Vector2(400, 300), new Vector2(600, 300));
+			shape.UpdatePosition(new Vector2(-100, -100));
+
+			var expected = new Vector2[]
+			{
+				new Vector2(-100, -100),
+				new Vector2(-200, -300),
+				new Vector2(0, -300),
+			};
+
+			Assert.Equal(expected, shape.GetEdgePoints());
+
+			Assert.True(shape.IsInside(new Vector2(-100, -200)));
+			Assert.True(shape.IsInside(new Vector2(-210, -301)));
+			Assert.True(shape.IsInside(new Vector2(-190, -301)));
+			Assert.True(shape.IsInside(new Vector2(-210, -301)));
+			Assert.False(shape.IsInside(new Vector2(-190, -290)));
+			Assert.False(shape.IsInside(new Vector2(-210, -290)));
+		}
 	}
 }

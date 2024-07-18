@@ -17,7 +17,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the circle's center position.
 		/// </summary>
-		public Vector2 Center { get; }
+		public Vector2 Center { get; private set; }
 
 		/// <summary>
 		/// Returns the circle's radius.
@@ -135,6 +135,17 @@ namespace Yggdrasil.Geometry.Shapes
 			var y = this.Center.Y + distance * Math.Sin(angle);
 
 			return new Vector2((int)x, (int)y);
+		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2 position)
+		{
+			this.Center = position;
+			_edgePoints = null;
+			_outlines = null;
 		}
 	}
 }

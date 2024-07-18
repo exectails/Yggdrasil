@@ -46,5 +46,11 @@ namespace Yggdrasil.Geometry
 		/// <param name="rnd"></param>
 		/// <returns></returns>
 		Vector2 GetRandomPoint(Random rnd);
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		void UpdatePosition(Vector2 position);
 	}
 }

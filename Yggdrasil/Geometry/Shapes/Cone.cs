@@ -15,12 +15,12 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the center of the cone.
 		/// </summary>
-		public Vector2 Center { get; }
+		public Vector2 Center { get; private set; }
 
 		/// <summary>
 		/// Returns the position of the pointed tip of the cone.
 		/// </summary>
-		public Vector2 Tip { get; }
+		public Vector2 Tip { get; private set; }
 
 		/// <summary>
 		/// Returns the direction of the cone in degress, extending from
@@ -54,7 +54,18 @@ namespace Yggdrasil.Geometry.Shapes
 			this.Radius = radius;
 			this.Angle = Math2.Clamp(0, 180, angle);
 
-			// Get center
+			this.UpdateCenter(tipPos, direction, radius, angle);
+		}
+
+		/// <summary>
+		/// Updates the center based on the given properties.
+		/// </summary>
+		/// <param name="tipPos"></param>
+		/// <param name="direction"></param>
+		/// <param name="radius"></param>
+		/// <param name="angle"></param>
+		private void UpdateCenter(Vector2 tipPos, double direction, double radius, float angle)
+		{
 			var radians = Math2.DegreeToRadian(direction);
 			var centerDistance = radius / 2;
 
@@ -220,6 +231,19 @@ namespace Yggdrasil.Geometry.Shapes
 			}
 
 			return new Vector2(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2 position)
+		{
+			this.Tip = position;
+			_edgePoints = null;
+			_outlines = null;
+
+			this.UpdateCenter(this.Tip, this.Direction, this.Radius, (float)this.Angle);
 		}
 	}
 }

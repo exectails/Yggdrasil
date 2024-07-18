@@ -21,7 +21,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the average of the combined shapes.
 		/// </summary>
-		public Vector2 Center { get; }
+		public Vector2 Center { get; private set; }
 
 		/// <summary>
 		/// Creates new instance.
@@ -106,6 +106,20 @@ namespace Yggdrasil.Geometry.Shapes
 		{
 			var rndShape = this.Shapes.Random();
 			return rndShape.GetRandomPoint(rnd);
+		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2 position)
+		{
+			this.Center = position;
+			_edgePoints = null;
+			_outlines = null;
+
+			foreach (var shape in this.Shapes)
+				shape.UpdatePosition(position);
 		}
 	}
 }

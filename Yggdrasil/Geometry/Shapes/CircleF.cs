@@ -159,5 +159,16 @@ namespace Yggdrasil.Geometry.Shapes
 
 			this.Center = newCenterPoint;
 		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2F position)
+		{
+			this.Center = position;
+			_edgePoints = null;
+			_outlines = null;
+		}
 	}
 }

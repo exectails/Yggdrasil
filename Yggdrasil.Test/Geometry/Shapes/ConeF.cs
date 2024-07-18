@@ -35,5 +35,26 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 
 			Assert.Equal(expected, shape.GetEdgePoints());
 		}
+
+		[Fact]
+		public void UpdatePosition()
+		{
+			var shape = new ConeF(new Vector2F(350, 350), 0, 200, 60);
+			shape.UpdatePosition(new Vector2F(250, 250));
+
+			var expected = new Vector2F[]
+			{
+				new Vector2F(250, 250),
+				new Vector2F(423, 350),
+				new Vector2F(450, 250),
+				new Vector2F(423, 150),
+			};
+
+			Assert.Equal(expected, shape.GetEdgePoints());
+
+			Assert.True(shape.IsInside(new Vector2F(300, 250)));
+			Assert.False(shape.IsInside(new Vector2F(400, 350)));
+			Assert.False(shape.IsInside(new Vector2F(300, -250)));
+		}
 	}
 }

@@ -136,5 +136,19 @@ namespace Yggdrasil.Geometry.Shapes
 			_edgePoints = null;
 			_outlines = null;
 		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2F position)
+		{
+			this.Center = position;
+			_edgePoints = null;
+			_outlines = null;
+
+			foreach (var shape in this.Shapes)
+				shape.UpdatePosition(position);
+		}
 	}
 }

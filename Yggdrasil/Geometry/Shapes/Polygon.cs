@@ -15,7 +15,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <summary>
 		/// Returns the polygon's position.
 		/// </summary>
-		public Vector2 Center { get; }
+		public Vector2 Center { get; private set; }
 
 		/// <summary>
 		/// Returns the polygon's points.
@@ -219,6 +219,21 @@ namespace Yggdrasil.Geometry.Shapes
 			}
 
 			return new Vector2(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+		}
+
+		/// <summary>
+		/// Moves shape to the given position and recalculates its properties.
+		/// </summary>
+		/// <param name="position"></param>
+		public void UpdatePosition(Vector2 position)
+		{
+			var delta = position - this.Center;
+
+			this.Center = position;
+			_outlines = null;
+
+			for (var i = 0; i < this.Points.Length; ++i)
+				this.Points[i] += delta;
 		}
 	}
 }

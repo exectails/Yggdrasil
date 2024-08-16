@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Yggdrasil.Geometry.Shapes;
 using Yggdrasil.Network.Communication;
 
 namespace Yggdrasil.Network.TCP
@@ -164,18 +165,18 @@ namespace Yggdrasil.Network.TCP
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
 
-				if (this.ConnectionChecker != null && !this.ConnectionChecker.Invoke(connection))
+				if (this.ConnectionChecker == null || this.ConnectionChecker(connection))
 				{
-					this.ConnectionRejected?.Invoke(connection, "Connection rejected by server.");
-					connection.Close(ConnectionCloseType.Rejected);
-					return;
+					this.OnAccepted(connection);
+
+					connection.Closed += this.OnClosed;
+					connection.BeginReceive();
 				}
-
-				connection.Closed += this.OnClosed;
-
-				this.OnAccepted(connection);
-
-				connection.BeginReceive();
+				else
+				{
+					connection.Close(ConnectionCloseType.Rejected);
+					this.OnRejected(connection);
+				}
 
 				this.BeginAccept();
 			}
@@ -201,6 +202,18 @@ namespace Yggdrasil.Network.TCP
 				_connections.Add(conn);
 
 			this.ConnectionAccepted?.Invoke(conn);
+		}
+
+		/// <summary>
+		/// Called when a connection was rejected.
+		/// </summary>
+		/// <param name="conn"></param>
+		private void OnRejected(TConnection conn)
+		{
+			lock (_connections)
+				_connections.Remove(conn);
+
+			this.ConnectionRejected?.Invoke(conn, "Connection rejected by server.");
 		}
 
 		/// <summary>

@@ -39,6 +39,18 @@ namespace Yggdrasil.Network.TCP
 		public event Action<TConnection> ConnectionAccepted;
 
 		/// <summary>
+		/// Raised when a connection was rejected.
+		/// </summary>
+		public event Action<TConnection, string> ConnectionRejected;
+
+		/// <summary>
+		/// Function to use to check if an incoming connection is valid.
+		/// Returning true means the connection should be accepted, false
+		/// means it should be rejected.
+		/// </summary>
+		public Func<TConnection, bool> ConnectionChecker { get; set; }
+
+		/// <summary>
 		/// Raised when a connection was closed or lost.
 		/// </summary>
 		public event Action<TConnection, ConnectionCloseType> ConnectionClosed;
@@ -151,6 +163,14 @@ namespace Yggdrasil.Network.TCP
 
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
+
+				if (this.ConnectionChecker != null && !this.ConnectionChecker.Invoke(connection))
+				{
+					this.ConnectionRejected?.Invoke(connection, "Connection rejected by server.");
+					connection.Close(ConnectionCloseType.Rejected);
+					return;
+				}
+
 				connection.Closed += this.OnClosed;
 
 				this.OnAccepted(connection);

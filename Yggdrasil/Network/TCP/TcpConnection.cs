@@ -233,5 +233,10 @@ namespace Yggdrasil.Network.TCP
 		/// The connection was lost unexpectedly.
 		/// </summary>
 		Lost,
+
+		/// <summary>
+		/// The connection was rejected by the acceptor.
+		/// </summary>
+		Rejected,
 	}
 }

@@ -49,7 +49,7 @@ namespace Yggdrasil.Network.TCP
 		/// Returning true means the connection should be accepted, false
 		/// means it should be rejected.
 		/// </summary>
-		public Func<TConnection, bool> ConnectionChecker { get; set; }
+		public Func<TConnection, ConnectionCheck> ConnectionChecker { get; set; }
 
 		/// <summary>
 		/// Raised when a connection was closed or lost.
@@ -165,7 +165,9 @@ namespace Yggdrasil.Network.TCP
 				var connection = new TConnection();
 				connection.Init(connectionSocket);
 
-				if (this.ConnectionChecker == null || this.ConnectionChecker(connection))
+				var connectionCheck = this.ConnectionChecker?.Invoke(connection) ?? new ConnectionCheck(ConnectionCheckResult.Accept, "No connection checker set.");
+
+				if (connectionCheck.Result == ConnectionCheckResult.Accept)
 				{
 					this.OnAccepted(connection);
 
@@ -175,7 +177,7 @@ namespace Yggdrasil.Network.TCP
 				else
 				{
 					connection.Close(ConnectionCloseType.Rejected);
-					this.OnRejected(connection);
+					this.OnRejected(connection, connectionCheck.Reason);
 				}
 
 				this.BeginAccept();
@@ -208,12 +210,13 @@ namespace Yggdrasil.Network.TCP
 		/// Called when a connection was rejected.
 		/// </summary>
 		/// <param name="conn"></param>
-		private void OnRejected(TConnection conn)
+		/// <param name="reason"></param>
+		private void OnRejected(TConnection conn, string reason)
 		{
 			lock (_connections)
 				_connections.Remove(conn);
 
-			this.ConnectionRejected?.Invoke(conn, "Connection rejected by server.");
+			this.ConnectionRejected?.Invoke(conn, reason);
 		}
 
 		/// <summary>

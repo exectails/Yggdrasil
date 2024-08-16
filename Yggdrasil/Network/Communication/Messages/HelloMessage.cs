@@ -14,12 +14,22 @@ namespace Yggdrasil.Network.Communication.Messages
 		public string Name { get; }
 
 		/// <summary>
+		/// Gets or sets the authentication for the communication.
+		/// </summary>
+		/// <remarks>
+		/// Connection requests will be rejected if this value is not correct.
+		/// </remarks>
+		public string Authentication { get; set; }
+
+		/// <summary>
 		/// Creates new message.
 		/// </summary>
-		/// <param name="name"></param>
-		public HelloMessage(string name)
+		/// <param name="name">Name of the connecting communicator.</param>
+		/// <param name="authentication">Authentication value for the other side to validate the connection.</param>
+		public HelloMessage(string name, string authentication)
 		{
 			this.Name = name;
+			this.Authentication = authentication;
 		}
 	}
 }

@@ -29,6 +29,17 @@ namespace Yggdrasil.Network.Communication
 		public string Name { get; }
 
 		/// <summary>
+		/// Gets or sets the authentication information necessary to connect
+		/// to this communicator.
+		/// </summary>
+		public string Authentication { get; set; }
+
+		/// <summary>
+		/// Returns true if the communicator requires authentication to connect.
+		/// </summary>
+		public bool RequiresAuthentication => !string.IsNullOrWhiteSpace(this.Authentication);
+
+		/// <summary>
 		/// Returns the local end point the instance is listening on.
 		/// </summary>
 		public IPEndPoint LocalEndPoint { get; private set; }
@@ -58,8 +69,19 @@ namespace Yggdrasil.Network.Communication
 		/// </summary>
 		/// <param name="name"></param>
 		public Communicator(string name)
+			: this(name, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance that will listen on the given end point.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="authentication"></param>
+		public Communicator(string name, string authentication)
 		{
 			this.Name = name;
+			this.Authentication = authentication;
 		}
 
 		/// <summary>
@@ -134,18 +156,20 @@ namespace Yggdrasil.Network.Communication
 		/// the connection under the given name.
 		/// </summary>
 		/// <param name="name"></param>
+		/// <param name="authentication"></param>
 		/// <param name="host"></param>
 		/// <param name="port"></param>
-		public void Connect(string name, string host, int port)
-			=> this.Connect(name, new IPEndPoint(IPAddress.Parse(host), port));
+		public void Connect(string name, string authentication, string host, int port)
+			=> this.Connect(name, authentication, new IPEndPoint(IPAddress.Parse(host), port));
 
 		/// <summary>
 		/// Connects to a communicator at the given address and saves
 		/// the connection under the given name.
 		/// </summary>
 		/// <param name="name"></param>
+		/// <param name="authentication"></param>
 		/// <param name="endPoint"></param>
-		public void Connect(string name, IPEndPoint endPoint)
+		public void Connect(string name, string authentication, IPEndPoint endPoint)
 		{
 			if (_clients.TryGetValue(name, out var client) && client.Status == ClientStatus.Connected)
 				throw new ArgumentException($"There is already a connection with the ident '{name}'.");
@@ -157,7 +181,7 @@ namespace Yggdrasil.Network.Communication
 
 			_clients[name] = client;
 
-			this.Send(name, new HelloMessage(this.Name));
+			this.Send(name, new HelloMessage(this.Name, authentication));
 		}
 
 		/// <summary>
@@ -193,6 +217,12 @@ namespace Yggdrasil.Network.Communication
 			{
 				case HelloMessage m:
 				{
+					if (this.RequiresAuthentication && m.Authentication != this.Authentication)
+					{
+						conn.Close();
+						return;
+					}
+
 					conn.Name = m.Name;
 					_connections[conn.Name] = conn;
 

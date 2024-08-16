@@ -13,7 +13,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>exec</Authors>
     <Description>Game server and emulation library.</Description>
     <RepositoryUrl>https://github.com/exectails/Yggdrasil</RepositoryUrl>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using Yggdrasil.Logging;
 
 namespace Yggdrasil.Util
@@ -11,6 +10,23 @@ namespace Yggdrasil.Util
 	/// </summary>
 	public class ConsoleUtil
 	{
+		private static string InternalTitle = "";
+
+		/// <summary>
+		/// Gets or sets the title of the console window.
+		/// </summary>
+		/// <remarks>
+		/// Uses an internal buffer to store the title set, as getting the
+		/// title is not possible across all platforms and configurations.
+		/// This means the returned value will only ever reflect the value
+		/// previously set through this property.
+		/// </remarks>
+		private static string WindowTitle
+		{
+			get => InternalTitle;
+			set => Console.Title = InternalTitle = value;
+		}
+
 		/// <summary>
 		/// Writes logo and credits to Console.
 		/// </summary>
@@ -23,7 +39,7 @@ namespace Yggdrasil.Util
 		{
 			var foreColor = Console.ForegroundColor;
 
-			Console.Title = consoleTitlePrefix + " : " + consoleTitle;
+			WindowTitle = consoleTitlePrefix + " : " + consoleTitle;
 
 			Console.ForegroundColor = logoColor;
 			WriteLinesCentered(logo);
@@ -89,8 +105,8 @@ namespace Yggdrasil.Util
 		/// </summary>
 		public static void LoadingTitle()
 		{
-			if (!Console.Title.StartsWith("* "))
-				Console.Title = "* " + Console.Title;
+			if (!WindowTitle.StartsWith("* "))
+				WindowTitle = "* " + WindowTitle;
 		}
 
 		/// <summary>
@@ -100,7 +116,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		public static void RunningTitle()
 		{
-			Console.Title = Console.Title.TrimStart('*', ' ');
+			WindowTitle = WindowTitle.TrimStart('*', ' ');
 		}
 
 		/// <summary>

@@ -17,17 +17,27 @@ namespace Yggdrasil.Logging
 		/// <param name="name"></param>
 		/// <returns></returns>
 		public static void Init(string name)
+			=> Init(name, "logs");
+
+		/// <summary>
+		/// Initializes global Log instance with the given name and folder path
+		/// to store log files in. If Init is not called, a default logger with
+		/// the name of the assembly will be created.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="folderPath"></param>
+		public static void Init(string name, string folderPath)
 		{
 			GlobalLogger = Logger.Get(name);
 
 			GlobalLogger.AddTarget(new ConsoleTarget());
-			GlobalLogger.AddTarget(new FileTarget("logs"));
+			GlobalLogger.AddTarget(new FileTarget(folderPath));
 		}
 
 		/// <summary>
-		/// Creates a logger if it doesn't exist yet.
+		/// Returns the global logger used by this class.
 		/// </summary>
-		private static Logger GetLogger()
+		public static Logger GetLogger()
 		{
 			if (GlobalLogger == null)
 				Init(null);

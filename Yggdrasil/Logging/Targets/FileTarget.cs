@@ -24,7 +24,10 @@ namespace Yggdrasil.Logging.Targets
 		/// <param name="folderPath"></param>
 		public FileTarget(string folderPath = "")
 		{
-			this.FolderPath = folderPath;
+			if (string.IsNullOrWhiteSpace(folderPath))
+				folderPath = "./";
+
+			this.FolderPath = Path.GetFullPath(folderPath);
 		}
 
 		/// <summary>

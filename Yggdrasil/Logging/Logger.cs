@@ -267,8 +267,6 @@ namespace Yggdrasil.Logging
 		/// <param name="message"></param>
 		public void Write(LogLevel level, string message)
 		{
-			var dt = DateTime.Now;
-
 			lock (_targets)
 			{
 				foreach (var target in _targets)

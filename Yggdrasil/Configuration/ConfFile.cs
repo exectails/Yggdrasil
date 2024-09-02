@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Yggdrasil.IO;
 
 namespace Yggdrasil.Configuration
@@ -71,6 +72,16 @@ namespace Yggdrasil.Configuration
 						_options[line.Value.Substring(0, pos).Trim()] = line.Value.Substring(pos + 1).Trim();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns a copy of all loaded options.
+		/// </summary>
+		/// <returns></returns>
+		public Dictionary<string, string> GetOptions()
+		{
+			lock (_options)
+				return new Dictionary<string, string>(_options);
 		}
 
 		/// <summary>

@@ -82,13 +82,13 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 			expected = new Vector2[]
 			{
 				new Vector2(458, 741),
-				new Vector2(400, 499),
+				new Vector2(400, 600),
 				new Vector2(458, 458),
 				new Vector2(600, 400),
 				new Vector2(741, 458),
-				new Vector2(800, 600),
+				new Vector2(799, 600),
 				new Vector2(741, 741),
-				new Vector2(599, 800),
+				new Vector2(600, 799),
 			};
 
 			Assert.Equal(expected, shape.GetEdgePoints(8));

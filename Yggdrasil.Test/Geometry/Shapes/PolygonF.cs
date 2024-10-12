@@ -43,19 +43,28 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 
 			var expected = new Vector2F[]
 			{
-				new Vector2F(-100, -100),
-				new Vector2F(-200, -300),
-				new Vector2F(0, -300),
+				new Vector2F(-100, 33.33f),
+				new Vector2F(-200, -166.67f),
+				new Vector2F(0, -166.67f),
 			};
 
-			Assert.Equal(expected, shape.GetEdgePoints());
+			var points = shape.GetEdgePoints();
 
-			Assert.True(shape.IsInside(new Vector2F(-100, -200)));
-			Assert.True(shape.IsInside(new Vector2F(-210, -301)));
-			Assert.True(shape.IsInside(new Vector2F(-190, -301)));
-			Assert.True(shape.IsInside(new Vector2F(-210, -301)));
+			for (var i = 0; i < 3; i++)
+			{
+				Assert.Equal(expected[i].X, points[i].X, 2);
+				Assert.Equal(expected[i].Y, points[i].Y, 2);
+			}
+
+			Assert.False(shape.IsInside(new Vector2F(-100, -200)));
+			Assert.False(shape.IsInside(new Vector2F(-210, -301)));
+			Assert.False(shape.IsInside(new Vector2F(-190, -301)));
+			Assert.False(shape.IsInside(new Vector2F(-210, -301)));
 			Assert.False(shape.IsInside(new Vector2F(-190, -290)));
 			Assert.False(shape.IsInside(new Vector2F(-210, -290)));
+			Assert.True(shape.IsInside(new Vector2F(-150, -100)));
+			Assert.True(shape.IsInside(new Vector2F(-50, -100)));
+			Assert.True(shape.IsInside(new Vector2F(-100, -150)));
 		}
 	}
 }

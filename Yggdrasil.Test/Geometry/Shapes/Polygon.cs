@@ -43,19 +43,22 @@ namespace Yggdrasil.Tests.Geometry.Shapes
 
 			var expected = new Vector2[]
 			{
-				new Vector2(-100, -100),
-				new Vector2(-200, -300),
-				new Vector2(0, -300),
+				new Vector2(-100, 34),
+				new Vector2(-200, -166),
+				new Vector2(0, -166),
 			};
 
 			Assert.Equal(expected, shape.GetEdgePoints());
 
-			Assert.True(shape.IsInside(new Vector2(-100, -200)));
-			Assert.True(shape.IsInside(new Vector2(-210, -301)));
-			Assert.True(shape.IsInside(new Vector2(-190, -301)));
-			Assert.True(shape.IsInside(new Vector2(-210, -301)));
+			Assert.False(shape.IsInside(new Vector2(-100, -200)));
+			Assert.False(shape.IsInside(new Vector2(-210, -301)));
+			Assert.False(shape.IsInside(new Vector2(-190, -301)));
+			Assert.False(shape.IsInside(new Vector2(-210, -301)));
 			Assert.False(shape.IsInside(new Vector2(-190, -290)));
 			Assert.False(shape.IsInside(new Vector2(-210, -290)));
+			Assert.True(shape.IsInside(new Vector2(-150, -100)));
+			Assert.True(shape.IsInside(new Vector2(-50, -100)));
+			Assert.True(shape.IsInside(new Vector2(-100, -150)));
 		}
 	}
 }

@@ -63,6 +63,21 @@ namespace Yggdrasil.Test.Events
 			Assert.Throws<SubscriptionException>(() => OnAttribute.Load(client2, server));
 		}
 
+		[Fact]
+		public void InheritedEvents()
+		{
+			var server = new ServerEvents();
+			var client = new ClientEvents2();
+
+			OnAttribute.Load(client, server);
+
+			server.OnFoo(server, EventArgs.Empty);
+			server.Bar.Raise(server, EventArgs.Empty);
+
+			Assert.True(client.FooCalled);
+			Assert.True(client.BarCalled);
+		}
+
 		private class ServerEvents
 		{
 			public event EventHandler<EventArgs> Foo;
@@ -83,6 +98,10 @@ namespace Yggdrasil.Test.Events
 			[On("Bar")]
 			public void OnBar(object sender, EventArgs e)
 				=> BarCalled = true;
+		}
+
+		private class ClientEvents2 : ClientEvents
+		{
 		}
 
 		private class MissingClientEvents

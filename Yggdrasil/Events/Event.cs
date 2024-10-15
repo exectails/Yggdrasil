@@ -21,6 +21,30 @@ namespace Yggdrasil.Events
 		private event EventHandler<TArgs> _event;
 
 		/// <summary>
+		/// Returns the owner of this event if any was set.
+		/// </summary>
+		/// <remarks>
+		/// If no sender is specified when raising the event, the owner will be used.
+		/// </remarks>
+		public object Owner { get; }
+
+		/// <summary>
+		/// Creates a new event without owner.
+		/// </summary>
+		public Event()
+		{
+		}
+
+		/// <summary>
+		/// Creates a new event with the given owner.
+		/// </summary>
+		/// <param name="owner"></param>
+		public Event(object owner)
+		{
+			this.Owner = owner;
+		}
+
+		/// <summary>
 		/// Subscribes the handler to the event.
 		/// </summary>
 		/// <param name="handler"></param>
@@ -44,7 +68,7 @@ namespace Yggdrasil.Events
 		/// <param name="args"></param>
 		public void Raise(TArgs args)
 		{
-			this.Raise(null, args);
+			this.Raise(this.Owner, args);
 		}
 
 		/// <summary>

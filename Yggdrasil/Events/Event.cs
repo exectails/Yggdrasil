@@ -2,15 +2,21 @@
 
 namespace Yggdrasil.Events
 {
-	/// Using a struct for this is kind of dumb, because you have to jump through
-	/// hoops to handle it generically, but it's nice to not have to instantiate
-	/// the event object. Worth it? Maybe.
+	// Originally I wanted to use structs for events, so it wouldn't be necessary
+	// to instantiate them, but that seemed like a hassle in the long run.
+	// Still... this,
+	// 
+	//     public Event<EventArgs> Foobar;
+	// 
+	// does seem nicer than this.
+	// 
+	//     public Event<EventArgs> Foobar = new();
 
 	/// <summary>
 	/// A generic event that can be subscribed to and raised.
 	/// </summary>
 	/// <typeparam name="TArgs"></typeparam>
-	public struct Event<TArgs> where TArgs : EventArgs
+	public class Event<TArgs> where TArgs : EventArgs
 	{
 		private event EventHandler<TArgs> _event;
 

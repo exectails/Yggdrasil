@@ -82,8 +82,8 @@ namespace Yggdrasil.Test.Events
 
 		private class EventManager
 		{
-			public Event<EventArgs> Foo;
-			public Event<EventArgs> Bar;
+			public readonly Event<EventArgs> Foo = new();
+			public readonly Event<EventArgs> Bar = new();
 		}
 	}
 }

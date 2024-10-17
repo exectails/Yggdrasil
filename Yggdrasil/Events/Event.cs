@@ -29,6 +29,11 @@ namespace Yggdrasil.Events
 		public object Owner { get; }
 
 		/// <summary>
+		/// Returns whether this event has any subscribers.
+		/// </summary>
+		public bool HasSubscribers => _event != null;
+
+		/// <summary>
 		/// Creates a new event without owner.
 		/// </summary>
 		public Event()

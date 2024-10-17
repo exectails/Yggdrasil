@@ -18,6 +18,7 @@ namespace Yggdrasil.Test.Events
 			ev.Raise(EventArgs.Empty);
 
 			Assert.True(eventRaised);
+			Assert.True(ev.HasSubscribers);
 		}
 
 		[Fact]
@@ -32,12 +33,14 @@ namespace Yggdrasil.Test.Events
 			ev.Raise(EventArgs.Empty);
 
 			Assert.True(eventRaised);
+			Assert.True(ev.HasSubscribers);
 			eventRaised = false;
 
 			ev.Unsubscribe(handler);
 			ev.Raise(EventArgs.Empty);
 
 			Assert.False(eventRaised);
+			Assert.False(ev.HasSubscribers);
 		}
 
 		[Fact]

@@ -67,7 +67,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 								if (this.MandatoryFields.Length > 0)
 									entry.AssertNotMissing(this.MandatoryFields);
 
-								data = new TObject();
+								data = new TObject { Id = id };
 							}
 
 							this.ReadEntry(entry, data);

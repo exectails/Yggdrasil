@@ -128,9 +128,8 @@ namespace Yggdrasil.Test.Data
 			Assert.Equal(typeof(MandatoryValueException), db2.Warnings[0].GetType());
 		}
 
-		public class ItemData : IObjectData<int>
+		public class ItemData : IdObjectData
 		{
-			public int Id { get; set; }
 			public string Name { get; set; }
 			public float Weight { get; set; }
 		}
@@ -141,7 +140,6 @@ namespace Yggdrasil.Test.Data
 
 			protected override void ReadEntry(JObject entry, ItemData data)
 			{
-				data.Id = entry.ReadInt("id");
 				data.Name = entry.ReadString("name", data.Name);
 				data.Weight = entry.ReadFloat("weight", data.Weight);
 			}

@@ -9,6 +9,17 @@
 		/// <summary>
 		/// Returns the object's unique id.
 		/// </summary>
-		TId Id { get; }
+		TId Id { get; set; }
+	}
+
+	/// <summary>
+	/// Represents a database object that can be identified by an integer id.
+	/// </summary>
+	public abstract class IdObjectData : IObjectData<int>
+	{
+		/// <summary>
+		/// Returns the object's unique id.
+		/// </summary>
+		public int Id { get; set; }
 	}
 }

@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yggdrasil.Ai\Yggdrasil.Ai.csproj" />
+    <ProjectReference Include="..\Yggdrasil.Data.JSON\Yggdrasil.Data.JSON.csproj" />
     <ProjectReference Include="..\Yggdrasil.Data\Yggdrasil.Data.csproj" />
     <ProjectReference Include="..\Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj" />
     <ProjectReference Include="..\Yggdrasil.Scripting\Yggdrasil.Scripting.csproj" />

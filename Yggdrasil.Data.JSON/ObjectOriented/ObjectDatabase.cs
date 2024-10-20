@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,8 +12,11 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 	/// </summary>
 	/// <typeparam name="TId"></typeparam>
 	/// <typeparam name="TObject"></typeparam>
-	public abstract class ObjectDatabase<TId, TObject> where TObject : IObjectData<TId>, new()
+	public abstract class ObjectDatabase<TId, TObject> : IDatabase where TObject : IObjectData<TId>, new()
 	{
+		void IDatabase.LoadFile(string filePath) => this.Load(filePath);
+		DatabaseWarningException[] IDatabase.GetWarnings() => this.Warnings.ToArray();
+
 		/// <summary>
 		/// Returns the loaded entries.
 		/// </summary>
@@ -22,6 +26,20 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// Returns the warnings that were encountered while loading the database.
 		/// </summary>
 		public List<DatabaseWarningException> Warnings { get; } = new List<DatabaseWarningException>();
+
+		/// <summary>
+		/// Returns the number of loaded entries in the database.
+		/// </summary>
+		public int Count => this.Entries.Count;
+
+		/// <summary>
+		/// Removes all entries from the database.
+		/// </summary>
+		public void Clear()
+		{
+			this.Entries.Clear();
+			this.Warnings.Clear();
+		}
 
 		/// <summary>
 		/// Loads the database from the given file path.

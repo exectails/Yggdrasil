@@ -89,7 +89,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 							}
 
 							this.ReadEntry(entry, data);
-							this.Entries[id] = data;
+							this.AddOrReplace(data);
 						}
 						catch (MandatoryValueException ex)
 						{
@@ -155,5 +155,76 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		protected virtual void AfterLoad()
 		{
 		}
+
+		/// <summary>
+		/// Adds the given object to the database, replacing any already existing
+		/// entries.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public void AddOrReplace(TObject data)
+		{
+			if (data == null)
+				throw new ArgumentNullException(nameof(data));
+
+			this.Entries[data.Id] = data;
+		}
+
+		/// <summary>
+		/// Returns true if the database contains an object with the given id.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public bool Contains(TId id)
+			=> this.Entries.ContainsKey(id);
+
+		/// <summary>
+		/// Returns the object with the given id.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the object with the given id does not exist.
+		/// </exception>
+		public TObject Get(TId id)
+		{
+			if (!this.Entries.TryGetValue(id, out var data))
+				throw new ArgumentException("Object not found.", nameof(id));
+
+			return data;
+		}
+
+		/// <summary>
+		/// Returns the object with the given id via out. Returns false if no
+		/// matching object was found.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public bool TryGet(TId id, out TObject data)
+		{
+			if (this.Entries.TryGetValue(id, out data))
+				return true;
+
+			data = default;
+			return false;
+		}
+
+		/// <summary>
+		/// Returns the first object that matches the given predicate.
+		/// Returns null if no matching object was found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TObject Find(Func<TObject, bool> predicate)
+			=> this.Entries.Values.FirstOrDefault(predicate);
+
+		/// <summary>
+		/// Returns all objects that match the given predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public TObject[] FindAll(Func<TObject, bool> predicate)
+			=> this.Entries.Values.Where(predicate).ToArray();
 	}
 }

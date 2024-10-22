@@ -18,6 +18,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		where TObject : IObjectData<TId, TVersion>, new()
 	{
 		int IDatabase.Count => this.Objects.Count;
+		void IDatabase.Clear() => this.Objects.Clear();
 		void IDatabase.LoadFile(string filePath) => this.Load(filePath);
 		DatabaseWarningException[] IDatabase.GetWarnings() => this.Warnings.ToArray();
 
@@ -51,15 +52,6 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		public ObjectDatabase(TVersion version)
 		{
 			this.Version = version;
-		}
-
-		/// <summary>
-		/// Removes all entries from the database.
-		/// </summary>
-		public void Clear()
-		{
-			this.Objects.Clear();
-			this.Warnings.Clear();
 		}
 
 		/// <summary>

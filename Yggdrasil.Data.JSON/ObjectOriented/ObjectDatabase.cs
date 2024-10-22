@@ -87,6 +87,10 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 
 								data = new TObject { Id = id };
 							}
+							else if (!this.ShouldOverride(entry, data))
+							{
+								continue;
+							}
 
 							this.ReadEntry(entry, data);
 							this.AddOrReplace(data);
@@ -141,6 +145,18 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <param name="entry"></param>
 		/// <returns></returns>
 		protected abstract TId ReadId(JObject entry);
+
+		/// <summary>
+		/// Returns true if the given entry should override data in an existing
+		/// object.
+		/// </summary>
+		/// <param name="entry"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		protected virtual bool ShouldOverride(JObject entry, TObject data)
+		{
+			return true;
+		}
 
 		/// <summary>
 		/// Reads an entry's data from the database into the object.

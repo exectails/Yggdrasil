@@ -18,26 +18,27 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		DatabaseWarningException[] IDatabase.GetWarnings() => this.Warnings.ToArray();
 
 		/// <summary>
-		/// Returns the loaded entries.
+		/// Returns the loaded objects.
 		/// </summary>
-		public Dictionary<TId, TObject> Entries { get; } = new Dictionary<TId, TObject>();
+		public Dictionary<TId, TObject> Objects { get; } = new Dictionary<TId, TObject>();
 
 		/// <summary>
-		/// Returns the warnings that were encountered while loading the database.
+		/// Returns the warnings that were encountered during the last call to
+		/// Load.
 		/// </summary>
 		public List<DatabaseWarningException> Warnings { get; } = new List<DatabaseWarningException>();
 
 		/// <summary>
-		/// Returns the number of loaded entries in the database.
+		/// Returns the number of loaded objects.
 		/// </summary>
-		public int Count => this.Entries.Count;
+		public int Count => this.Objects.Count;
 
 		/// <summary>
 		/// Removes all entries from the database.
 		/// </summary>
 		public void Clear()
 		{
-			this.Entries.Clear();
+			this.Objects.Clear();
 			this.Warnings.Clear();
 		}
 
@@ -69,54 +70,54 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 
 					foreach (var token in array)
 					{
-						if (!(token is JObject entry))
+						if (!(token is JObject jObj))
 							continue;
 
 						try
 						{
-							if (!entry.ContainsKey("id"))
-								throw new MandatoryValueException(fileName, "id", entry);
+							if (!jObj.ContainsKey("id"))
+								throw new MandatoryValueException(fileName, "id", jObj);
 
-							var id = this.ReadId(entry);
-							var exists = this.Entries.TryGetValue(id, out var data);
+							var id = this.ReadId(jObj);
+							var exists = this.Objects.TryGetValue(id, out var dataObj);
 
 							if (!exists)
 							{
 								if (this.MandatoryFields.Length > 0)
-									entry.AssertNotMissing(this.MandatoryFields);
+									jObj.AssertNotMissing(this.MandatoryFields);
 
-								data = new TObject { Id = id };
+								dataObj = new TObject { Id = id };
 							}
-							else if (!this.ShouldOverride(entry, data))
+							else if (!this.ShouldOverride(jObj, dataObj))
 							{
 								continue;
 							}
 
-							this.ReadEntry(entry, data);
-							this.AddOrReplace(data);
+							this.ReadEntry(jObj, dataObj);
+							this.AddOrReplace(dataObj);
 						}
 						catch (MandatoryValueException ex)
 						{
-							this.Warnings.Add(new MandatoryValueException(fileName, ex.Key, entry));
+							this.Warnings.Add(new MandatoryValueException(fileName, ex.Key, jObj));
 							continue;
 						}
 						catch (DatabaseWarningException ex)
 						{
-							var msg = string.Format("{0}\n{1}", ex.Message, entry);
+							var msg = string.Format("{0}\n{1}", ex.Message, jObj);
 
 							this.Warnings.Add(new DatabaseWarningException(fileName, msg));
 							continue;
 						}
 						catch (OverflowException)
 						{
-							var msg = string.Format("Number too big or too small for variable, in \n{0}", entry);
+							var msg = string.Format("Number too big or too small for variable, in \n{0}", jObj);
 
 							this.Warnings.Add(new DatabaseWarningException(fileName, msg));
 							continue;
 						}
 						catch (Exception ex)
 						{
-							var msg = string.Format("Exception: {0}\nEntry: \n{1}", ex, entry);
+							var msg = string.Format("Exception: {0}\nEntry: \n{1}", ex, jObj);
 
 							throw new DatabaseErrorException(fileName, msg);
 						}
@@ -140,7 +141,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		protected virtual string[] MandatoryFields { get; } = new string[0];
 
 		/// <summary>
-		/// Reads an entry's id from the database.
+		/// Reads the id from a database entry.
 		/// </summary>
 		/// <param name="entry"></param>
 		/// <returns></returns>
@@ -151,9 +152,9 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// object.
 		/// </summary>
 		/// <param name="entry"></param>
-		/// <param name="data"></param>
+		/// <param name="dataObj"></param>
 		/// <returns></returns>
-		protected virtual bool ShouldOverride(JObject entry, TObject data)
+		protected virtual bool ShouldOverride(JObject entry, TObject dataObj)
 		{
 			return true;
 		}
@@ -162,8 +163,8 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// Reads an entry's data from the database into the object.
 		/// </summary>
 		/// <param name="entry"></param>
-		/// <param name="data"></param>
-		protected abstract void ReadEntry(JObject entry, TObject data);
+		/// <param name="dataObj"></param>
+		protected abstract void ReadEntry(JObject entry, TObject dataObj);
 
 		/// <summary>
 		/// Called after the database has been loaded.
@@ -176,14 +177,14 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// Adds the given object to the database, replacing any already existing
 		/// entries.
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="dataObj"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public void AddOrReplace(TObject data)
+		public void AddOrReplace(TObject dataObj)
 		{
-			if (data == null)
-				throw new ArgumentNullException(nameof(data));
+			if (dataObj == null)
+				throw new ArgumentNullException(nameof(dataObj));
 
-			this.Entries[data.Id] = data;
+			this.Objects[dataObj.Id] = dataObj;
 		}
 
 		/// <summary>
@@ -192,7 +193,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <param name="id"></param>
 		/// <returns></returns>
 		public bool Contains(TId id)
-			=> this.Entries.ContainsKey(id);
+			=> this.Objects.ContainsKey(id);
 
 		/// <summary>
 		/// Returns the object with the given id.
@@ -204,10 +205,10 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// </exception>
 		public TObject Get(TId id)
 		{
-			if (!this.Entries.TryGetValue(id, out var data))
+			if (!this.Objects.TryGetValue(id, out var dataObj))
 				throw new ArgumentException("Object not found.", nameof(id));
 
-			return data;
+			return dataObj;
 		}
 
 		/// <summary>
@@ -219,7 +220,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <returns></returns>
 		public bool TryGet(TId id, out TObject data)
 		{
-			if (this.Entries.TryGetValue(id, out data))
+			if (this.Objects.TryGetValue(id, out data))
 				return true;
 
 			data = default;
@@ -233,7 +234,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <param name="predicate"></param>
 		/// <returns></returns>
 		public TObject Find(Func<TObject, bool> predicate)
-			=> this.Entries.Values.FirstOrDefault(predicate);
+			=> this.Objects.Values.FirstOrDefault(predicate);
 
 		/// <summary>
 		/// Returns all objects that match the given predicate.
@@ -241,6 +242,6 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <param name="predicate"></param>
 		/// <returns></returns>
 		public TObject[] FindAll(Func<TObject, bool> predicate)
-			=> this.Entries.Values.Where(predicate).ToArray();
+			=> this.Objects.Values.Where(predicate).ToArray();
 	}
 }

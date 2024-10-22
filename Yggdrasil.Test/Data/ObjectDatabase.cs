@@ -128,10 +128,63 @@ namespace Yggdrasil.Test.Data
 			Assert.Equal(typeof(MandatoryValueException), db2.Warnings[0].GetType());
 		}
 
+		[Fact]
+		public void Enums()
+		{
+			using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(TestFile1));
+			using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(TestFile4));
+
+			var db1 = new ItemDb();
+			db1.Load("stream", new MemoryStream(Encoding.UTF8.GetBytes(TestFile5)));
+
+			Assert.Equal(3, db1.Entries.Count);
+
+			Assert.Equal("Shield", db1.Entries[2].Name);
+			Assert.Equal(ItemType.Equipment, db1.Entries[1].Type);
+		}
+
+		[Fact]
+		public void Flags()
+		{
+			using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(TestFile1));
+			using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(TestFile4));
+
+			var db1 = new ItemDb();
+			db1.Load("stream", new MemoryStream(Encoding.UTF8.GetBytes(TestFile5)));
+
+			Assert.Equal(3, db1.Entries.Count);
+
+			Assert.Equal("Sword", db1.Entries[1].Name);
+			Assert.Equal(ItemUsableType.Knight, db1.Entries[1].UsableType);
+
+			Assert.Equal("Shield", db1.Entries[2].Name);
+			Assert.Equal(ItemUsableType.Knight | ItemUsableType.Archer, db1.Entries[2].UsableType);
+
+			Assert.Equal("Potion", db1.Entries[3].Name);
+			Assert.Equal(ItemUsableType.All, db1.Entries[3].UsableType);
+		}
+
+		public enum ItemType
+		{
+			Undefined,
+			Consumable,
+			Equipment,
+		}
+
+		public enum ItemUsableType
+		{
+			All = 0xFFFF,
+			Knight = 1,
+			Wizard = 2,
+			Archer = 4,
+		}
+
 		public class ItemData : IdObjectData
 		{
 			public string Name { get; set; }
 			public float Weight { get; set; }
+			public ItemType Type { get; set; }
+			public ItemUsableType UsableType { get; set; }
 		}
 
 		public class ItemDb : IdObjectDatabase<ItemData>
@@ -142,6 +195,8 @@ namespace Yggdrasil.Test.Data
 			{
 				//data.Name = entry.ReadString("name", data.Name);
 				//data.Weight = entry.ReadFloat("weight", data.Weight);
+				//data.Type = entry.ReadEnum("type", data.Type);
+				//data.UsableType = entry.ReadEnum("usableType", data.UsableType);
 
 				var serializer = new DataEntryReader<ItemData>();
 				serializer.Read(entry, data);
@@ -175,6 +230,14 @@ namespace Yggdrasil.Test.Data
 			{ id: 1, name: 'Sword', weight: 1.5 },
 			{ id: 2, name: 'Shield', waight: 2.5 }, // Typo
 			{ id: 3, name: 'Potion', weight: 0.5 }
+		]
+		";
+
+		private const string TestFile5 = @"
+		[
+			{ id: 1, name: 'Sword', weight: 1.5, type: 'Equipment', usableType: 'Knight' },
+			{ id: 2, name: 'Shield', weight: 2.5, type: 'Equipment', usableType: 'Knight|Archer' },
+			{ id: 3, name: 'Potion', weight: 0.5, type: 'Consumable', usableType: 'All' }
 		]
 		";
 	}

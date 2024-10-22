@@ -179,7 +179,7 @@ namespace Yggdrasil.Test.Data
 			Archer = 4,
 		}
 
-		public class ItemData : IdObjectData
+		public class ItemData : StandardObjectData
 		{
 			public string Name { get; set; }
 			public float Weight { get; set; }
@@ -187,16 +187,16 @@ namespace Yggdrasil.Test.Data
 			public ItemUsableType UsableType { get; set; }
 		}
 
-		public class ItemDb : IdObjectDatabase<ItemData>
+		public class ItemDb : StandardObjectDatabase<ItemData>
 		{
 			protected override string[] MandatoryFields { get; } = ["name", "weight"];
 
-			protected override void ReadEntry(JObject entry, ItemData dataObj)
+			protected override void ReadEntry(JObject entry, ItemData dataObj, ItemData existingObj)
 			{
-				dataObj.Name = entry.ReadString("name", dataObj.Name);
-				dataObj.Weight = entry.ReadFloat("weight", dataObj.Weight);
-				dataObj.Type = entry.ReadEnum("type", dataObj.Type);
-				dataObj.UsableType = entry.ReadEnum("usableType", dataObj.UsableType);
+				dataObj.Name = entry.ReadString("name", existingObj.Name);
+				dataObj.Weight = entry.ReadFloat("weight", existingObj.Weight);
+				dataObj.Type = entry.ReadEnum("type", existingObj.Type);
+				dataObj.UsableType = entry.ReadEnum("usableType", existingObj.UsableType);
 			}
 		}
 

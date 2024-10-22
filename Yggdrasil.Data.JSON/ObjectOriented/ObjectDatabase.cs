@@ -11,11 +11,20 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 	/// Loads and manages a set of database objects.
 	/// </summary>
 	/// <typeparam name="TId"></typeparam>
+	/// <typeparam name="TVersion"></typeparam>
 	/// <typeparam name="TObject"></typeparam>
-	public abstract class ObjectDatabase<TId, TObject> : IDatabase where TObject : IObjectData<TId>, new()
+	public abstract class ObjectDatabase<TId, TVersion, TObject> : IDatabase
+		where TId : IEquatable<TId>
+		where TVersion : IComparable<TVersion>
+		where TObject : IObjectData<TId, TVersion>, new()
 	{
 		void IDatabase.LoadFile(string filePath) => this.Load(filePath);
 		DatabaseWarningException[] IDatabase.GetWarnings() => this.Warnings.ToArray();
+
+		/// <summary>
+		/// Returns the target version of the database.
+		/// </summary>
+		public TVersion Version { get; }
 
 		/// <summary>
 		/// Returns the loaded objects.
@@ -32,6 +41,22 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// Returns the number of loaded objects.
 		/// </summary>
 		public int Count => this.Objects.Count;
+
+		/// <summary>
+		/// Creates a new object database.
+		/// </summary>
+		public ObjectDatabase() : this(default)
+		{
+		}
+
+		/// <summary>
+		/// Creates a new object database with the given target version.
+		/// </summary>
+		/// <param name="version"></param>
+		public ObjectDatabase(TVersion version)
+		{
+			this.Version = version;
+		}
 
 		/// <summary>
 		/// Removes all entries from the database.
@@ -75,26 +100,24 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 
 						try
 						{
-							if (!jObj.ContainsKey("id"))
-								throw new MandatoryValueException(fileName, "id", jObj);
+							var newObj = new TObject();
+							this.ReadBaseData(jObj, newObj);
 
-							var id = this.ReadId(jObj);
-							var exists = this.Objects.TryGetValue(id, out var dataObj);
-
-							if (!exists)
+							if (this.Objects.TryGetValue(newObj.Id, out var existingObj))
 							{
-								if (this.MandatoryFields.Length > 0)
-									jObj.AssertNotMissing(this.MandatoryFields);
-
-								dataObj = new TObject { Id = id };
+								if (this.ShouldOverride(newObj, existingObj))
+								{
+									this.ReadEntry(jObj, newObj, existingObj);
+									this.AddOrReplace(newObj);
+								}
 							}
-							else if (!this.ShouldOverride(jObj, dataObj))
+							else
 							{
-								continue;
-							}
+								jObj.AssertNotMissing(this.MandatoryFields);
 
-							this.ReadEntry(jObj, dataObj);
-							this.AddOrReplace(dataObj);
+								this.ReadEntry(jObj, newObj, newObj);
+								this.AddOrReplace(newObj);
+							}
 						}
 						catch (MandatoryValueException ex)
 						{
@@ -141,30 +164,38 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		protected virtual string[] MandatoryFields { get; } = new string[0];
 
 		/// <summary>
-		/// Reads the id from a database entry.
+		/// Returns true if the new object should override the existing one.
 		/// </summary>
-		/// <param name="entry"></param>
+		/// <remarks>
+		/// Called for existing objects after the base data for the new object
+		/// was read. The given new object does not represent a fully loaded
+		/// object.
+		/// </remarks>
+		/// <param name="newObj"></param>
+		/// <param name="existingObj"></param>
 		/// <returns></returns>
-		protected abstract TId ReadId(JObject entry);
+		protected virtual bool ShouldOverride(TObject newObj, TObject existingObj)
+		{
+			var existingVersion = existingObj.Version;
+			var newVersion = newObj.Version;
+
+			return (newVersion.CompareTo(this.Version) <= 0 && newVersion.CompareTo(existingVersion) >= 0);
+		}
 
 		/// <summary>
-		/// Returns true if the given entry should override data in an existing
-		/// object.
+		/// Reads the basic data from the entry necessary to handle the object.
 		/// </summary>
 		/// <param name="entry"></param>
 		/// <param name="dataObj"></param>
-		/// <returns></returns>
-		protected virtual bool ShouldOverride(JObject entry, TObject dataObj)
-		{
-			return true;
-		}
+		protected abstract void ReadBaseData(JObject entry, TObject dataObj);
 
 		/// <summary>
 		/// Reads an entry's data from the database into the object.
 		/// </summary>
 		/// <param name="entry"></param>
 		/// <param name="dataObj"></param>
-		protected abstract void ReadEntry(JObject entry, TObject dataObj);
+		/// <param name="existingObj"></param>
+		protected abstract void ReadEntry(JObject entry, TObject dataObj, TObject existingObj);
 
 		/// <summary>
 		/// Called after the database has been loaded.

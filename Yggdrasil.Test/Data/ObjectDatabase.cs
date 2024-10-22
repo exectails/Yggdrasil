@@ -140,8 +140,11 @@ namespace Yggdrasil.Test.Data
 
 			protected override void ReadEntry(JObject entry, ItemData data)
 			{
-				data.Name = entry.ReadString("name", data.Name);
-				data.Weight = entry.ReadFloat("weight", data.Weight);
+				//data.Name = entry.ReadString("name", data.Name);
+				//data.Weight = entry.ReadFloat("weight", data.Weight);
+
+				var serializer = new DataEntryReader<ItemData>();
+				serializer.Read(entry, data);
 			}
 		}
 

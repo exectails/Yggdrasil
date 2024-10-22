@@ -223,6 +223,12 @@ namespace Yggdrasil.Data.JSON
 		/// <exception cref="MandatoryValueException"></exception>
 		public static void AssertNotMissing(this JObject obj, params string[] keys)
 		{
+			if (keys == null)
+				throw new ArgumentNullException("The keys list may be empty, but not null.");
+
+			if (keys.Length == 0)
+				return;
+
 			foreach (var key in keys)
 			{
 				if (!obj.ContainsKey(key))

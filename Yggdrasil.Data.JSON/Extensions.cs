@@ -130,7 +130,7 @@ namespace Yggdrasil.Data.JSON
 		/// <param name="key"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
-		public static TEnum ReadEnum<TEnum>(this JObject obj, string key, TEnum def = default(TEnum))
+		public static TEnum ReadEnum<TEnum>(this JObject obj, string key, TEnum def = default)
 		{
 			if (!obj.ContainsKey(key))
 				return def;
@@ -150,7 +150,7 @@ namespace Yggdrasil.Data.JSON
 		/// <param name="key"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
-		public static TimeSpan ReadTimeSpan(this JObject obj, string key, TimeSpan def = default(TimeSpan))
+		public static TimeSpan ReadTimeSpan(this JObject obj, string key, TimeSpan def = default)
 		{
 			if (!obj.ContainsKey(key))
 				return def;
@@ -166,7 +166,7 @@ namespace Yggdrasil.Data.JSON
 		/// <param name="key"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
-		public static TValue[] ReadArray<TValue>(this JObject obj, string key, TValue[] def = default(TValue[]))
+		public static TValue[] ReadArray<TValue>(this JObject obj, string key, TValue[] def = default)
 		{
 			if (!obj.ContainsKey(key))
 				return def;
@@ -182,7 +182,7 @@ namespace Yggdrasil.Data.JSON
 		/// <param name="key"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
-		public static List<TValue> ReadList<TValue>(this JObject obj, string key, List<TValue> def = default(List<TValue>))
+		public static List<TValue> ReadList<TValue>(this JObject obj, string key, List<TValue> def = default)
 		{
 			if (!obj.ContainsKey(key))
 				return def;
@@ -242,7 +242,7 @@ namespace Yggdrasil.Data.JSON
 			if (!obj.ContainsKey(key))
 				yield break;
 
-			foreach (JObject element in obj[key])
+			foreach (var element in obj[key].Cast<JObject>())
 				yield return element;
 		}
 
@@ -259,7 +259,7 @@ namespace Yggdrasil.Data.JSON
 			if (!obj.ContainsKey(key))
 				yield break;
 
-			foreach (JValue element in obj[key])
+			foreach (var element in obj[key].Cast<JValue>())
 				yield return (TType)element.Value;
 		}
 

@@ -20,14 +20,14 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal(3, db.Objects.Count);
 
-			Assert.Equal("Sword", db.Objects[1].Name);
-			Assert.Equal(1.5f, db.Objects[1].Weight);
+			Assert.Equal("Sword", db.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db.Objects.Get(1).Weight);
 
-			Assert.Equal("Shield", db.Objects[2].Name);
-			Assert.Equal(2.5f, db.Objects[2].Weight);
+			Assert.Equal("Shield", db.Objects.Get(2).Name);
+			Assert.Equal(2.5f, db.Objects.Get(2).Weight);
 
-			Assert.Equal("Potion", db.Objects[3].Name);
-			Assert.Equal(0.5f, db.Objects[3].Weight);
+			Assert.Equal("Potion", db.Objects.Get(3).Name);
+			Assert.Equal(0.5f, db.Objects.Get(3).Weight);
 		}
 
 		[Fact]
@@ -42,20 +42,20 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal(5, db.Objects.Count);
 
-			Assert.Equal("Sword", db.Objects[1].Name);
-			Assert.Equal(1.5f, db.Objects[1].Weight);
+			Assert.Equal("Sword", db.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db.Objects.Get(1).Weight);
 
-			Assert.Equal("Shield", db.Objects[2].Name);
-			Assert.Equal(2.5f, db.Objects[2].Weight);
+			Assert.Equal("Shield", db.Objects.Get(2).Name);
+			Assert.Equal(2.5f, db.Objects.Get(2).Weight);
 
-			Assert.Equal("Potion", db.Objects[3].Name);
-			Assert.Equal(0.5f, db.Objects[3].Weight);
+			Assert.Equal("Potion", db.Objects.Get(3).Name);
+			Assert.Equal(0.5f, db.Objects.Get(3).Weight);
 
-			Assert.Equal("Axe", db.Objects[4].Name);
-			Assert.Equal(2.0f, db.Objects[4].Weight);
+			Assert.Equal("Axe", db.Objects.Get(4).Name);
+			Assert.Equal(2.0f, db.Objects.Get(4).Weight);
 
-			Assert.Equal("Bow", db.Objects[5].Name);
-			Assert.Equal(1.0f, db.Objects[5].Weight);
+			Assert.Equal("Bow", db.Objects.Get(5).Name);
+			Assert.Equal(1.0f, db.Objects.Get(5).Weight);
 		}
 
 		[Fact]
@@ -69,27 +69,27 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal(3, db.Objects.Count);
 
-			Assert.Equal("Sword", db.Objects[1].Name);
-			Assert.Equal(1.5f, db.Objects[1].Weight);
+			Assert.Equal("Sword", db.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db.Objects.Get(1).Weight);
 
-			Assert.Equal("Shield", db.Objects[2].Name);
-			Assert.Equal(2.5f, db.Objects[2].Weight);
+			Assert.Equal("Shield", db.Objects.Get(2).Name);
+			Assert.Equal(2.5f, db.Objects.Get(2).Weight);
 
-			Assert.Equal("Potion", db.Objects[3].Name);
-			Assert.Equal(0.5f, db.Objects[3].Weight);
+			Assert.Equal("Potion", db.Objects.Get(3).Name);
+			Assert.Equal(0.5f, db.Objects.Get(3).Weight);
 
 			db.Load("stream2", stream2);
 
 			Assert.Equal(3, db.Objects.Count);
 
-			Assert.Equal("Sword", db.Objects[1].Name);
-			Assert.Equal(1.5f, db.Objects[1].Weight);
+			Assert.Equal("Sword", db.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db.Objects.Get(1).Weight);
 
-			Assert.Equal("Shield", db.Objects[2].Name);
-			Assert.Equal(20f, db.Objects[2].Weight);
+			Assert.Equal("Shield", db.Objects.Get(2).Name);
+			Assert.Equal(20f, db.Objects.Get(2).Weight);
 
-			Assert.Equal("Potion", db.Objects[3].Name);
-			Assert.Equal(0.1f, db.Objects[3].Weight);
+			Assert.Equal("Potion", db.Objects.Get(3).Name);
+			Assert.Equal(0.1f, db.Objects.Get(3).Weight);
 		}
 
 		[Fact]
@@ -104,14 +104,14 @@ namespace Yggdrasil.Test.Data
 			Assert.Equal(3, db1.Objects.Count);
 			Assert.Equal(0, db1.Warnings.Count);
 
-			Assert.Equal("Sword", db1.Objects[1].Name);
-			Assert.Equal(1.5f, db1.Objects[1].Weight);
+			Assert.Equal("Sword", db1.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db1.Objects.Get(1).Weight);
 
-			Assert.Equal("Shield", db1.Objects[2].Name);
-			Assert.Equal(2.5f, db1.Objects[2].Weight);
+			Assert.Equal("Shield", db1.Objects.Get(2).Name);
+			Assert.Equal(2.5f, db1.Objects.Get(2).Weight);
 
-			Assert.Equal("Potion", db1.Objects[3].Name);
-			Assert.Equal(0.5f, db1.Objects[3].Weight);
+			Assert.Equal("Potion", db1.Objects.Get(3).Name);
+			Assert.Equal(0.5f, db1.Objects.Get(3).Weight);
 
 			var db2 = new ItemDb();
 			db2.Load("stream", new MemoryStream(Encoding.UTF8.GetBytes(TestFile4)));
@@ -119,11 +119,11 @@ namespace Yggdrasil.Test.Data
 			Assert.Equal(2, db2.Objects.Count);
 			Assert.Equal(1, db2.Warnings.Count);
 
-			Assert.Equal("Sword", db2.Objects[1].Name);
-			Assert.Equal(1.5f, db2.Objects[1].Weight);
+			Assert.Equal("Sword", db2.Objects.Get(1).Name);
+			Assert.Equal(1.5f, db2.Objects.Get(1).Weight);
 
-			Assert.Equal("Potion", db2.Objects[3].Name);
-			Assert.Equal(0.5f, db2.Objects[3].Weight);
+			Assert.Equal("Potion", db2.Objects.Get(3).Name);
+			Assert.Equal(0.5f, db2.Objects.Get(3).Weight);
 
 			Assert.Equal(typeof(MandatoryValueException), db2.Warnings[0].GetType());
 		}
@@ -139,8 +139,8 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal(3, db1.Objects.Count);
 
-			Assert.Equal("Shield", db1.Objects[2].Name);
-			Assert.Equal(ItemType.Equipment, db1.Objects[1].Type);
+			Assert.Equal("Shield", db1.Objects.Get(2).Name);
+			Assert.Equal(ItemType.Equipment, db1.Objects.Get(1).Type);
 		}
 
 		[Fact]
@@ -154,14 +154,14 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal(3, db1.Objects.Count);
 
-			Assert.Equal("Sword", db1.Objects[1].Name);
-			Assert.Equal(ItemUsableType.Knight, db1.Objects[1].UsableType);
+			Assert.Equal("Sword", db1.Objects.Get(1).Name);
+			Assert.Equal(ItemUsableType.Knight, db1.Objects.Get(1).UsableType);
 
-			Assert.Equal("Shield", db1.Objects[2].Name);
-			Assert.Equal(ItemUsableType.Knight | ItemUsableType.Archer, db1.Objects[2].UsableType);
+			Assert.Equal("Shield", db1.Objects.Get(2).Name);
+			Assert.Equal(ItemUsableType.Knight | ItemUsableType.Archer, db1.Objects.Get(2).UsableType);
 
-			Assert.Equal("Potion", db1.Objects[3].Name);
-			Assert.Equal(ItemUsableType.All, db1.Objects[3].UsableType);
+			Assert.Equal("Potion", db1.Objects.Get(3).Name);
+			Assert.Equal(ItemUsableType.All, db1.Objects.Get(3).UsableType);
 		}
 
 		public enum ItemType

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -18,6 +17,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		where TVersion : IComparable<TVersion>
 		where TObject : IObjectData<TId, TVersion>, new()
 	{
+		int IDatabase.Count => this.Objects.Count;
 		void IDatabase.LoadFile(string filePath) => this.Load(filePath);
 		DatabaseWarningException[] IDatabase.GetWarnings() => this.Warnings.ToArray();
 
@@ -29,18 +29,13 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <summary>
 		/// Returns the loaded objects.
 		/// </summary>
-		public Dictionary<TId, TObject> Objects { get; } = new Dictionary<TId, TObject>();
+		public ObjectStorage<TId, TObject> Objects { get; } = new ObjectStorage<TId, TObject>();
 
 		/// <summary>
 		/// Returns the warnings that were encountered during the last call to
 		/// Load.
 		/// </summary>
 		public List<DatabaseWarningException> Warnings { get; } = new List<DatabaseWarningException>();
-
-		/// <summary>
-		/// Returns the number of loaded objects.
-		/// </summary>
-		public int Count => this.Objects.Count;
 
 		/// <summary>
 		/// Creates a new object database.
@@ -103,12 +98,12 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 							var newObj = new TObject();
 							this.ReadBaseData(jObj, newObj);
 
-							if (this.Objects.TryGetValue(newObj.Id, out var existingObj))
+							if (this.Objects.TryGet(newObj.Id, out var existingObj))
 							{
 								if (this.ShouldOverride(newObj, existingObj))
 								{
 									this.ReadEntry(jObj, newObj, existingObj);
-									this.AddOrReplace(newObj);
+									this.Objects.AddOrReplace(newObj);
 								}
 							}
 							else
@@ -116,7 +111,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 								jObj.AssertNotMissing(this.MandatoryFields);
 
 								this.ReadEntry(jObj, newObj, newObj);
-								this.AddOrReplace(newObj);
+								this.Objects.AddOrReplace(newObj);
 							}
 						}
 						catch (MandatoryValueException ex)
@@ -203,76 +198,5 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		protected virtual void AfterLoad()
 		{
 		}
-
-		/// <summary>
-		/// Adds the given object to the database, replacing any already existing
-		/// entries.
-		/// </summary>
-		/// <param name="dataObj"></param>
-		/// <exception cref="ArgumentNullException"></exception>
-		public void AddOrReplace(TObject dataObj)
-		{
-			if (dataObj == null)
-				throw new ArgumentNullException(nameof(dataObj));
-
-			this.Objects[dataObj.Id] = dataObj;
-		}
-
-		/// <summary>
-		/// Returns true if the database contains an object with the given id.
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public bool Contains(TId id)
-			=> this.Objects.ContainsKey(id);
-
-		/// <summary>
-		/// Returns the object with the given id.
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException">
-		/// Thrown if the object with the given id does not exist.
-		/// </exception>
-		public TObject Get(TId id)
-		{
-			if (!this.Objects.TryGetValue(id, out var dataObj))
-				throw new ArgumentException("Object not found.", nameof(id));
-
-			return dataObj;
-		}
-
-		/// <summary>
-		/// Returns the object with the given id via out. Returns false if no
-		/// matching object was found.
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public bool TryGet(TId id, out TObject data)
-		{
-			if (this.Objects.TryGetValue(id, out data))
-				return true;
-
-			data = default;
-			return false;
-		}
-
-		/// <summary>
-		/// Returns the first object that matches the given predicate.
-		/// Returns null if no matching object was found.
-		/// </summary>
-		/// <param name="predicate"></param>
-		/// <returns></returns>
-		public TObject Find(Func<TObject, bool> predicate)
-			=> this.Objects.Values.FirstOrDefault(predicate);
-
-		/// <summary>
-		/// Returns all objects that match the given predicate.
-		/// </summary>
-		/// <param name="predicate"></param>
-		/// <returns></returns>
-		public TObject[] FindAll(Func<TObject, bool> predicate)
-			=> this.Objects.Values.Where(predicate).ToArray();
 	}
 }

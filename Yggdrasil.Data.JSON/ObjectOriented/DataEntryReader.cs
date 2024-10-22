@@ -40,7 +40,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 			if (_reader != null)
 				throw new InvalidOperationException("Reader is already prepared.");
 
-			_reader = this.CreateReader();
+			_reader = CreateReader<TObject>();
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		private ReaderEntryFunc GetReader()
 		{
 			if (_reader == null)
-				_reader = this.CreateReader();
+				_reader = CreateReader<TObject>();
 
 			return _reader;
 		}
@@ -60,10 +60,10 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="UnsupportedTypeException"></exception>
-		private ReaderEntryFunc CreateReader()
+		private static ReaderEntryFunc CreateReader<TClass>()
 		{
 			var entryType = typeof(JObject);
-			var dataType = typeof(TObject);
+			var dataType = typeof(TClass);
 			var properties = dataType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(a => a.CanWrite).ToList();
 
 			var entryParam = Expression.Parameter(entryType, "entry");
@@ -74,7 +74,13 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 
 			var expressions = properties.Select(property =>
 			{
-				var jsonFieldName = property.Name.ToLower();
+				var jsonFieldName = property.GetCustomAttribute<DataFieldAttribute>()?.Name;
+
+				if (jsonFieldName == null)
+				{
+					jsonFieldName = property.Name;
+					jsonFieldName = char.ToLower(jsonFieldName[0]) + jsonFieldName.Substring(1);
+				}
 
 				MethodInfo readMethod;
 
@@ -93,6 +99,10 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 				else if (property.PropertyType == typeof(string))
 				{
 					readMethod = extMethods.First(a => a.Name == "ReadString" && a.GetParameters().Length == 3);
+				}
+				else if (property.PropertyType.IsEnum)
+				{
+					readMethod = extMethods.First(a => a.Name == "ReadEnum" && a.GetParameters().Length == 3).MakeGenericMethod(property.PropertyType);
 				}
 				else
 				{

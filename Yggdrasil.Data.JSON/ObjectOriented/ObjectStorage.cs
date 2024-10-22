@@ -26,7 +26,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// </summary>
 		/// <param name="dataObj"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public void AddOrReplace(TObject dataObj)
+		public void Insert(TObject dataObj)
 		{
 			if (dataObj == null)
 				throw new ArgumentNullException(nameof(dataObj));

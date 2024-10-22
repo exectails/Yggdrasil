@@ -95,7 +95,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 								if (this.ShouldOverride(newObj, existingObj))
 								{
 									this.ReadEntry(jObj, newObj, existingObj);
-									this.Objects.AddOrReplace(newObj);
+									this.InsertObject(newObj);
 								}
 							}
 							else
@@ -103,7 +103,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 								jObj.AssertNotMissing(this.MandatoryFields);
 
 								this.ReadEntry(jObj, newObj, newObj);
-								this.Objects.AddOrReplace(newObj);
+								this.InsertObject(newObj);
 							}
 						}
 						catch (MandatoryValueException ex)
@@ -183,6 +183,16 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// <param name="dataObj"></param>
 		/// <param name="existingObj"></param>
 		protected abstract void ReadEntry(JObject entry, TObject dataObj, TObject existingObj);
+
+		/// <summary>
+		/// Inserts the object into the database, potentially replacing existing
+		/// objects.
+		/// </summary>
+		/// <param name="obj"></param>
+		protected virtual void InsertObject(TObject obj)
+		{
+			this.Objects.Insert(obj);
+		}
 
 		/// <summary>
 		/// Called after the database has been loaded.

@@ -189,7 +189,10 @@ namespace Yggdrasil.Test.Data
 
 		public class ItemDb : StandardObjectDatabase<ItemData>
 		{
-			protected override string[] MandatoryFields { get; } = ["name", "weight"];
+			protected override void CheckFields(JObject entry)
+			{
+				entry.AssertNotMissing("name", "weight");
+			}
 
 			protected override void ReadEntry(JObject entry, ItemData dataObj, ItemData existingObj)
 			{

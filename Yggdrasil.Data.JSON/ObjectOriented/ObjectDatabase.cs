@@ -100,8 +100,7 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 							}
 							else
 							{
-								jObj.AssertNotMissing(this.MandatoryFields);
-
+								this.CheckFields(jObj);
 								this.ReadEntry(jObj, newObj, newObj);
 								this.InsertObject(newObj);
 							}
@@ -145,12 +144,6 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		}
 
 		/// <summary>
-		/// Returns a list of mandatory fields that must be present on the
-		/// first version of an object.
-		/// </summary>
-		protected virtual string[] MandatoryFields { get; } = new string[0];
-
-		/// <summary>
 		/// Returns true if the new object should override the existing one.
 		/// </summary>
 		/// <remarks>
@@ -167,6 +160,15 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 			var newVersion = newObj.Version;
 
 			return (newVersion.CompareTo(this.Version) <= 0 && newVersion.CompareTo(existingVersion) >= 0);
+		}
+
+		/// <summary>
+		/// Returns true if the entry's fields are valid in number.
+		/// </summary>
+		/// <param name="entry"></param>
+		/// <returns></returns>
+		protected virtual void CheckFields(JObject entry)
+		{
 		}
 
 		/// <summary>

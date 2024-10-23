@@ -26,21 +26,4 @@ namespace Yggdrasil.Data.JSON.ObjectOriented
 		/// </summary>
 		TVersion Version { get; set; }
 	}
-
-	/// <summary>
-	/// Represents a database object that can be identified by an integer id
-	/// and versioned by a numeric version.
-	/// </summary>
-	public abstract class StandardObjectData : IObjectData<int, int>
-	{
-		/// <summary>
-		/// Returns the object's unique id.
-		/// </summary>
-		public int Id { get; set; }
-
-		/// <summary>
-		/// Returns the object's version.
-		/// </summary>
-		public int Version { get; set; }
-	}
 }

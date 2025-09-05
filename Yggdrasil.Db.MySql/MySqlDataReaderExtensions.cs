@@ -49,5 +49,19 @@ namespace Yggdrasil.Db.MySql
 			var ordinal = reader.GetOrdinal(field);
 			return reader.IsDBNull(ordinal) ? defaultValue : reader.GetDateTime(ordinal);
 		}
+
+		/// <summary>
+		/// Returns the value of the named field, defaulting to the given
+		/// value if the field is null.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <param name="field"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public static int? GetOptionalInt32(this MySqlDataReader reader, string field, int? defaultValue)
+		{
+			var ordinal = reader.GetOrdinal(field);
+			return reader.IsDBNull(ordinal) ? defaultValue : reader.GetInt32(ordinal);
+		}
 	}
 }

@@ -32,6 +32,16 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Fired when a variable changes.
+		/// </summary>
+		/// <remarks>
+		/// Raised every time Set* is called, regardless of whether the
+		/// value actually changed, in case it would be difficult to tell
+		/// for the relevant type.
+		/// </remarks>
+		public event EventHandler<VariableChangedEventArgs> VariableChanged;
+
+		/// <summary>
 		/// Creates new instance.
 		/// </summary>
 		public Variables()
@@ -358,6 +368,8 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public object Set(string name, object value)
 		{
+			var oldValue = this.Get(name);
+
 			if (value == null)
 			{
 				this.Remove(name);
@@ -370,6 +382,10 @@ namespace Yggdrasil.Util
 					_cache = null;
 				}
 			}
+
+			// Always fire event, since we can't be entirely certain whether
+			// an equality check would be correct for all types.
+			this.VariableChanged?.Invoke(this, new VariableChangedEventArgs(name, oldValue, value));
 
 			return null;
 		}
@@ -563,6 +579,40 @@ namespace Yggdrasil.Util
 				foreach (var variable in variables)
 					_variables[variable.Key] = variable.Value;
 			}
+		}
+	}
+
+	/// <summary>
+	/// Arguments for variable changed events.
+	/// </summary>
+	public class VariableChangedEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Returns the name of the variable that changed.
+		/// </summary>
+		public string Name { get; }
+
+		/// <summary>
+		/// Returns the old value of the variable.
+		/// </summary>
+		public object OldValue { get; }
+
+		/// <summary>
+		/// Returns the new value of the variable.
+		/// </summary>
+		public object NewValue { get; }
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="oldValue"></param>
+		/// <param name="newValue"></param>
+		public VariableChangedEventArgs(string name, object oldValue, object newValue)
+		{
+			this.Name = name;
+			this.OldValue = oldValue;
+			this.NewValue = newValue;
 		}
 	}
 }

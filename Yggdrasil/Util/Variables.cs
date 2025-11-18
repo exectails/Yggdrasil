@@ -57,7 +57,7 @@ namespace Yggdrasil.Util
 		/// <param name="name"></param>
 		/// <param name="def"></param>
 		/// <returns></returns>
-		public TValue Get<TValue>(string name, TValue def = default(TValue))
+		public TValue Get<TValue>(string name, TValue def = default)
 		{
 			if (!this.TryGet(name, out TValue value))
 				return def;
@@ -98,7 +98,7 @@ namespace Yggdrasil.Util
 			{
 				if (!_variables.TryGetValue(name, out result))
 				{
-					value = default(TValue);
+					value = default;
 					return false;
 				}
 			}

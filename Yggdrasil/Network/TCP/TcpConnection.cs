@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 
 namespace Yggdrasil.Network.TCP
 {
@@ -16,6 +16,10 @@ namespace Yggdrasil.Network.TCP
 
 		private readonly byte[] _buffer = new byte[BufferMaxSize];
 		private Socket _socket;
+
+		private readonly object _sendSyncLock = new object();
+		private readonly Queue<byte[]> _sendQueue = new Queue<byte[]>();
+		private bool _isSending;
 
 		private bool _raisedConnected;
 
@@ -141,9 +145,9 @@ namespace Yggdrasil.Network.TCP
 			catch (ObjectDisposedException)
 			{
 			}
-			// SocketExceptions are thrown if the connection is unexpectedly
-			// and/or abruptly closed by the client, such as when the process
-			// was killed.
+			// SocketExceptions are thrown if the connection is
+			// unexpectedly and/or abruptly closed by the client or
+			// server, such as when the process was killed.
 			catch (SocketException)
 			{
 				try { this.Close(ConnectionCloseType.Lost); } catch { }
@@ -193,8 +197,81 @@ namespace Yggdrasil.Network.TCP
 		/// <param name="data"></param>
 		public virtual void Send(byte[] data)
 		{
-			if (this.Status == ConnectionStatus.Open)
-				_socket.Send(data);
+			if (this.Status != ConnectionStatus.Open)
+				return;
+
+			lock (_sendSyncLock)
+			{
+				_sendQueue.Enqueue(data);
+
+				if (!_isSending)
+				{
+					_isSending = true;
+					this.BeginSend();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Checks for queued packets and begins sending them if there are
+		/// any.
+		/// </summary>
+		private void BeginSend()
+		{
+			try
+			{
+				byte[] data;
+
+				lock (_sendSyncLock)
+				{
+					if (_sendQueue.Count == 0)
+					{
+						_isSending = false;
+						return;
+					}
+
+					// Get data to send, dequeue after it was sent
+					data = _sendQueue.Peek();
+				}
+
+				_socket.BeginSend(data, 0, data.Length, SocketFlags.None, this.OnSend, null);
+			}
+			catch
+			{
+				this.Close(ConnectionCloseType.Disconnected);
+			}
+		}
+
+		/// <summary>
+		/// Called when data has been sent.
+		/// </summary>
+		/// <param name="ar"></param>
+		private void OnSend(IAsyncResult ar)
+		{
+			try
+			{
+				_socket.EndSend(ar);
+
+				lock (_sendSyncLock)
+				{
+					_sendQueue.Dequeue();
+				}
+
+				// Try to send next packet in the queue
+				this.BeginSend();
+			}
+			catch (ObjectDisposedException)
+			{
+			}
+			catch (SocketException)
+			{
+				try { this.Close(ConnectionCloseType.Lost); } catch { }
+			}
+			catch (Exception ex)
+			{
+				try { this.OnReceiveException(ex); } catch { }
+				try { this.Close(ConnectionCloseType.Disconnected); } catch { }
+			}
 		}
 	}
 

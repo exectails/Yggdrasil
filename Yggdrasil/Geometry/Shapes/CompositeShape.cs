@@ -98,6 +98,13 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains the shape.
+		/// </summary>
+		/// <returns></returns>
+		public BoundingBox GetBounds()
+			=> BoundingBox.FromPoints(this.GetEdgePoints());
+
+		/// <summary>
 		/// Returns a random point within one of this shape's shapes.
 		/// </summary>
 		/// <param name="rnd"></param>

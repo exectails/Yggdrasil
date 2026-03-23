@@ -101,6 +101,19 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains the shape.
+		/// </summary>
+		/// <returns></returns>
+		public BoundingBox GetBounds()
+		{
+			var left = this.Center.X - this.Radius;
+			var top = this.Center.Y - this.Radius;
+			var size = this.Radius * 2;
+
+			return new BoundingBox(left, top, size, size);
+		}
+
+		/// <summary>
 		/// Returns the given amount of edge points for this circle.
 		/// </summary>
 		/// <param name="edges"></param>

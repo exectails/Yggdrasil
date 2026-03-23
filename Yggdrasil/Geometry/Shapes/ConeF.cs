@@ -252,7 +252,7 @@ namespace Yggdrasil.Geometry.Shapes
 					return point;
 			}
 
-			return new Vector2F(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+			return this.Center;
 		}
 
 		/// <summary>

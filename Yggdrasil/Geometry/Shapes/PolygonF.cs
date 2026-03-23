@@ -241,7 +241,10 @@ namespace Yggdrasil.Geometry.Shapes
 					return point;
 			}
 
-			return new Vector2F(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+			if (this.IsInside(this.Center))
+				return this.Center;
+
+			return new Vector2F(minX, minY);
 		}
 
 		/// <summary>

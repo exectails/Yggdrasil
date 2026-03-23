@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Yggdrasil.Geometry.Shapes
@@ -240,7 +241,10 @@ namespace Yggdrasil.Geometry.Shapes
 					return point;
 			}
 
-			return new Vector2(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+			if (this.IsInside(this.Center))
+				return this.Center;
+
+			return new Vector2(minX, minY);
 		}
 
 		/// <summary>

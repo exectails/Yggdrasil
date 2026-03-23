@@ -12,16 +12,6 @@ namespace Yggdrasil.Util
 		private readonly object _syncLock = new object();
 		private readonly object _activateSyncLock = new object();
 		private readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
-		private string _cache = null;
-
-		/// <summary>
-		/// Gets or sets this instance's cached variable string.
-		/// </summary>
-		protected string Cache
-		{
-			get { lock (_syncLock) return _cache; }
-			set { lock (_syncLock) _cache = value; }
-		}
 
 		/// <summary>
 		/// Returns the number of variables in this instance.
@@ -377,10 +367,7 @@ namespace Yggdrasil.Util
 			else
 			{
 				lock (_syncLock)
-				{
 					_variables[name] = value;
-					_cache = null;
-				}
 			}
 
 			// Always fire event, since we can't be entirely certain whether
@@ -552,10 +539,7 @@ namespace Yggdrasil.Util
 		public void Remove(string name)
 		{
 			lock (_syncLock)
-			{
 				_variables.Remove(name);
-				_cache = null;
-			}
 		}
 
 		/// <summary>

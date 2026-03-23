@@ -2,7 +2,7 @@
 using Yggdrasil.Geometry.Shapes;
 using Xunit;
 
-namespace Yggdrasil.Tests.Geometry.Shapes
+namespace Yggdrasil.Test.Geometry.Shapes
 {
 	public class ConeTests
 	{

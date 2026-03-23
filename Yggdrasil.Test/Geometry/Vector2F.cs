@@ -1,7 +1,7 @@
 ﻿using Yggdrasil.Geometry;
 using Xunit;
 
-namespace Yggdrasil.Tests.Geometry
+namespace Yggdrasil.Test.Geometry
 {
 	public class Vector2FTests
 	{

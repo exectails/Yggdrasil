@@ -3,7 +3,7 @@ using Yggdrasil.Geometry.Shapes;
 using Xunit;
 using System;
 
-namespace Yggdrasil.Tests.Geometry.Shapes
+namespace Yggdrasil.Test.Geometry.Shapes
 {
 	public class CircleTests
 	{

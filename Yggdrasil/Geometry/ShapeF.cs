@@ -41,6 +41,12 @@ namespace Yggdrasil.Geometry
 		OutlineF[] GetOutlines();
 
 		/// <summary>
+		/// Returns a bounding box that contains the shape.
+		/// </summary>
+		/// <returns></returns>
+		BoundingBoxF GetBounds();
+
+		/// <summary>
 		/// Returns a random point inside the shape.
 		/// </summary>
 		/// <param name="rnd"></param>

@@ -124,6 +124,20 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains the shape.
+		/// </summary>
+		/// <returns></returns>
+		public BoundingBoxF GetBounds()
+		{
+			var x = this.Center.X - this.Radius;
+			var y = this.Center.Y - this.Radius;
+			var width = this.Radius * 2;
+			var height = this.Radius * 2;
+
+			return new BoundingBoxF(x, y, width, height);
+		}
+
+		/// <summary>
 		/// Returns a random point within the circle.
 		/// </summary>
 		/// <param name="rnd"></param>

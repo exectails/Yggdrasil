@@ -1,7 +1,7 @@
 ﻿namespace Yggdrasil.Geometry.Shapes
 {
 	/// <summary>
-	/// A rectangle shape.
+	/// An axis-aligned rectangle shape.
 	/// </summary>
 	/// <remarks>
 	/// To create a rotated rectangle use PolygonF.Rectangle.
@@ -9,7 +9,7 @@
 	public class RectangleF : PolygonF
 	{
 		/// <summary>
-		/// Returns the rectangle's position.
+		/// Returns the rectangle's corner position.
 		/// </summary>
 		public Vector2F Position { get; }
 

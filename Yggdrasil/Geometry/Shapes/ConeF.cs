@@ -209,6 +209,13 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains the shape.
+		/// </summary>
+		/// <returns></returns>
+		public BoundingBoxF GetBounds()
+			=> BoundingBoxF.FromPoints(this.GetEdgePoints());
+
+		/// <summary>
 		/// Returns random point within the cone.
 		/// </summary>
 		/// <param name="rnd"></param>

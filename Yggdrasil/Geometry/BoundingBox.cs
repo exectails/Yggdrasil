@@ -94,6 +94,32 @@ namespace Yggdrasil.Geometry
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains all of the given points.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <returns></returns>
+		public static BoundingBoxF FromPoints(ReadOnlySpan<Vector2F> points)
+		{
+			if (points.Length == 0)
+				return Empty;
+
+			var left = float.MaxValue;
+			var top = float.MaxValue;
+			var right = float.MinValue;
+			var bottom = float.MinValue;
+
+			foreach (var point in points)
+			{
+				if (point.X < left) left = point.X;
+				if (point.X > right) right = point.X;
+				if (point.Y < top) top = point.Y;
+				if (point.Y > bottom) bottom = point.Y;
+			}
+
+			return new BoundingBoxF(left, top, right - left, bottom - top);
+		}
+
+		/// <summary>
 		/// Returns true if the given bounding box intersects with this
 		/// one, meaning that parts of them overlap or touch.
 		/// </summary>

@@ -35,5 +35,23 @@ namespace Yggdrasil.Test.Geometry
 			Assert.True(box1.Intersects(box3));
 			Assert.False(box1.Intersects(box4));
 		}
+
+		[Fact]
+		public void FromPoints()
+		{
+			var points = new Vector2F[]
+			{
+				new(10, 20),
+				new(30, 40),
+				new(50, 60),
+			};
+
+			var box = BoundingBoxF.FromPoints(points);
+
+			Assert.Equal(10, box.X);
+			Assert.Equal(20, box.Y);
+			Assert.Equal(40, box.Width);
+			Assert.Equal(40, box.Height);
+		}
 	}
 }

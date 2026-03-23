@@ -38,7 +38,7 @@
 		public Rectangle(Vector2 pos, Vector2 size)
 			: base(pos, size.X, size.Y)
 		{
-			this.Position = pos + this.Size / 2;
+			this.Position = pos;
 			this.Size = size;
 		}
 

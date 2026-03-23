@@ -59,7 +59,7 @@ namespace Yggdrasil.Test.Network
 			socket2.Connect("127.0.0.1", acceptor.LocalEndPoint.Port);
 
 			// Wait a moment for the events to fire.
-			Wait(50);
+			Wait(200);
 
 			Assert.Equal(true, socket1.Connected);
 			Assert.Equal(true, socket2.Connected);

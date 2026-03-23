@@ -54,7 +54,7 @@ namespace Yggdrasil.Geometry.Shapes
 			this.Radius = radius;
 			this.Angle = Math2.Clamp(0, 180, angle);
 
-			this.UpdateCenter(tipPos, direction, radius, angle);
+			this.UpdateCenter(tipPos, direction, radius);
 		}
 
 		/// <summary>
@@ -63,8 +63,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <param name="tipPos"></param>
 		/// <param name="direction"></param>
 		/// <param name="radius"></param>
-		/// <param name="angle"></param>
-		private void UpdateCenter(Vector2 tipPos, double direction, double radius, float angle)
+		private void UpdateCenter(Vector2 tipPos, double direction, double radius)
 		{
 			var radians = Math2.DegreeToRadian(direction);
 			var centerDistance = radius / 2;
@@ -250,7 +249,7 @@ namespace Yggdrasil.Geometry.Shapes
 			_edgePoints = null;
 			_outlines = null;
 
-			this.UpdateCenter(this.Tip, this.Direction, this.Radius, (float)this.Angle);
+			this.UpdateCenter(this.Tip, this.Direction, this.Radius);
 		}
 	}
 }

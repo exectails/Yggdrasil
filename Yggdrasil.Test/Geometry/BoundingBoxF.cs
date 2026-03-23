@@ -3,7 +3,7 @@ using Yggdrasil.Geometry;
 
 namespace Yggdrasil.Test.Geometry
 {
-	public class BoundingBoxTests
+	public class BoundingBoxFTests
 	{
 		[Fact]
 		public void Contains()

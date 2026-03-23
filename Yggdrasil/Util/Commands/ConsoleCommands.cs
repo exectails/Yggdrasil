@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Yggdrasil.Logging;
@@ -119,7 +120,17 @@ namespace Yggdrasil.Util.Commands
 		/// <returns></returns>
 		protected virtual CommandResult HandleStatus(string command, Arguments args)
 		{
-			Log.Info("Memory Usage: {0:N0} KB", Math.Round(GC.GetTotalMemory(false) / 1024f));
+			using (var currentProcess = Process.GetCurrentProcess())
+			{
+				var managedMemory = GC.GetTotalMemory(forceFullCollection: false);
+				var privateMemory = currentProcess.PrivateMemorySize64;
+				var physicalMemory = currentProcess.WorkingSet64;
+
+				Log.Info("Memory:");
+				Log.Info("  Managed Heap  : {0:N0} MB", managedMemory / 1024.0 / 1024.0);
+				Log.Info("  Physical (RAM): {0:N0} MB", physicalMemory / 1024.0 / 1024.0);
+				Log.Info("  Private (Swap): {0:N0} MB", privateMemory / 1024.0 / 1024.0);
+			}
 
 			return CommandResult.Okay;
 		}

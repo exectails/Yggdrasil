@@ -39,6 +39,15 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Removes all variables.
+		/// </summary>
+		public void Clear()
+		{
+			lock (_syncLock)
+				_variables.Clear();
+		}
+
+		/// <summary>
 		/// Returns true if a variable with the given name exists.
 		/// </summary>
 		/// <param name="name"></param>

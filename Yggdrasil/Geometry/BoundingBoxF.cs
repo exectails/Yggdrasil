@@ -103,17 +103,20 @@ namespace Yggdrasil.Geometry
 			if (points.Length == 0)
 				return Empty;
 
-			var left = float.MaxValue;
-			var top = float.MaxValue;
-			var right = float.MinValue;
-			var bottom = float.MinValue;
+			var left = points[0].X;
+			var top = points[0].Y;
+			var right = points[0].X;
+			var bottom = points[0].Y;
 
-			foreach (var point in points)
+			for (var i = 1; i < points.Length; ++i)
 			{
+				var point = points[i];
+
 				if (point.X < left) left = point.X;
-				if (point.X > right) right = point.X;
+				else if (point.X > right) right = point.X;
+
 				if (point.Y < top) top = point.Y;
-				if (point.Y > bottom) bottom = point.Y;
+				else if (point.Y > bottom) bottom = point.Y;
 			}
 
 			return new BoundingBoxF(left, top, right - left, bottom - top);

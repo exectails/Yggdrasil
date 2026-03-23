@@ -210,10 +210,25 @@ namespace Yggdrasil.Geometry.Shapes
 		public Vector2 GetRandomPoint(Random rnd)
 		{
 			var edgePoints = this.GetEdgePoints();
-			var minX = edgePoints.Min(a => a.X);
-			var maxX = edgePoints.Max(a => a.X);
-			var minY = edgePoints.Min(a => a.Y);
-			var maxY = edgePoints.Max(a => a.Y);
+
+			if (edgePoints.Length == 0)
+				return default;
+
+			var minX = edgePoints[0].X;
+			var maxX = edgePoints[0].X;
+			var minY = edgePoints[0].Y;
+			var maxY = edgePoints[0].Y;
+
+			for (var j = 1; j < edgePoints.Length; ++j)
+			{
+				var point = edgePoints[j];
+
+				if (point.X < minX) minX = point.X;
+				else if (point.X > maxX) maxX = point.X;
+
+				if (point.Y < minY) minY = point.Y;
+				else if (point.Y > maxY) maxY = point.Y;
+			}
 
 			for (var i = 0; i < 100; ++i)
 			{

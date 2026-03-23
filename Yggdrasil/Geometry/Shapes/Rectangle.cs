@@ -21,6 +21,18 @@
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public Rectangle(int x, int y, int width, int height)
+			: this(new Vector2(x, y), new Vector2(width, height))
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
 		public Rectangle(Vector2 pos, Vector2 size)

@@ -21,6 +21,18 @@
 		/// <summary>
 		/// Creates new instance.
 		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public RectangleF(float x, float y, float width, float height)
+			: this(new Vector2F(x, y), new Vector2F(width, height))
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
 		public RectangleF(Vector2F pos, Vector2F size)

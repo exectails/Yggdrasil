@@ -73,7 +73,7 @@ namespace Yggdrasil.Geometry.Shapes
 
 		/// <summary>
 		/// Returns a polyon with 4 edge points, making up a rectangle
-		/// with the given properties.
+		/// with the given properties. Expands from the center point x/y.
 		/// </summary>
 		/// <param name="x">Center position of the rectangle.</param>
 		/// <param name="y">Center position of the rectangle.</param>
@@ -88,7 +88,7 @@ namespace Yggdrasil.Geometry.Shapes
 
 		/// <summary>
 		/// Returns a polyon with 4 edge points, making up a rectangle
-		/// with the given properties.
+		/// with the given properties. Expands from the center point.
 		/// </summary>
 		/// <param name="center">Center position of the rectangle.</param>
 		/// <param name="size">Size of the rectangle.</param>

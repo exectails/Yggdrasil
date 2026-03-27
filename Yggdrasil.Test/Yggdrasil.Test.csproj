@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Yggdrasil.Data\Yggdrasil.Data.csproj" />
     <ProjectReference Include="..\Yggdrasil.Network.WebSocket\Yggdrasil.Network.WebSocket.csproj" />
     <ProjectReference Include="..\Yggdrasil.Scripting\Yggdrasil.Scripting.csproj" />
+    <ProjectReference Include="..\Yggdrasil.Structures\Yggdrasil.Structures.csproj" />
     <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj" />
   </ItemGroup>
   <ItemGroup>

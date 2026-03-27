@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
-using System.Collections.Generic;
+using System.Threading;
 using Yggdrasil.Scheduling;
 
 namespace Yggdrasil.Composition
@@ -15,12 +16,10 @@ namespace Yggdrasil.Composition
 	/// </remarks>
 	public class ComponentCollection : IUpdateable
 	{
-		private readonly object _syncLock = new object();
+		private readonly ConcurrentDictionary<Type, IComponent> _components = new ConcurrentDictionary<Type, IComponent>();
 
-		private readonly Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
-
-		private readonly List<IUpdateable> _updateables = new List<IUpdateable>();
-		private bool _updateablesDirty;
+		private volatile IUpdateable[] _updateables = new IUpdateable[0];
+		private int _updateablesDirty;
 
 		/// <summary>
 		/// Adds a component.
@@ -30,13 +29,10 @@ namespace Yggdrasil.Composition
 		public void Add<TComponent>(TComponent component) where TComponent : IComponent
 		{
 			var type = component.GetType();
-			lock (_syncLock)
-			{
-				_components[type] = component;
+			_components[type] = component;
 
-				if (component is IUpdateable)
-					_updateablesDirty = true;
-			}
+			if (component is IUpdateable)
+				Interlocked.Exchange(ref _updateablesDirty, 1);
 		}
 
 		/// <summary>
@@ -46,16 +42,11 @@ namespace Yggdrasil.Composition
 		/// <param name="component"></param>
 		public bool Remove(IComponent component)
 		{
-			var removed = false;
-
 			var type = component.GetType();
-			lock (_syncLock)
-			{
-				removed = _components.Remove(type);
+			var removed = _components.TryRemove(type, out _);
 
-				if (removed && component is IUpdateable)
-					_updateablesDirty = true;
-			}
+			if (removed && component is IUpdateable)
+				Interlocked.Exchange(ref _updateablesDirty, 1);
 
 			return removed;
 		}
@@ -68,13 +59,22 @@ namespace Yggdrasil.Composition
 		/// <returns></returns>
 		public bool Remove<TComponent>()
 		{
-			lock (_syncLock)
-			{
-				if (!_components.TryGetValue(typeof(TComponent), out var component))
-					return false;
+			var type = typeof(TComponent);
+			var removed = _components.TryRemove(type, out var component);
 
-				return this.Remove(component);
-			}
+			if (removed && component is IUpdateable)
+				Interlocked.Exchange(ref _updateablesDirty, 1);
+
+			return removed;
+		}
+
+		/// <summary>
+		/// Removes all components.
+		/// </summary>
+		public void Clear()
+		{
+			_components.Clear();
+			Interlocked.Exchange(ref _updateablesDirty, 1);
 		}
 
 		/// <summary>
@@ -87,11 +87,8 @@ namespace Yggdrasil.Composition
 		{
 			var type = typeof(TComponent);
 
-			lock (_syncLock)
-			{
-				if (_components.TryGetValue(type, out var component))
-					return (TComponent)component;
-			}
+			if (_components.TryGetValue(type, out var component))
+				return (TComponent)component;
 
 			return default;
 		}
@@ -116,8 +113,7 @@ namespace Yggdrasil.Composition
 		/// <returns></returns>
 		public bool Has<TComponent>()
 		{
-			lock (_syncLock)
-				return _components.ContainsKey(typeof(TComponent));
+			return _components.ContainsKey(typeof(TComponent));
 		}
 
 		/// <summary>
@@ -126,17 +122,12 @@ namespace Yggdrasil.Composition
 		/// <param name="elapsed"></param>
 		public void Update(TimeSpan elapsed)
 		{
-			lock (_syncLock)
-			{
-				if (_updateablesDirty)
-				{
-					_updateables.Clear();
-					_updateables.AddRange(_components.Values.OfType<IUpdateable>());
-					_updateablesDirty = false;
-				}
-			}
+			if (Interlocked.CompareExchange(ref _updateablesDirty, 0, 1) == 1)
+				_updateables = _components.Values.OfType<IUpdateable>().ToArray();
 
-			foreach (var component in _updateables)
+			var updateables = _updateables;
+
+			foreach (var component in updateables)
 				component.Update(elapsed);
 		}
 	}

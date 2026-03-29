@@ -94,6 +94,20 @@ namespace Yggdrasil.Geometry
 		}
 
 		/// <summary>
+		/// Returns a bounding box that contains the area defined by the
+		/// given edge points.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="top"></param>
+		/// <param name="right"></param>
+		/// <param name="bottom"></param>
+		/// <returns></returns>
+		public static BoundingBox FromLTRB(int left, int top, int right, int bottom)
+		{
+			return new BoundingBox(left, top, right - left, bottom - top);
+		}
+
+		/// <summary>
 		/// Returns a bounding box that contains all of the given points.
 		/// </summary>
 		/// <param name="points"></param>

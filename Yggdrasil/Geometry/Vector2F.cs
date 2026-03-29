@@ -44,6 +44,21 @@ namespace Yggdrasil.Geometry
 		}
 
 		/// <summary>
+		/// Returns true if the other vector is within the given range of
+		/// this one.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
+		public bool InRange(Vector2F other, float range)
+		{
+			var dx = this.X - other.X;
+			var dy = this.Y - other.Y;
+
+			return (dx * dx) + (dy * dy) <= (range * range);
+		}
+
+		/// <summary>
 		/// Returns direction the other vetcor is in as an angle in degree.
 		/// </summary>
 		/// <param name="other"></param>

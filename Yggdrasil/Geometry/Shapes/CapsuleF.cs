@@ -10,6 +10,8 @@ namespace Yggdrasil.Geometry.Shapes
 	{
 		private Vector2F[] _edgePoints;
 		private OutlineF[] _outlines;
+		private bool _edgePointsDirty = true;
+		private bool _outlinesDirty = true;
 
 		/// <summary>
 		/// Returns the capsule's center position.
@@ -32,7 +34,7 @@ namespace Yggdrasil.Geometry.Shapes
 		/// Returns the capsule's radius, which is the distance from the
 		/// center to the edge, and the radius of the circular ends.
 		/// </summary>
-		public float Radius { get; }
+		public float Radius { get; private set; }
 
 		/// <summary>
 		/// Creates new capsule.
@@ -69,8 +71,11 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <returns></returns>
 		public Vector2F[] GetEdgePoints()
 		{
-			if (_edgePoints != null)
+			if (_edgePoints != null && !_edgePointsDirty)
 				return _edgePoints;
+
+			if (_edgePoints == null)
+				_edgePoints = new Vector2F[6];
 
 			var dirX = this.Point2.X - this.Point1.X;
 			var dirY = this.Point2.Y - this.Point1.Y;
@@ -82,15 +87,16 @@ namespace Yggdrasil.Geometry.Shapes
 			var perpX = -dirNY;
 			var perpY = dirNX;
 
-			return _edgePoints = new Vector2F[]
-			{
-				new Vector2F(this.Point1.X - dirNX * this.Radius, this.Point1.Y - dirNY * this.Radius),
-				new Vector2F(this.Point1.X + perpX * this.Radius, this.Point1.Y + perpY * this.Radius),
-				new Vector2F(this.Point2.X + perpX * this.Radius, this.Point2.Y + perpY * this.Radius),
-				new Vector2F(this.Point2.X + dirNX * this.Radius, this.Point2.Y + dirNY * this.Radius),
-				new Vector2F(this.Point2.X - perpX * this.Radius, this.Point2.Y - perpY * this.Radius),
-				new Vector2F(this.Point1.X - perpX * this.Radius, this.Point1.Y - perpY * this.Radius),
-			};
+			_edgePoints[0] = new Vector2F(this.Point1.X - dirNX * this.Radius, this.Point1.Y - dirNY * this.Radius);
+			_edgePoints[1] = new Vector2F(this.Point1.X + perpX * this.Radius, this.Point1.Y + perpY * this.Radius);
+			_edgePoints[2] = new Vector2F(this.Point2.X + perpX * this.Radius, this.Point2.Y + perpY * this.Radius);
+			_edgePoints[3] = new Vector2F(this.Point2.X + dirNX * this.Radius, this.Point2.Y + dirNY * this.Radius);
+			_edgePoints[4] = new Vector2F(this.Point2.X - perpX * this.Radius, this.Point2.Y - perpY * this.Radius);
+			_edgePoints[5] = new Vector2F(this.Point1.X - perpX * this.Radius, this.Point1.Y - perpY * this.Radius);
+
+			_edgePointsDirty = false;
+
+			return _edgePoints;
 		}
 
 		/// <summary>
@@ -100,11 +106,13 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <returns></returns>
 		public OutlineF[] GetOutlines()
 		{
-			if (_outlines != null)
+			if (_outlines != null && !_outlinesDirty)
 				return _outlines;
 
 			var edgePoints = this.GetEdgePoints();
-			var lines = new LineF[edgePoints.Length];
+
+			if (_outlines == null)
+				_outlines = new OutlineF[1] { new OutlineF(new LineF[edgePoints.Length]) };
 
 			for (var i = 0; i < edgePoints.Length; ++i)
 			{
@@ -112,10 +120,12 @@ namespace Yggdrasil.Geometry.Shapes
 				var point2 = edgePoints[(i + 1) % edgePoints.Length];
 
 				var line = new LineF(point1, point2);
-				lines[i] = line;
+				_outlines[0].Lines[i] = line;
 			}
 
-			return _outlines = new OutlineF[] { new OutlineF(lines) };
+			_outlinesDirty = false;
+
+			return _outlines;
 		}
 
 		/// <summary>
@@ -182,7 +192,8 @@ namespace Yggdrasil.Geometry.Shapes
 		}
 
 		/// <summary>
-		/// Updates the capsule's position by moving its center position.
+		/// Updates the capsule's position by moving its center to the
+		/// given position.
 		/// </summary>
 		/// <param name="position"></param>
 		public void UpdatePosition(Vector2F position)
@@ -194,8 +205,8 @@ namespace Yggdrasil.Geometry.Shapes
 			this.Point2 = new Vector2F(this.Point2.X + deltaX, this.Point2.Y + deltaY);
 			this.Center = position;
 
-			_edgePoints = null;
-			_outlines = null;
+			_edgePointsDirty = true;
+			_outlinesDirty = true;
 		}
 	}
 }

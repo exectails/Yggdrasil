@@ -44,11 +44,25 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <param name="radius"></param>
 		public CapsuleF(Vector2F point1, Vector2F point2, float radius)
 		{
+			this.Reshape(point1, point2, radius);
+		}
+
+		/// <summary>
+		/// Updates shape parameters.
+		/// </summary>
+		/// <param name="point1"></param>
+		/// <param name="point2"></param>
+		/// <param name="radius"></param>
+		public void Reshape(Vector2F point1, Vector2F point2, float radius)
+		{
 			this.Point1 = point1;
 			this.Point2 = point2;
 			this.Radius = radius;
 
 			this.Center = new Vector2F((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
+
+			_edgePointsDirty = true;
+			_outlinesDirty = true;
 		}
 
 		/// <summary>

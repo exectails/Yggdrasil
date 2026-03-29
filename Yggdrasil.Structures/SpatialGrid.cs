@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Yggdrasil.Geometry;
 
@@ -42,6 +43,26 @@ namespace Yggdrasil.Structures
 		/// Returns the threshold for pooling objects.
 		/// </summary>
 		private int PoolObjectThreshold => Math.Max(100, this.ObjectCount / 4);
+
+		/// <summary>
+		/// Returns a list of all cell coordinates currently in the
+		/// spatial grid.
+		/// </summary>
+		public List<Vector2> Cells
+		{
+			get
+			{
+				_lock.EnterWriteLock();
+				try
+				{
+					return new List<Vector2>(_cells.Keys.Select(a => new Vector2(a.X, a.Y)));
+				}
+				finally
+				{
+					_lock.ExitWriteLock();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new spatial grid with the specified cell size.

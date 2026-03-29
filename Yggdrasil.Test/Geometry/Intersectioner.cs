@@ -21,8 +21,8 @@ namespace Yggdrasil.Test.Geometry
 		public void CircleIntersectsCapsule()
 		{
 			var circle = new CircleF(new Vector2F(0, 0), 10);
-			var capsule1 = new CapsuleF(new Vector2F(15, 0), new Vector2F(25, 0), 10, 10);
-			var capsule2 = new CapsuleF(new Vector2F(25, 0), new Vector2F(35, 0), 2, 10);
+			var capsule1 = new CapsuleF(new Vector2F(15, 0), new Vector2F(25, 0), 10);
+			var capsule2 = new CapsuleF(new Vector2F(25, 0), new Vector2F(35, 0), 2);
 
 			Assert.True(Intersectioner.Intersects(circle, capsule1));
 			Assert.False(Intersectioner.Intersects(circle, capsule2));
@@ -55,7 +55,7 @@ namespace Yggdrasil.Test.Geometry
 		[Fact]
 		public void CapsuleIntersectsPolygon()
 		{
-			var capsule = new CapsuleF(new Vector2F(-10, 0), new Vector2F(10, 0), 2, 20);
+			var capsule = new CapsuleF(new Vector2F(-10, 0), new Vector2F(10, 0), 2);
 			var poly1 = new PolygonF(new[] { new Vector2F(-5, -5), new Vector2F(5, -5), new Vector2F(5, 5), new Vector2F(-5, 5) });
 			var poly2 = new PolygonF(new[] { new Vector2F(15, -5), new Vector2F(25, -5), new Vector2F(25, 5), new Vector2F(15, 5) });
 

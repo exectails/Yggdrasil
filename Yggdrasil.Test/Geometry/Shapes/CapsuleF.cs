@@ -10,7 +10,7 @@ namespace Yggdrasil.Test.Geometry.Shapes
 		[Fact]
 		public void IsInside()
 		{
-			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50, 200);
+			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50);
 
 			Assert.True(shape.IsInside(new Vector2F(100, 100)));
 			Assert.True(shape.IsInside(new Vector2F(300, 100)));
@@ -31,7 +31,7 @@ namespace Yggdrasil.Test.Geometry.Shapes
 		[Fact]
 		public void GetRandomPoint()
 		{
-			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50, 200);
+			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50);
 			var rnd = new Random();
 
 			for (var i = 0; i < 100; ++i)
@@ -44,7 +44,7 @@ namespace Yggdrasil.Test.Geometry.Shapes
 		[Fact]
 		public void UpdatePosition()
 		{
-			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50, 200);
+			var shape = new CapsuleF(new Vector2F(100, 100), new Vector2F(300, 100), 50);
 
 			shape.UpdatePosition(new Vector2F(500, 500));
 

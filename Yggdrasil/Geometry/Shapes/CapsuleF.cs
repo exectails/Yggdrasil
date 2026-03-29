@@ -35,25 +35,16 @@ namespace Yggdrasil.Geometry.Shapes
 		public float Radius { get; }
 
 		/// <summary>
-		/// Returns the capsule's length, which is the distance between
-		/// the centers of the circular ends, and the length of the
-		/// rectangular middle section.
-		/// </summary>
-		public float Length { get; }
-
-		/// <summary>
 		/// Creates new capsule.
 		/// </summary>
 		/// <param name="point1"></param>
 		/// <param name="point2"></param>
 		/// <param name="radius"></param>
-		/// <param name="length"></param>
-		public CapsuleF(Vector2F point1, Vector2F point2, float radius, float length)
+		public CapsuleF(Vector2F point1, Vector2F point2, float radius)
 		{
 			this.Point1 = point1;
 			this.Point2 = point2;
 			this.Radius = radius;
-			this.Length = length;
 
 			this.Center = new Vector2F((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
 		}

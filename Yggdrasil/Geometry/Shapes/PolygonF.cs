@@ -12,6 +12,7 @@ namespace Yggdrasil.Geometry.Shapes
 	public class PolygonF : IShapeF, IRotatableF
 	{
 		private OutlineF[] _outlines;
+		private bool _outlinesDirty = true;
 
 		/// <summary>
 		/// Returns the polygon's position.
@@ -178,11 +179,13 @@ namespace Yggdrasil.Geometry.Shapes
 		/// <returns></returns>
 		public OutlineF[] GetOutlines()
 		{
-			if (_outlines != null)
+			if (_outlines != null && !_outlinesDirty)
 				return _outlines;
 
 			var edgePoints = this.GetEdgePoints();
-			var lines = new LineF[edgePoints.Length];
+
+			if (_outlines == null)
+				_outlines = new OutlineF[1] { new OutlineF(new LineF[edgePoints.Length]) };
 
 			for (var i = 0; i < edgePoints.Length; ++i)
 			{
@@ -190,10 +193,12 @@ namespace Yggdrasil.Geometry.Shapes
 				var point2 = edgePoints[(i + 1) % edgePoints.Length];
 
 				var line = new LineF(point1, point2);
-				lines[i] = line;
+				_outlines[0].Lines[i] = line;
 			}
 
-			return _outlines = new OutlineF[] { new OutlineF(lines) };
+			_outlinesDirty = false;
+
+			return _outlines;
 		}
 
 		/// <summary>
@@ -266,6 +271,8 @@ namespace Yggdrasil.Geometry.Shapes
 				var point = this.Points[i];
 				this.Points[i] = PointUtil.Rotate(point, pivot, degreeAngle);
 			}
+
+			_outlinesDirty = true;
 		}
 
 		/// <summary>
@@ -277,10 +284,11 @@ namespace Yggdrasil.Geometry.Shapes
 			var delta = position - this.Center;
 
 			this.Center = position;
-			_outlines = null;
 
 			for (var i = 0; i < this.Points.Length; ++i)
 				this.Points[i] += delta;
+
+			_outlinesDirty = true;
 		}
 	}
 }

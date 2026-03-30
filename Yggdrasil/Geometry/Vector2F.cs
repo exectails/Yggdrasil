@@ -177,5 +177,40 @@ namespace Yggdrasil.Geometry
 		{
 			return string.Format("(Vector2F - X: {0:n2}, Y: {1:n2})", this.X, this.Y);
 		}
+
+		/// <summary>
+		/// Returns the dot product of the two vectors.
+		/// </summary>
+		/// <param name="vector1"></param>
+		/// <param name="vector2"></param>
+		/// <returns></returns>
+		public static float Dot(Vector2F vector1, Vector2F vector2)
+		{
+			return vector1.X * vector2.X + vector1.Y * vector2.Y;
+		}
+
+		/// <summary>
+		/// Returns the distance between the two vectors.
+		/// </summary>
+		/// <param name="vector1"></param>
+		/// <param name="vector2"></param>
+		/// <returns></returns>
+		public static double Distance(Vector2F vector1, Vector2F vector2)
+			=> vector1.GetDistance(vector2);
+
+		/// <summary>
+		/// Returns a new vector with the same direction as the vector
+		/// from vector1 to vector2, but with a length of 1.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns></returns>
+		public static Vector2F Normalize(Vector2F vector)
+		{
+			var length = Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+			if (length == 0)
+				return Vector2F.Zero;
+
+			return new Vector2F((float)(vector.X / length), (float)(vector.Y / length));
+		}
 	}
 }

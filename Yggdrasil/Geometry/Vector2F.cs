@@ -110,7 +110,7 @@ namespace Yggdrasil.Geometry
 		/// <param name="vector"></param>
 		/// <param name="multiplier"></param>
 		/// <returns></returns>
-		public static Vector2F operator *(Vector2F vector, int multiplier)
+		public static Vector2F operator *(Vector2F vector, float multiplier)
 		{
 			return new Vector2F(vector.X * multiplier, vector.Y * multiplier);
 		}
@@ -122,7 +122,7 @@ namespace Yggdrasil.Geometry
 		/// <param name="vector1"></param>
 		/// <param name="divider"></param>
 		/// <returns></returns>
-		public static Vector2F operator /(Vector2F vector1, int divider)
+		public static Vector2F operator /(Vector2F vector1, float divider)
 		{
 			return new Vector2F(vector1.X / divider, vector1.Y / divider);
 		}

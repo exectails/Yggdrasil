@@ -75,5 +75,49 @@ namespace Yggdrasil.Test.Geometry
 			Assert.True(Intersectioner.Intersects(poly1, poly2));
 			Assert.False(Intersectioner.Intersects(poly1, poly3));
 		}
+
+		[Fact]
+		public void CircleIntersectsLine()
+		{
+			var circle = new CircleF(new Vector2F(0, 0), 5);
+			var line1 = new LineF(new Vector2F(-10, 0), new Vector2F(10, 0));
+			var line2 = new LineF(new Vector2F(-10, 10), new Vector2F(10, 10));
+
+			Assert.True(Intersectioner.Intersects(circle, line1));
+			Assert.False(Intersectioner.Intersects(circle, line2));
+		}
+
+		[Fact]
+		public void CapsuleIntersectsLine()
+		{
+			var capsule = new CapsuleF(new Vector2F(-5, 0), new Vector2F(5, 0), 2);
+			var line1 = new LineF(new Vector2F(0, -10), new Vector2F(0, 10));
+			var line2 = new LineF(new Vector2F(0, 5), new Vector2F(0, 10));
+
+			Assert.True(Intersectioner.Intersects(capsule, line1));
+			Assert.False(Intersectioner.Intersects(capsule, line2));
+		}
+
+		[Fact]
+		public void ConeIntersectsLine()
+		{
+			var cone = new ConeF(new Vector2F(0, 0), 0, 90, 20);
+			var line1 = new LineF(new Vector2F(10, -10), new Vector2F(10, 10));
+			var line2 = new LineF(new Vector2F(-10, -10), new Vector2F(-10, 10));
+
+			Assert.True(Intersectioner.Intersects(cone, line1));
+			Assert.False(Intersectioner.Intersects(cone, line2));
+		}
+
+		[Fact]
+		public void PolygonIntersectsLine()
+		{
+			var poly = new PolygonF(new[] { new Vector2F(-5, -5), new Vector2F(5, -5), new Vector2F(5, 5), new Vector2F(-5, 5) });
+			var line1 = new LineF(new Vector2F(-10, 0), new Vector2F(10, 0));
+			var line2 = new LineF(new Vector2F(-10, 10), new Vector2F(10, 10));
+
+			Assert.True(Intersectioner.Intersects(poly, line1));
+			Assert.False(Intersectioner.Intersects(poly, line2));
+		}
 	}
 }

@@ -48,6 +48,26 @@ namespace Yggdrasil.Geometry
 		}
 
 		/// <summary>
+		/// Determines and returns whether the shape intersects with the
+		/// line.
+		/// </summary>
+		/// <param name="shape"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		public static bool Intersects(this IShapeF shape, LineF line)
+		{
+			switch (shape)
+			{
+				case CircleF circle: return CircleIntersectsLine(circle, line);
+				case CapsuleF capsule: return CapsuleIntersectsLine(capsule, line);
+				case ConeF cone: return ConeIntersectsLine(cone, line);
+				case PolygonF polygon: return PolygonIntersectsLine(polygon, line);
+			}
+
+			return ShapeIntersectsLine(shape, line);
+		}
+
+		/// <summary>
 		/// Determines and returns whether the two shapes intersect.
 		/// </summary>
 		/// <param name="circle1"></param>
@@ -341,6 +361,171 @@ namespace Yggdrasil.Geometry
 			{
 				if (outline2.Lines.Length > 0 && shape1.IsInside(outline2.Lines[0].Point1))
 					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Determines and returns whether the circle intersects with the
+		/// line in any way.
+		/// </summary>
+		/// <param name="circle"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		private static bool CircleIntersectsLine(CircleF circle, LineF line)
+		{
+			return GetPointSegmentDistanceSq(circle.Center.X, circle.Center.Y, line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y) <= (circle.Radius * circle.Radius);
+		}
+
+		/// <summary>
+		/// Determines and returns whether the capsule intersects with the
+		/// line in any way.
+		/// </summary>
+		/// <param name="capsule"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		private static bool CapsuleIntersectsLine(CapsuleF capsule, LineF line)
+		{
+			var cx1 = capsule.Point1.X;
+			var cy1 = capsule.Point1.Y;
+			var cx2 = capsule.Point2.X;
+			var cy2 = capsule.Point2.Y;
+			var lx1 = line.Point1.X;
+			var ly1 = line.Point1.Y;
+			var lx2 = line.Point2.X;
+			var ly2 = line.Point2.Y;
+
+			if (SegmentsIntersect(cx1, cy1, cx2, cy2, lx1, ly1, lx2, ly2))
+				return true;
+
+			var radiusSq = capsule.Radius * capsule.Radius;
+
+			if (GetPointSegmentDistanceSq(cx1, cy1, lx1, ly1, lx2, ly2) <= radiusSq)
+				return true;
+
+			if (GetPointSegmentDistanceSq(cx2, cy2, lx1, ly1, lx2, ly2) <= radiusSq)
+				return true;
+
+			if (GetPointSegmentDistanceSq(lx1, ly1, cx1, cy1, cx2, cy2) <= radiusSq)
+				return true;
+
+			if (GetPointSegmentDistanceSq(lx2, ly2, cx1, cy1, cx2, cy2) <= radiusSq)
+				return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Determines and returns whether the cone intersects with the
+		/// line in any way.
+		/// </summary>
+		/// <param name="cone"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		private static bool ConeIntersectsLine(ConeF cone, LineF line)
+		{
+			if (!cone.GetBounds().Intersects(line.GetBoundingBox()))
+				return false;
+
+			if (cone.IsInside(line.Point1) || cone.IsInside(line.Point2))
+				return true;
+
+			var tip = cone.Tip;
+			var halfAngle = cone.Angle / 2.0;
+
+			var leftAngle = (cone.Direction - halfAngle) * (Math.PI / 180.0);
+			var leftX = tip.X + ((float)cone.Radius * (float)Math.Cos(leftAngle));
+			var leftY = tip.Y + ((float)cone.Radius * (float)Math.Sin(leftAngle));
+
+			if (SegmentsIntersect(tip.X, tip.Y, leftX, leftY, line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y))
+				return true;
+
+			var rightAngle = (cone.Direction + halfAngle) * (Math.PI / 180.0);
+			var rightX = tip.X + ((float)cone.Radius * (float)Math.Cos(rightAngle));
+			var rightY = tip.Y + ((float)cone.Radius * (float)Math.Sin(rightAngle));
+
+			if (SegmentsIntersect(tip.X, tip.Y, rightX, rightY, line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y))
+				return true;
+
+			var dx = line.Point2.X - line.Point1.X;
+			var dy = line.Point2.Y - line.Point1.Y;
+			var lengthSq = (dx * dx) + (dy * dy);
+
+			if (lengthSq > 0)
+			{
+				var dot = (((tip.X - line.Point1.X) * dx) + ((tip.Y - line.Point1.Y) * dy)) / lengthSq;
+				var t = Math.Max(0, Math.Min(1, dot));
+
+				var closestX = line.Point1.X + (t * dx);
+				var closestY = line.Point1.Y + (t * dy);
+
+				var distSq = ((tip.X - closestX) * (tip.X - closestX)) + ((tip.Y - closestY) * (tip.Y - closestY));
+				if (distSq <= cone.Radius * cone.Radius)
+				{
+					var angleToClosest = Math.Atan2(closestY - tip.Y, closestX - tip.X) * (180.0 / Math.PI);
+					var angleDiff = angleToClosest - cone.Direction;
+					while (angleDiff <= -180) angleDiff += 360;
+					while (angleDiff > 180) angleDiff -= 360;
+
+					if (Math.Abs(angleDiff) <= halfAngle)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Determines and returns whether the polygon intersects with the
+		/// line in any way.
+		/// </summary>
+		/// <param name="polygon"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		private static bool PolygonIntersectsLine(PolygonF polygon, LineF line)
+		{
+			if (!polygon.GetBounds().Intersects(line.GetBoundingBox()))
+				return false;
+
+			if (polygon.IsInside(line.Point1) || polygon.IsInside(line.Point2))
+				return true;
+
+			var points = polygon.Points;
+			for (var i = 0; i < points.Length; ++i)
+			{
+				var p1 = points[i];
+				var p2 = points[(i + 1) % points.Length];
+
+				if (SegmentsIntersect(p1.X, p1.Y, p2.X, p2.Y, line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y))
+					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Determines and returns whether the shape intersects with the
+		/// line in any way.
+		/// </summary>
+		/// <param name="shape"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		private static bool ShapeIntersectsLine(IShapeF shape, LineF line)
+		{
+			if (!shape.GetBounds().Intersects(line.GetBoundingBox()))
+				return false;
+
+			if (shape.IsInside(line.Point1) || shape.IsInside(line.Point2))
+				return true;
+
+			foreach (var outline in shape.GetOutlines())
+			{
+				foreach (var outlineLine in outline.Lines)
+				{
+					if (line.Intersects(outlineLine, out _))
+						return true;
+				}
 			}
 
 			return false;

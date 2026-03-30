@@ -1,4 +1,6 @@
-﻿namespace Yggdrasil.Geometry
+﻿using System;
+
+namespace Yggdrasil.Geometry
 {
 	/// <summary>
 	/// A line, respresented by two points.
@@ -24,6 +26,20 @@
 		{
 			this.Point1 = point1;
 			this.Point2 = point2;
+		}
+
+		/// <summary>
+		/// Returns a bounding box that contains the line.
+		/// </summary>
+		/// <returns></returns>
+		public BoundingBoxF GetBoundingBox()
+		{
+			var minX = Math.Min(this.Point1.X, this.Point2.X);
+			var minY = Math.Min(this.Point1.Y, this.Point2.Y);
+			var maxX = Math.Max(this.Point1.X, this.Point2.X);
+			var maxY = Math.Max(this.Point1.Y, this.Point2.Y);
+
+			return BoundingBoxF.FromLTRB(minX, minY, maxX, maxY);
 		}
 
 		/// <summary>

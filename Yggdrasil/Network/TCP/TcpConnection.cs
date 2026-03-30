@@ -18,7 +18,7 @@ namespace Yggdrasil.Network.TCP
 		private Socket _socket;
 
 		private readonly object _sendSyncLock = new object();
-		private readonly Queue<byte[]> _sendQueue = new Queue<byte[]>();
+		private readonly Queue<SendItem> _sendQueue = new Queue<SendItem>();
 		private bool _isSending;
 
 		private bool _raisedConnected;
@@ -81,6 +81,23 @@ namespace Yggdrasil.Network.TCP
 			try { _socket.Shutdown(SocketShutdown.Both); } catch { }
 			try { _socket.Close(); } catch { }
 			try { this.NotifyClosed(type); } catch { }
+
+			try
+			{
+				var unsentItems = new List<SendItem>();
+
+				lock (_sendSyncLock)
+				{
+					while (_sendQueue.Count > 0)
+						unsentItems.Add(_sendQueue.Dequeue());
+				}
+
+				foreach (var item in unsentItems)
+					this.PostSend(item.Buffer, item.Length, PostSendType.Closed);
+			}
+			catch
+			{
+			}
 		}
 
 		/// <summary>
@@ -192,17 +209,28 @@ namespace Yggdrasil.Network.TCP
 		protected abstract void ReceiveData(byte[] buffer, int length);
 
 		/// <summary>
-		/// Sends data via socket.
+		/// Sends full data via socket.
 		/// </summary>
 		/// <param name="data"></param>
 		public virtual void Send(byte[] data)
+			=> this.Send(data, data.Length);
+
+		/// <summary>
+		/// Sends the given amount of byte in data via socket.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="length"></param>
+		public virtual void Send(byte[] data, int length)
 		{
 			if (this.Status != ConnectionStatus.Open)
+			{
+				this.PostSend(data, length, PostSendType.Closed);
 				return;
+			}
 
 			lock (_sendSyncLock)
 			{
-				_sendQueue.Enqueue(data);
+				_sendQueue.Enqueue(new SendItem(data, length));
 
 				if (!_isSending)
 				{
@@ -220,7 +248,7 @@ namespace Yggdrasil.Network.TCP
 		{
 			try
 			{
-				byte[] data;
+				SendItem sendItem;
 
 				lock (_sendSyncLock)
 				{
@@ -231,10 +259,10 @@ namespace Yggdrasil.Network.TCP
 					}
 
 					// Get data to send, dequeue after it was sent
-					data = _sendQueue.Peek();
+					sendItem = _sendQueue.Peek();
 				}
 
-				_socket.BeginSend(data, 0, data.Length, SocketFlags.None, this.OnSend, null);
+				_socket.BeginSend(sendItem.Buffer, 0, sendItem.Length, SocketFlags.None, this.OnSend, null);
 			}
 			catch
 			{
@@ -252,10 +280,12 @@ namespace Yggdrasil.Network.TCP
 			{
 				_socket.EndSend(ar);
 
+				SendItem sendItem;
+
 				lock (_sendSyncLock)
-				{
-					_sendQueue.Dequeue();
-				}
+					sendItem = _sendQueue.Dequeue();
+
+				this.PostSend(sendItem.Buffer, sendItem.Length, PostSendType.Sent);
 
 				// Try to send next packet in the queue
 				this.BeginSend();
@@ -272,6 +302,51 @@ namespace Yggdrasil.Network.TCP
 				try { this.OnReceiveException(ex); } catch { }
 				try { this.Close(ConnectionCloseType.Disconnected); } catch { }
 			}
+		}
+
+		/// <summary>
+		/// Called after the given data was sent.
+		/// </summary>
+		/// <remarks>
+		/// This callback can be used to handle any post-send logic,
+		/// such as logging or resource cleanup. Also called when
+		/// the connection closed while there are still packets in
+		/// the send queue.
+		/// </remarks>
+		/// <param name="data"></param>
+		/// <param name="length"></param>
+		/// <param name="type"></param>
+		protected virtual void PostSend(byte[] data, int length, PostSendType type)
+		{
+		}
+
+		private readonly struct SendItem
+		{
+			public readonly byte[] Buffer;
+			public readonly int Length;
+
+			public SendItem(byte[] buffer, int length)
+			{
+				this.Buffer = buffer;
+				this.Length = length;
+			}
+		}
+
+		/// <summary>
+		/// Specifies the type of a post-send callback.
+		/// </summary>
+		public enum PostSendType
+		{
+			/// <summary>
+			/// The data was sent as part of a normal send operation.
+			/// </summary>
+			Sent,
+
+			/// <summary>
+			/// The data wasn't sent because the connection was closed
+			/// while the data was still in the send queue.
+			/// </summary>
+			Closed,
 		}
 	}
 

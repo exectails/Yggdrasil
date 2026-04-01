@@ -1,42 +1,45 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace Yggdrasil.Util
 {
 	/// <summary>
 	/// Reader and writer for a byte array.
 	/// </summary>
-	public class BufferReaderWriter
+	public class BufferReaderWriter : IDisposable
 	{
 		/// <summary>
 		/// Default size for a new buffer.
 		/// </summary>
-		private const int DefaultSize = 128;
+		public const int DefaultSize = 128;
 
 		/// <summary>
-		/// Size added every time the buffer runs out of space.
+		/// Size added when the buffer runs out of space.
 		/// </summary>
-		private const int AddSize = 256;
+		public const int AddSize = 256;
 
 		private byte[] _buffer;
-		private int _ptr, _length;
-		private readonly bool _fixedLength;
+		private int _ptr, _length, _minBufferLength;
+		private bool _fixedLength;
+		private bool _disposed;
 
 		/// <summary>
 		/// Returns the buffer's current position.
 		/// </summary>
-		public int Index { get { return Math.Min(_ptr, this.Capacity); } }
+		public int Index => Math.Min(_ptr, this.Capacity);
 
 		/// <summary>
 		/// Returns the current length of the underlying array.
 		/// </summary>
-		public int Capacity { get { return _buffer.Length; } }
+		public int Capacity => _minBufferLength;
 
 		/// <summary>
 		/// Returns the length of the actual data.
 		/// </summary>
-		public int Length { get { return _length; } }
+		public int Length => _length;
 
 		/// <summary>
 		/// Gets or sets this instance's endianness.
@@ -54,35 +57,131 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Creates a new buffer with the given length.
 		/// </summary>
-		/// <param name="length"></param>
+		/// <param name="length">Effective length of the data in the buffer.</param>
 		public BufferReaderWriter(int length)
-			: this(new byte[length], 0, 0, false)
 		{
+			this.Reuse(length);
 		}
 
 		/// <summary>
 		/// Creates a new buffer from byte array.
 		/// </summary>
-		/// <param name="buffer"></param>
+		/// <remarks>
+		/// Copies buffer into an underlying and pooled array. The given
+		/// buffer can be safely modified after creating this instance.
+		/// </remarks>
+		/// <param name="buffer">The buffer that is to be read from.</param>
 		public BufferReaderWriter(byte[] buffer)
-			: this(buffer, 0, buffer.Length, false)
 		{
+			this.Reuse(buffer);
 		}
 
 		/// <summary>
 		/// Creates a new buffer from byte array, setting the index and
 		/// the target length of the buffer accordingly.
 		/// </summary>
+		/// <remarks>
+		/// Copies buffer into an underlying and pooled array. The given
+		/// buffer can be safely modified after creating this instance.
+		/// </remarks>
+		/// <param name="buffer">The buffer that is to be read from.</param>
+		/// <param name="index">Index to start reading from.</param>
+		/// <param name="length">Effective length of the data in the buffer.</param>
+		/// <param name="fixedLength">Indicates whether the buffer length is fixed or can be grown.</param>
+		public BufferReaderWriter(byte[] buffer, int index, int length, bool fixedLength)
+		{
+			this.Reuse(buffer, index, length, fixedLength);
+		}
+
+		/// <summary>
+		/// Resets the instance to make it reusable for a writing session
+		/// with the given length.
+		/// </summary>
+		/// <param name="length"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void Reuse(int length)
+		{
+			this.AssertNotDisposed();
+
+			if (length < 0)
+				throw new InvalidOperationException("Length must be a positive number.");
+
+			if (_buffer != null)
+				ArrayPool<byte>.Shared.Return(_buffer);
+
+			_buffer = ArrayPool<byte>.Shared.Rent(length);
+			_ptr = 0;
+			_length = 0;
+			_minBufferLength = length;
+			_fixedLength = false;
+		}
+
+		/// <summary>
+		/// Resets the instance to make it reusable for a reading session
+		/// with the given buffer.
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void Reuse(byte[] buffer)
+		{
+			this.Reuse(buffer, 0, buffer.Length, false);
+		}
+
+		/// <summary>
+		/// Resets the instance to make it reusable for a reading session
+		/// with the given buffer.
+		/// </summary>
 		/// <param name="buffer"></param>
 		/// <param name="index"></param>
 		/// <param name="length"></param>
 		/// <param name="fixedLength"></param>
-		public BufferReaderWriter(byte[] buffer, int index, int length, bool fixedLength)
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public void Reuse(byte[] buffer, int index, int length, bool fixedLength)
 		{
-			_buffer = buffer;
+			this.AssertNotDisposed();
+
+			if (buffer == null)
+				throw new ArgumentNullException(nameof(buffer));
+
+			if (index < 0)
+				throw new InvalidOperationException("Index must be a positive number.");
+
+			if (length < 0)
+				throw new InvalidOperationException("Length must be a positive number.");
+
+			if (buffer.Length < index + length)
+				throw new ArgumentOutOfRangeException(nameof(buffer), "Buffer is not long enough.");
+
+			if (_buffer != null)
+				ArrayPool<byte>.Shared.Return(_buffer);
+
+			_buffer = ArrayPool<byte>.Shared.Rent(buffer.Length);
 			_ptr = index;
 			_length = length;
+			_minBufferLength = buffer.Length;
 			_fixedLength = fixedLength;
+
+			Buffer.BlockCopy(buffer, 0, _buffer, 0, buffer.Length);
+		}
+
+		/// <summary>
+		/// Cleans up resources used by this instance.
+		/// </summary>
+		public void Dispose()
+		{
+			if (_disposed)
+				return;
+
+			_disposed = true;
+
+			ArrayPool<byte>.Shared.Return(_buffer);
+
+			_buffer = null;
+			_ptr = 0;
+			_length = 0;
+			_minBufferLength = 0;
 		}
 
 		// General
@@ -95,14 +194,27 @@ namespace Yggdrasil.Util
 		/// <param name="needed"></param>
 		private void EnsureSpace(int needed)
 		{
-			if (_ptr + needed <= _buffer.Length)
+			var requiredLength = _ptr + needed;
+
+			if (requiredLength <= _minBufferLength)
 				return;
 
 			if (_fixedLength)
 				throw new InvalidOperationException("Buffer can't be extended, as its length is fixed.");
 
 			var add = Math.Max(needed, AddSize);
-			Array.Resize(ref _buffer, _buffer.Length + add);
+			var newLength = _minBufferLength + add;
+
+			if (newLength > _buffer.Length)
+			{
+				var newBuffer = ArrayPool<byte>.Shared.Rent(newLength);
+				Buffer.BlockCopy(_buffer, 0, newBuffer, 0, _minBufferLength);
+
+				ArrayPool<byte>.Shared.Return(_buffer);
+				_buffer = newBuffer;
+			}
+
+			_minBufferLength = newLength;
 		}
 
 		/// <summary>
@@ -113,8 +225,20 @@ namespace Yggdrasil.Util
 		/// <param name="needed"></param>
 		private void AssertEnoughBytes(int needed)
 		{
-			if (_ptr + needed > _buffer.Length)
-				throw new InvalidOperationException("End of buffer.");
+			var requiredLength = _ptr + needed;
+
+			if (requiredLength > _length)
+				throw new InvalidOperationException("End of data in buffer.");
+		}
+
+		/// <summary>
+		/// Throws ObjectDisposedException if this instance was disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException"></exception>
+		private void AssertNotDisposed()
+		{
+			if (_disposed)
+				throw new ObjectDisposedException("BufferReaderWriter");
 		}
 
 		/// <summary>
@@ -128,6 +252,8 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public byte[] Copy()
 		{
+			this.AssertNotDisposed();
+
 			var result = new byte[_length];
 			Buffer.BlockCopy(_buffer, 0, result, 0, _length);
 			return result;
@@ -139,9 +265,7 @@ namespace Yggdrasil.Util
 		/// <param name="destination"></param>
 		/// <param name="offset"></param>
 		public void CopyTo(byte[] destination, int offset)
-		{
-			this.CopyTo(destination, offset, 0);
-		}
+			=> this.CopyTo(destination, offset, 0);
 
 		/// <summary>
 		/// Copies the buffer's data into the given array, at the offset.
@@ -151,6 +275,8 @@ namespace Yggdrasil.Util
 		/// <param name="sourceOffset">The offset from which to read in the buffer.</param>
 		public void CopyTo(byte[] destination, int destinationOffset, int sourceOffset)
 		{
+			this.AssertNotDisposed();
+
 			if (destinationOffset < 0)
 				throw new InvalidOperationException("Offset must be a positive number.");
 
@@ -167,23 +293,25 @@ namespace Yggdrasil.Util
 		/// <param name="origin">Origin of the search.</param>
 		public void Seek(int index, SeekOrigin origin)
 		{
+			this.AssertNotDisposed();
+
 			switch (origin)
 			{
 				case SeekOrigin.Begin:
-					if (index < 0 || index > _buffer.Length)
-						throw new InvalidOperationException("Out of buffer.");
+					if (index < 0 || index > _minBufferLength)
+						throw new InvalidOperationException("Out of data in buffer.");
 					_ptr = index;
 					break;
 
 				case SeekOrigin.End:
-					if (index > 0 || -index > _buffer.Length)
-						throw new InvalidOperationException("Out of buffer.");
-					_ptr = _buffer.Length + index;
+					if (index > 0 || -index > _minBufferLength)
+						throw new InvalidOperationException("Out of data in buffer.");
+					_ptr = _minBufferLength + index;
 					break;
 
 				case SeekOrigin.Current:
-					if (_ptr + index < 0 || _ptr + index > _buffer.Length)
-						throw new InvalidOperationException("Out of buffer.");
+					if (_ptr + index < 0 || _ptr + index > _minBufferLength)
+						throw new InvalidOperationException("Out of data in buffer.");
 					_ptr += index;
 					break;
 
@@ -212,17 +340,10 @@ namespace Yggdrasil.Util
 		/// </summary>
 		public void ResetLength()
 		{
+			this.AssertNotDisposed();
+
 			_ptr = 0;
 			_length = 0;
-		}
-
-		/// <summary>
-		/// Reverses the order of the bytes.
-		/// </summary>
-		/// <param name="bytes"></param>
-		private static void ReverseBytes(ref byte[] bytes)
-		{
-			Array.Reverse(bytes, 0, bytes.Length);
 		}
 
 		/// <summary>
@@ -256,6 +377,8 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public int IndexOf(byte val, int startIndex)
 		{
+			this.AssertNotDisposed();
+
 			for (var i = startIndex; i < _length; ++i)
 			{
 				if (_buffer[i] == val)
@@ -274,6 +397,8 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public byte Peek()
 		{
+			this.AssertNotDisposed();
+
 			return _buffer[_ptr];
 		}
 
@@ -284,8 +409,10 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public byte GetAt(int index)
 		{
-			if (index < 0 || index > _buffer.Length - 1)
-				throw new InvalidOperationException("Out of buffer.");
+			this.AssertNotDisposed();
+
+			if (index < 0 || index > _minBufferLength - 1)
+				throw new InvalidOperationException("Out of data in buffer.");
 
 			return _buffer[index];
 		}
@@ -296,6 +423,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public byte ReadByte()
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(byte));
 
 			var result = _buffer[_ptr++];
@@ -314,6 +442,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public short ReadInt16()
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(short));
 
 			var result = 0;
@@ -338,6 +467,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public int ReadInt32()
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(int));
 
 			var result = 0;
@@ -362,6 +492,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public int ReadInt24()
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(int) - 1);
 
 			var result = 0;
@@ -387,6 +518,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public long ReadInt64()
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(long));
 
 			var result = 0L;
@@ -411,11 +543,17 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public float ReadFloat()
 		{
-			var bytes = this.Read(sizeof(float));
-			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
-				ReverseBytes(ref bytes);
+			this.AssertNotDisposed();
+			this.AssertEnoughBytes(sizeof(float));
 
-			return BitConverter.ToSingle(bytes, 0);
+			var intValue = 0;
+			for (var i = 0; i < sizeof(float); ++i)
+				intValue += ((int)_buffer[_ptr++] << (i * 8));
+
+			if (this.Endianness == Endianness.BigEndian)
+				intValue = IPAddress.NetworkToHostOrder(intValue);
+
+			return new FloatIntUnion { IntValue = intValue }.FloatValue;
 		}
 
 		/// <summary>
@@ -424,11 +562,17 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public double ReadDouble()
 		{
-			var bytes = this.Read(sizeof(double));
-			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
-				ReverseBytes(ref bytes);
+			this.AssertNotDisposed();
+			this.AssertEnoughBytes(sizeof(double));
 
-			return BitConverter.ToDouble(bytes, 0);
+			var longValue = 0L;
+			for (var i = 0; i < sizeof(double); ++i)
+				longValue += ((long)_buffer[_ptr++] << (i * 8));
+
+			if (this.Endianness == Endianness.BigEndian)
+				longValue = IPAddress.NetworkToHostOrder(longValue);
+
+			return new DoubleLongUnion { LongValue = longValue }.DoubleValue;
 		}
 
 		/// <summary>
@@ -437,6 +581,7 @@ namespace Yggdrasil.Util
 		/// <returns></returns>
 		public byte[] Read(int length)
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(length);
 
 			var result = new byte[length];
@@ -455,6 +600,8 @@ namespace Yggdrasil.Util
 		/// <param name="length"></param>
 		public void ReadTo(byte[] buffer, int offset, int length)
 		{
+			this.AssertNotDisposed();
+
 			if (offset < 0)
 				throw new InvalidOperationException("Offset must be a positive number.");
 
@@ -479,6 +626,7 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public void WriteByte(byte value)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(byte));
 
 			_buffer[_ptr] = value;
@@ -497,6 +645,7 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public void WriteInt16(short value)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(short));
 
 			if (this.Endianness == Endianness.BigEndian)
@@ -514,17 +663,12 @@ namespace Yggdrasil.Util
 		public void WriteUInt16(ushort value) => this.WriteInt16((short)value);
 
 		/// <summary>
-		/// Writes value to buffer.
-		/// </summary>
-		/// <param name="value"></param>
-		public void WriteInt32(int value) => this.WriteInt32(value, this.Endianness);
-
-		/// <summary>
 		/// Writes 3-byte integer value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
 		public void WriteInt24(int value)
 		{
+			this.AssertNotDisposed();
 			this.AssertEnoughBytes(sizeof(int) - 1);
 
 			if (this.Endianness == Endianness.BigEndian)
@@ -550,6 +694,7 @@ namespace Yggdrasil.Util
 		/// <param name="endianness"></param>
 		public void WriteInt32(int value, Endianness endianness)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(int));
 
 			if (endianness == Endianness.BigEndian)
@@ -564,6 +709,12 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
+		public void WriteInt32(int value) => this.WriteInt32(value, this.Endianness);
+
+		/// <summary>
+		/// Writes value to buffer.
+		/// </summary>
+		/// <param name="value"></param>
 		public void WriteUInt32(uint value) => this.WriteInt32((int)value);
 
 		/// <summary>
@@ -572,6 +723,7 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public void WriteInt64(long value)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(long));
 
 			if (this.Endianness == Endianness.BigEndian)
@@ -594,13 +746,17 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public void WriteFloat(float value)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(float));
 
-			var bytes = BitConverter.GetBytes(value);
-			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
-				ReverseBytes(ref bytes);
+			var intValue = new FloatIntUnion { FloatValue = value }.IntValue;
 
-			this.Write(bytes);
+			if (this.Endianness == Endianness.BigEndian)
+				intValue = IPAddress.HostToNetworkOrder(intValue);
+
+			for (var i = 0; i < sizeof(float); ++i)
+				_buffer[_ptr + i] = (byte)((intValue >> (i * 8)) & 0xFF);
+			this.UpdatePtrLength(sizeof(float));
 		}
 
 		/// <summary>
@@ -609,13 +765,17 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		public void WriteDouble(double value)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(sizeof(double));
 
-			var bytes = BitConverter.GetBytes(value);
-			if (this.Endianness == Endianness.BigEndian && BitConverter.IsLittleEndian)
-				ReverseBytes(ref bytes);
+			var longValue = new DoubleLongUnion { DoubleValue = value }.LongValue;
 
-			this.Write(bytes);
+			if (this.Endianness == Endianness.BigEndian)
+				longValue = IPAddress.HostToNetworkOrder(longValue);
+
+			for (var i = 0; i < sizeof(double); ++i)
+				_buffer[_ptr + i] = (byte)((longValue >> (i * 8)) & 0xFF);
+			this.UpdatePtrLength(sizeof(double));
 		}
 
 		/// <summary>
@@ -632,10 +792,31 @@ namespace Yggdrasil.Util
 		/// <param name="length"></param>
 		public void Write(byte[] value, int index, int length)
 		{
+			this.AssertNotDisposed();
 			this.EnsureSpace(length);
 
 			Buffer.BlockCopy(value, index, _buffer, _ptr, length);
 			this.UpdatePtrLength(length);
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		private struct FloatIntUnion
+		{
+			[FieldOffset(0)]
+			public int IntValue;
+
+			[FieldOffset(0)]
+			public float FloatValue;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		private struct DoubleLongUnion
+		{
+			[FieldOffset(0)]
+			public long LongValue;
+
+			[FieldOffset(0)]
+			public double DoubleValue;
 		}
 	}
 

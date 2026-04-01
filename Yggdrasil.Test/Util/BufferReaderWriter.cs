@@ -378,12 +378,12 @@ namespace Yggdrasil.Test.Util
 			buffer.WriteInt32(1);
 			buffer.WriteInt32(2);
 			buffer.WriteInt32(3);
-			Assert.Equal(10 + 256, buffer.Capacity);
+			Assert.Equal(10 + BufferReaderWriter.AddSize, buffer.Capacity);
 			Assert.Equal(12, buffer.Length);
 			Assert.Equal(12, buffer.Index);
 
 			buffer.ResetLength();
-			Assert.Equal(10 + 256, buffer.Capacity);
+			Assert.Equal(10 + BufferReaderWriter.AddSize, buffer.Capacity);
 			Assert.Equal(0, buffer.Length);
 			Assert.Equal(0, buffer.Index);
 		}
@@ -451,6 +451,46 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal("foobar", str);
 			Assert.Equal(0, buffer.ReadByte());
 			Assert.Equal(0xFFFF, buffer.ReadUInt16());
+		}
+
+		[Fact]
+		public void Dispose()
+		{
+			var buffer = new BufferReaderWriter();
+			buffer.Dispose();
+
+			Assert.Throws<ObjectDisposedException>(() => buffer.WriteByte(0));
+			Assert.Throws<ObjectDisposedException>(() => buffer.ReadByte());
+			Assert.Throws<ObjectDisposedException>(() => buffer.Seek(0, SeekOrigin.Begin));
+			Assert.Throws<ObjectDisposedException>(() => buffer.Copy());
+		}
+
+		[Fact]
+		public void Reuse()
+		{
+			var buffer = new BufferReaderWriter();
+			buffer.Endianness = Endianness.BigEndian;
+
+			buffer.WriteByte(0x42);
+
+			Assert.Equal(BufferReaderWriter.DefaultSize, buffer.Capacity);
+			Assert.Equal(new byte[] { 0x42 }, buffer.Copy());
+
+			buffer.Reuse(10);
+			buffer.WriteInt32(0x42);
+
+			Assert.Equal(10, buffer.Capacity);
+			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x42 }, buffer.Copy());
+
+			buffer.WriteInt32(0x42);
+			buffer.WriteInt32(0x42);
+
+			Assert.Equal(10 + BufferReaderWriter.AddSize, buffer.Capacity);
+			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 0x42, }, buffer.Copy());
+
+			buffer.Dispose();
+
+			Assert.Throws<ObjectDisposedException>(() => buffer.WriteByte(0));
 		}
 	}
 }

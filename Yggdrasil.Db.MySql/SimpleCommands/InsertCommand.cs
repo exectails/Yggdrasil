@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using MySqlConnector;
 
 namespace Yggdrasil.Db.MySql.SimpleCommands
@@ -41,29 +42,41 @@ namespace Yggdrasil.Db.MySql.SimpleCommands
 		}
 
 		/// <summary>
-		/// Runs MySqlCommand.ExecuteNonQuery
+		/// Builds the parameterized query that is executed by this
+		/// command.
 		/// </summary>
 		/// <returns></returns>
-		public override int Execute()
+		public string Build()
 		{
-			// Build values part
 			var sb1 = new StringBuilder();
 			var sb2 = new StringBuilder();
+
 			foreach (var parameter in _set.Keys)
 			{
 				sb1.AppendFormat("`{0}`, ", parameter);
 				sb2.AppendFormat("@{0}, ", parameter);
 			}
 
-			// Add values part
-			var values = "(" + sb1.ToString().Trim(' ', ',') + ") VALUES (" + sb2.ToString().Trim(' ', ',') + ")";
-			_mc.CommandText = _mc.CommandText.Replace("{parameters}", values);
+			var columns = sb1.ToString(0, sb1.Length - 2);
+			var values = sb2.ToString(0, sb2.Length - 2);
 
-			// Add parameters
+			var parameters = "(" + columns + ") VALUES (" + values + ")";
+			return _mc.CommandText.Replace("{parameters}", parameters);
+		}
+
+		/// <summary>
+		/// Runs MySqlCommand.ExecuteNonQuery
+		/// </summary>
+		/// <returns></returns>
+		public override int Execute()
+		{
+			var query = this.Build();
+
+			_mc.CommandText = query;
+
 			foreach (var parameter in _set)
 				_mc.Parameters.AddWithValue("@" + parameter.Key, parameter.Value);
 
-			// Run
 			return _mc.ExecuteNonQuery();
 		}
 	}

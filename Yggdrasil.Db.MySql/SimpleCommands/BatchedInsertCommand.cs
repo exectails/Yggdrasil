@@ -89,6 +89,13 @@ namespace Yggdrasil.Db.MySql.SimpleCommands
 		public void Dispose()
 		{
 			_mc.Dispose();
+
+			_baseQuery = null;
+			_mc = null;
+			_conn = null;
+			_transaction = null;
+			_rows = null;
+			_curRow = null;
 		}
 
 		/// <summary>
@@ -190,11 +197,37 @@ namespace Yggdrasil.Db.MySql.SimpleCommands
 		}
 
 		/// <summary>
-		/// Runs MySqlCommand.ExecuteNonQuery
+		/// Inserts the current batch and clears the values if the batch
+		/// size is greater than or equal to the given amount.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public void ExecuteOn(int amount)
+		{
+			if (amount <= 0)
+				throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
+
+			// Calculate actual row count to support calling AddRow at the
+			// top or the bottom of the loop.
+			var actualRowCount = _rows.Count - (_curRow.Count == 0 ? 1 : 0);
+
+			if (actualRowCount >= amount)
+			{
+				this.Execute();
+				this.Clear();
+			}
+		}
+
+		/// <summary>
+		/// Runs MySqlCommand.ExecuteNonQuery. Does nothing if no values
+		/// were set.
 		/// </summary>
 		/// <returns></returns>
 		public int Execute()
 		{
+			if (_rows.Count == 0 || _rows[0].Count == 0)
+				return 0;
+
 			var query = this.Build();
 			_mc.CommandText = query;
 

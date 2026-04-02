@@ -5,9 +5,29 @@ using MySqlConnector;
 namespace Yggdrasil.Db.MySql.SimpleCommands
 {
 	/// <summary>
+	/// Describes a simplified MySQL command, for easier, cleaner
+	/// inserting and updating.
+	/// </summary>
+	public interface ISimpleCommand
+	{
+		/// <summary>
+		/// Sets value for field.
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		void Set(string field, object value);
+
+		/// <summary>
+		/// Executes command.
+		/// </summary>
+		/// <returns></returns>
+		int Execute();
+	}
+
+	/// <summary>
 	/// Base class for simplified MySQL commands.
 	/// </summary>
-	public abstract class SimpleCommand : IDisposable
+	public abstract class SimpleCommand : ISimpleCommand, IDisposable
 	{
 		/// <summary>
 		/// Underlying MySqlCommand object.

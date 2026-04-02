@@ -189,6 +189,9 @@ namespace Yggdrasil.Db.MySql.SimpleCommands
 				BulkCopyTimeout = 30,
 			};
 
+			for (var i = 0; i < columnNames.Length; i++)
+				bulkCopy.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(i, columnNames[i]));
+
 			var result = bulkCopy.WriteToServer(dataTable);
 
 			return result.RowsInserted;

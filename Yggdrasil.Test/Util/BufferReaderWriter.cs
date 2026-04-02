@@ -414,6 +414,30 @@ namespace Yggdrasil.Test.Util
 		}
 
 		[Fact]
+		public void ReadAsSpan()
+		{
+			var buffer = new BufferReaderWriter(10);
+			buffer.WriteByte(1);
+			buffer.Seek(-1, SeekOrigin.End);
+			buffer.WriteByte(2);
+			buffer.Seek(0, SeekOrigin.Begin);
+
+			var span = buffer.ReadAsSpan(1);
+			Assert.Equal(new byte[] { 1 }, span.ToArray());
+
+			span = buffer.ReadAsSpan(9);
+
+			Assert.Equal(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 2 }, span.ToArray());
+			Assert.Throws<InvalidOperationException>(() => buffer.ReadAsSpan(-1));
+			Assert.Throws<InvalidOperationException>(() => buffer.ReadAsSpan(11));
+
+			buffer.Seek(1, SeekOrigin.Begin);
+			buffer.WriteByte(3);
+
+			Assert.Equal(new byte[] { 3, 0, 0, 0, 0, 0, 0, 0, 2 }, span.ToArray());
+		}
+
+		[Fact]
 		public void IndexOf()
 		{
 			var foobarBytes = Encoding.UTF8.GetBytes("foobar");

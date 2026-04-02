@@ -584,6 +584,9 @@ namespace Yggdrasil.Util
 			this.AssertNotDisposed();
 			this.AssertEnoughBytes(length);
 
+			if (length < 0)
+				throw new InvalidOperationException("Length must be a positive number.");
+
 			var result = new byte[length];
 			Buffer.BlockCopy(_buffer, _ptr, result, 0, length);
 			_ptr += length;
@@ -615,6 +618,29 @@ namespace Yggdrasil.Util
 
 			Buffer.BlockCopy(_buffer, _ptr, buffer, offset, length);
 			_ptr += length;
+		}
+
+		/// <summary>
+		/// Returns the next x bytes in the buffer as a span.
+		/// </summary>
+		/// <remarks>
+		/// The span is valid for as long as the buffer isn't modified or
+		/// disposed.
+		/// </remarks>
+		/// <param name="length"></param>
+		/// <returns></returns>
+		public ReadOnlySpan<byte> ReadAsSpan(int length)
+		{
+			this.AssertNotDisposed();
+			this.AssertEnoughBytes(length);
+
+			if (length < 0)
+				throw new InvalidOperationException("Length must be a positive number.");
+
+			var result = new ReadOnlySpan<byte>(_buffer, _ptr, length);
+			_ptr += length;
+
+			return result;
 		}
 
 		// Writing

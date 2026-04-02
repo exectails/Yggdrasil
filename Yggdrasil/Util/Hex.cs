@@ -9,7 +9,7 @@ namespace Yggdrasil.Util
 	/// </summary>
 	public static class Hex
 	{
-		private static readonly Regex _invalidHexCharacters = new Regex(@"[^0-9a-f]|0x", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex InvalidHexCharacters = new Regex(@"[^0-9a-f]|0x", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
 		/// Converts hex string to byte array, ignoring any invalid
@@ -28,7 +28,7 @@ namespace Yggdrasil.Util
 		/// </exception>
 		public static byte[] ToByteArray(string hexString)
 		{
-			hexString = _invalidHexCharacters.Replace(hexString, "");
+			hexString = InvalidHexCharacters.Replace(hexString, "");
 
 			var characterCount = hexString.Length;
 			if ((characterCount % 2) != 0)
@@ -52,7 +52,7 @@ namespace Yggdrasil.Util
 		/// <param name="byteArray"></param>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public static string ToString(byte[] byteArray, HexStringOptions options = HexStringOptions.SpaceSeparated)
+		public static string ToString(ReadOnlySpan<byte> byteArray, HexStringOptions options = HexStringOptions.SpaceSeparated)
 			=> ToString(byteArray, 0, byteArray.Length, options);
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace Yggdrasil.Util
 		/// <param name="length"></param>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public static string ToString(byte[] byteArray, int start, int length, HexStringOptions options = HexStringOptions.SpaceSeparated)
+		public static string ToString(ReadOnlySpan<byte> byteArray, int start, int length, HexStringOptions options = HexStringOptions.SpaceSeparated)
 		{
 			var result = new StringBuilder();
 

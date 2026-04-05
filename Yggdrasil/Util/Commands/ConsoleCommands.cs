@@ -53,11 +53,9 @@ namespace Yggdrasil.Util.Commands
 		/// </summary>
 		public void Wait()
 		{
-			// Just wait if not running in a console
 			if (!ConsoleUtil.IsUserInteractive)
 			{
-				var reset = new ManualResetEvent(false);
-				reset.WaitOne();
+				this.WaitForExit();
 				return;
 			}
 
@@ -65,7 +63,23 @@ namespace Yggdrasil.Util.Commands
 
 			while (true)
 			{
-				var line = Console.ReadLine();
+				string line;
+
+				try
+				{
+					line = Console.ReadLine();
+				}
+				catch
+				{
+					this.WaitForExit();
+					return;
+				}
+
+				if (line == null)
+				{
+					this.WaitForExit();
+					return;
+				}
 
 				var args = new Arguments(line);
 				if (args.Count == 0)
@@ -92,6 +106,14 @@ namespace Yggdrasil.Util.Commands
 					Log.Info("Usage: {0} {1}", command.Name, command.Usage);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Waits indefinitely, without accepting any commands.
+		/// </summary>
+		private void WaitForExit()
+		{
+			new ManualResetEvent(false).WaitOne();
 		}
 
 		/// <summary>

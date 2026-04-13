@@ -133,3 +133,6 @@ dotnet_diagnostic.CA2211.severity = none
 dotnet_diagnostic.xUnit2013.severity = none
 dotnet_diagnostic.xUnit2004.severity = none
 dotnet_diagnostic.xUnit2003.severity = none
+
+# IDE0180: Use tuple to swap values
+dotnet_diagnostic.IDE0180.severity = none

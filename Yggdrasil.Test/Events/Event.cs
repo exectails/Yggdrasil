@@ -83,10 +83,50 @@ namespace Yggdrasil.Test.Events
 			Assert.False(barRaised);
 		}
 
+		[Fact]
+		public void BadReadOnlyTest()
+		{
+			var foo = new Foo1();
+
+			var fooRaised = false;
+
+			void fooHandler(object sender, EventArgs e) => fooRaised = true;
+
+			foo.Foo.Subscribe(fooHandler);
+			foo.Foo.Raise(EventArgs.Empty);
+
+			Assert.False(fooRaised);
+		}
+
+		[Fact]
+		public void BadPropertyTest()
+		{
+			var foo = new Foo2();
+
+			var fooRaised = false;
+
+			void fooHandler(object sender, EventArgs e) => fooRaised = true;
+
+			foo.Foo.Subscribe(fooHandler);
+			foo.Foo.Raise(EventArgs.Empty);
+
+			Assert.False(fooRaised);
+		}
+
 		private class EventManager
 		{
-			public readonly Event<EventArgs> Foo = new();
-			public readonly Event<EventArgs> Bar = new();
+			public Event<EventArgs> Foo;
+			public Event<EventArgs> Bar;
+		}
+
+		private class Foo1
+		{
+			public readonly Event<EventArgs> Foo;
+		}
+
+		private class Foo2
+		{
+			public Event<EventArgs> Foo { get; set; }
 		}
 	}
 }

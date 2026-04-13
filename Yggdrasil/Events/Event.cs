@@ -2,52 +2,24 @@
 
 namespace Yggdrasil.Events
 {
-	// Originally I wanted to use structs for events, so it wouldn't be necessary
-	// to instantiate them, but that seemed like a hassle in the long run.
-	// Still... this,
-	// 
-	//     public Event<EventArgs> Foobar;
-	// 
-	// does seem nicer than this.
-	// 
-	//     public Event<EventArgs> Foobar = new();
-
 	/// <summary>
 	/// A generic event that can be subscribed to and raised.
 	/// </summary>
+	/// <remarks>
+	/// Note that due to this being a struct, it must be used as a
+	/// non-readonly field, or it might not work as intended. If the
+	/// instance is copied during access, (un)subscriptions will not
+	/// affect the original instance.
+	/// </remarks>
 	/// <typeparam name="TArgs"></typeparam>
-	public class Event<TArgs> where TArgs : EventArgs
+	public struct Event<TArgs> where TArgs : EventArgs
 	{
 		private event EventHandler<TArgs> _event;
-
-		/// <summary>
-		/// Returns the owner of this event if any was set.
-		/// </summary>
-		/// <remarks>
-		/// If no sender is specified when raising the event, the owner will be used.
-		/// </remarks>
-		public object Owner { get; }
 
 		/// <summary>
 		/// Returns whether this event has any subscribers.
 		/// </summary>
 		public bool HasSubscribers => _event != null;
-
-		/// <summary>
-		/// Creates a new event without owner.
-		/// </summary>
-		public Event()
-		{
-		}
-
-		/// <summary>
-		/// Creates a new event with the given owner.
-		/// </summary>
-		/// <param name="owner"></param>
-		public Event(object owner)
-		{
-			this.Owner = owner;
-		}
 
 		/// <summary>
 		/// Subscribes the handler to the event.
@@ -73,7 +45,7 @@ namespace Yggdrasil.Events
 		/// <param name="args"></param>
 		public void Raise(TArgs args)
 		{
-			this.Raise(this.Owner, args);
+			this.Raise(null, args);
 		}
 
 		/// <summary>

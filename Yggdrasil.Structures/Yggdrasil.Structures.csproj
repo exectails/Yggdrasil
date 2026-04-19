@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>Yggdrasil.Structures</AssemblyTitle>
-    <Company>exec</Company>
     <Product>Yggdrasil.Structures</Product>
     <Copyright>Copyright © 2016 exec</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <BaseOutputPath>..\bin\</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageId>ExecTails.$(AssemblyName)</PackageId>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>ExecTails.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>
     <Authors>exec</Authors>
+    <Company>exec</Company>
     <Description>Library for structures, part of the Yggdrasil family of server development libraries.</Description>
     <PackageProjectUrl>https://github.com/exectails/Yggdrasil</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/exectails/Yggdrasil</RepositoryUrl>
     <PackageTags>utility;structures</PackageTags>
-    <Version>1.1.0</Version>
+    <Version>2.0.0</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

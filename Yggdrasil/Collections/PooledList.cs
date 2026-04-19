@@ -3,6 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
+#if !NETSTANDARD2_0
+using Microsoft.Extensions.ObjectPool;
+#endif
+
 namespace Yggdrasil.Collections
 {
 	/// <summary>
@@ -19,11 +23,6 @@ namespace Yggdrasil.Collections
 	/// <typeparam name="T"></typeparam>
 	public class PooledList<T> : List<T>, IDisposable
 	{
-		private static readonly ConcurrentBag<PooledList<T>> Pool = new ConcurrentBag<PooledList<T>>();
-		private const int MaxPoolSize = 5000;
-		private const int MaxCapacity = 1024;
-		private static int PoolCount;
-
 		private bool _disposed;
 
 		/// <summary>
@@ -32,6 +31,13 @@ namespace Yggdrasil.Collections
 		private PooledList() : base()
 		{
 		}
+
+#if NETSTANDARD2_0
+
+		private static readonly ConcurrentBag<PooledList<T>> Pool = new ConcurrentBag<PooledList<T>>();
+		private const int MaxPoolSize = 5000;
+		private const int MaxCapacity = 1024;
+		private static int PoolCount;
 
 		/// <summary>
 		/// Returns a list from the pool.
@@ -78,5 +84,62 @@ namespace Yggdrasil.Collections
 			else
 				Interlocked.Decrement(ref PoolCount);
 		}
+
+#else
+
+		private static readonly ObjectPool<PooledList<T>> Pool = new DefaultObjectPool<PooledList<T>>(new ListPoolPolicy(), 5000);
+
+		private class ListPoolPolicy : IPooledObjectPolicy<PooledList<T>>
+		{
+			public PooledList<T> Create()
+			{
+				return new PooledList<T>();
+			}
+
+			public bool Return(PooledList<T> list)
+			{
+				if (list.Capacity >= 1024)
+				{
+					list.Clear();
+					return false;
+				}
+
+				list.Clear();
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Returns a list from the pool.
+		/// </summary>
+		/// <remarks>
+		/// It's highly recommended to use this method in a using
+		/// statement, so the list will be returned to the pool
+		/// semi-automatically.
+		/// </remarks>
+		/// <returns></returns>
+		public static PooledList<T> Rent()
+		{
+			var list = Pool.Get();
+			list._disposed = false;
+			return list;
+		}
+
+		/// <summary>
+		/// Disposes the list and returns it to the pool. After calling
+		/// this method, the list should not be used anymore.
+		/// </summary>
+		public void Dispose()
+		{
+			if (_disposed)
+				return;
+
+			_disposed = true;
+			Pool.Return(this);
+
+			GC.SuppressFinalize(this);
+		}
+
+#endif
 	}
 }

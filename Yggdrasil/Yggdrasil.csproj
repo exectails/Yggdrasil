@@ -21,7 +21,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/exectails/Yggdrasil</RepositoryUrl>
     <PackageTags>utility;server</PackageTags>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

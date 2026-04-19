@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Yggdrasil.Util
 {
@@ -91,6 +92,18 @@ namespace Yggdrasil.Util
 		public BufferReaderWriter(ReadOnlySpan<byte> buffer, int index, int length, bool fixedLength)
 		{
 			this.Reuse(buffer, index, length, fixedLength);
+		}
+
+		/// <summary>
+		/// Resets the instance's index and length, to restart writing
+		/// from the beginning of the buffer.
+		/// </summary>
+		public void Reset()
+		{
+			this.AssertNotDisposed();
+
+			_ptr = 0;
+			_length = 0;
 		}
 
 		/// <summary>
@@ -805,6 +818,127 @@ namespace Yggdrasil.Util
 		}
 
 		/// <summary>
+		/// Writes string to buffer, using the given encoding, and
+		/// options.
+		/// </summary>
+		/// <param name="encoding">The encoding used to convert the string to bytes.</param>
+		/// <param name="value">The string to be written.</param>
+		/// <param name="options">The options that affect how the string is written.</param>
+		public void WriteString(Encoding encoding, string value, StringWriteOptions options)
+		{
+			this.AssertNotDisposed();
+
+			if (value == null)
+				value = "";
+
+			var strByteCount = encoding.GetByteCount(value);
+			var terminate = (options & StringWriteOptions.Terminate) != 0;
+
+			if (terminate)
+				strByteCount += 1;
+
+			this.EnsureSpace(strByteCount);
+
+			if (strByteCount == 0)
+				return;
+
+			encoding.GetBytes(value, 0, value.Length, _buffer, _ptr);
+
+			if (terminate)
+				_buffer[_ptr + strByteCount - 1] = 0;
+
+			this.UpdatePtrLength(strByteCount);
+		}
+
+		/// <summary>
+		/// Writes string to buffer, using the given encoding, and
+		/// options.
+		/// </summary>
+		/// <remarks>
+		/// The bytes are truncated at the given length, with no regard
+		/// for the encoding or correct output. This means that the
+		/// resulting byte sequence could contain broken multi-byte
+		/// characters.
+		///
+		/// For example, the string "foo" in UTF-16LE would be encoded as
+		/// 66 00 6F 00 6F 00, but if the length is set to 5, the written
+		/// bytes would be 66 00 6F 00 6F, which is not technically a
+		/// valid UTF-16LE sequence. The caller needs to ensure that the
+		/// length is set in a way that doesn't break the encoding, if
+		/// that's a requirement.
+		///
+		/// If the length is longer than the byte count of the string, the
+		/// remaining bytes are filled with 0, and if the Terminate option
+		/// is set, the last byte of the string is set to 0, even if the
+		/// string's byte count is shorter than the given length. This may
+		/// potentially truncate the string, just like if the length was
+		/// too short.
+		/// </remarks>
+		/// <param name="encoding">The encoding used to convert the string to bytes.</param>
+		/// <param name="value">The string to be written.</param>
+		/// <param name="maxByteLength">The maximum length in byte that is written.</param>
+		/// <param name="options">The options that affect how the string is written.</param>
+		public void WriteString(Encoding encoding, string value, int maxByteLength, StringWriteOptions options)
+		{
+			this.AssertNotDisposed();
+
+			if (maxByteLength < 0)
+				throw new ArgumentException("Byte length must be a positive number.", nameof(maxByteLength));
+
+			if (maxByteLength < 1)
+				return;
+
+			this.EnsureSpace(maxByteLength);
+
+			if (value == null)
+				value = "";
+
+			var strByteCount = encoding.GetByteCount(value);
+
+			// Exit early if there's no string bytes to write
+			if (strByteCount == 0)
+			{
+				_buffer.AsSpan(_ptr, maxByteLength).Clear();
+				this.UpdatePtrLength(maxByteLength);
+				return;
+			}
+
+			var writeLength = Math.Min(strByteCount, maxByteLength);
+			var fillerByteCount = maxByteLength - writeLength;
+
+			// If the string fits into the given length, just write it
+			// directly into the buffer
+			if (strByteCount <= maxByteLength)
+			{
+				encoding.GetBytes(value, 0, value.Length, _buffer, _ptr);
+			}
+			// If the string doesn't fit, write it into a temporary buffer
+			// first and then copy parts of it over
+			else
+			{
+				var bytes = ArrayPool<byte>.Shared.Rent(strByteCount);
+
+				try
+				{
+					encoding.GetBytes(value, 0, value.Length, bytes, 0);
+					bytes.AsSpan(0, writeLength).CopyTo(_buffer.AsSpan(_ptr, writeLength));
+				}
+				finally
+				{
+					ArrayPool<byte>.Shared.Return(bytes);
+				}
+			}
+
+			if (fillerByteCount == 0 && (options & StringWriteOptions.Terminate) != 0)
+				_buffer[_ptr + writeLength - 1] = 0;
+
+			if (fillerByteCount > 0)
+				_buffer.AsSpan(_ptr + writeLength, fillerByteCount).Clear();
+
+			this.UpdatePtrLength(maxByteLength);
+		}
+
+		/// <summary>
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
@@ -869,5 +1003,22 @@ namespace Yggdrasil.Util
 		/// Higher bits first, how we commenly display hex values.
 		/// </summary>
 		BigEndian,
+	}
+
+	/// <summary>
+	/// Specifies options for writing string data.
+	/// </summary>
+	[Flags]
+	public enum StringWriteOptions
+	{
+		/// <summary>
+		/// No special options, just writing the string's bytes.
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Terminates the string with a null byte (0x00).
+		/// </summary>
+		Terminate = 1,
 	}
 }

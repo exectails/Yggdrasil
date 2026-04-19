@@ -73,6 +73,62 @@ namespace Yggdrasil.Test.Util
 		}
 
 		[Fact]
+		public void WriteString()
+		{
+			var buffer = new BufferReaderWriter();
+			buffer.Endianness = Endianness.BigEndian;
+
+			buffer.WriteString(Encoding.UTF8, "foobar", StringWriteOptions.None);
+			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "foobar", StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72, 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "", StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, null, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x00 }, buffer.Copy());
+		}
+
+		[Fact]
+		public void WriteStringWithLength()
+		{
+			var buffer = new BufferReaderWriter();
+			buffer.Endianness = Endianness.BigEndian;
+
+			buffer.WriteString(Encoding.UTF8, "foobar", 8, StringWriteOptions.None);
+			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72, 0x00, 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "foobar", 4, StringWriteOptions.None);
+			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "foobar", 4, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "", 4, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, null, 4, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x00 }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, "", 0, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { }, buffer.Copy());
+
+			buffer.Reset();
+			buffer.WriteString(Encoding.UTF8, null, 0, StringWriteOptions.Terminate);
+			Assert.Equal(new byte[] { }, buffer.Copy());
+		}
+
+		[Fact]
 		public void Reading()
 		{
 			var buffer = new BufferReaderWriter(31);

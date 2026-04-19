@@ -119,6 +119,69 @@ namespace Yggdrasil.Collections
 		}
 
 		/// <summary>
+		/// Adds an item to the tracker outside of updates.
+		/// </summary>
+		/// <remarks>
+		/// This method is intended for manual management of items that
+		/// are currently "inside". For example, in the context of
+		/// tracking visible actors, this method would be used to add an
+		/// actor that became visible outside of the regular update cycle
+		/// and should be considered part of the visible actors during the
+		/// next update.
+		/// </remarks>
+		/// <param name="item"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void InjectItem(TItem item)
+		{
+			if (_updating)
+				throw new InvalidOperationException("Call End() before adding items");
+
+			_prevItems.Add(item);
+		}
+
+		/// <summary>
+		/// Removes an item from the tracker outside of updates.
+		/// </summary>
+		/// <remarks>
+		/// This method is intended for manual management of items that
+		/// are currently "outside". For example, in the context of
+		/// tracking visible actors, this method would be used to remove
+		/// an actor that became non-visible outside of the regular update
+		/// cycle and should be considered part of the non-visible actors
+		/// during the next update.
+		/// </remarks>
+		/// <param name="item"></param>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void EjectItem(TItem item)
+		{
+			if (_updating)
+				throw new InvalidOperationException("Call End() before removing items");
+
+			_prevItems.Remove(item);
+		}
+
+		/// <summary>
+		/// Clears the tracker of all items.
+		/// </summary>
+		/// <remarks>
+		/// Effectively resets the tracker to its initial state. The next
+		/// update will consider all items that "inside" to be new items
+		/// that were added with that update.
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"></exception>
+		public void ClearItems()
+		{
+			if (_updating)
+				throw new InvalidOperationException("Call End() before clearing tracker");
+
+			_prevItems.Clear();
+			_curItems.Clear();
+			_addedItems.Clear();
+			_removedItems.Clear();
+			_itemSet.Clear();
+		}
+
+		/// <summary>
 		/// Starts the update, during which the tracker can be updated and
 		/// read.
 		/// </summary>

@@ -82,15 +82,15 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, "foobar", StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, "foobar", StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72, 0x00 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, "", StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, "", StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x00 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, null, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, null, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x00 }, buffer.Copy());
 		}
 
@@ -108,23 +108,23 @@ namespace Yggdrasil.Test.Util
 			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x62 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, "foobar", 4, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, "foobar", 4, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x66, 0x6F, 0x6F, 0x00 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, "", 4, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, "", 4, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x00 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, null, 4, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, null, 4, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { 0x00, 0x00, 0x00, 0x00 }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, "", 0, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, "", 0, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { }, buffer.Copy());
 
 			buffer.Reset();
-			buffer.WriteString(Encoding.UTF8, null, 0, StringWriteOptions.Terminate);
+			buffer.WriteString(Encoding.UTF8, null, 0, StringWriteOptions.NullTerminated);
 			Assert.Equal(new byte[] { }, buffer.Copy());
 		}
 

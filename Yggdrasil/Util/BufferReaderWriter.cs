@@ -821,6 +821,11 @@ namespace Yggdrasil.Util
 		/// Writes string to buffer, using the given encoding, and
 		/// options.
 		/// </summary>
+		/// <remarks>
+		/// If the NullTerminated option is set, a 0 byte is added at the
+		/// end of the string. If the string is empty or null, only the 0
+		/// byte is added.
+		/// </remarks>
 		/// <param name="encoding">The encoding used to convert the string to bytes.</param>
 		/// <param name="value">The string to be written.</param>
 		/// <param name="options">The options that affect how the string is written.</param>
@@ -832,7 +837,7 @@ namespace Yggdrasil.Util
 				value = "";
 
 			var strByteCount = encoding.GetByteCount(value);
-			var terminate = (options & StringWriteOptions.Terminate) != 0;
+			var terminate = (options & StringWriteOptions.NullTerminated) != 0;
 
 			if (terminate)
 				strByteCount += 1;
@@ -868,11 +873,11 @@ namespace Yggdrasil.Util
 		/// that's a requirement.
 		///
 		/// If the length is longer than the byte count of the string, the
-		/// remaining bytes are filled with 0, and if the Terminate option
-		/// is set, the last byte of the string is set to 0, even if the
-		/// string's byte count is shorter than the given length. This may
-		/// potentially truncate the string, just like if the length was
-		/// too short.
+		/// remaining bytes are filled with 0, and if the NullTerminated
+		/// option is set, the last byte of the string is set to 0, even
+		/// if the string's byte count is shorter than the given length.
+		/// This may potentially truncate the encoded bytes, just like if
+		/// the length was too short.
 		/// </remarks>
 		/// <param name="encoding">The encoding used to convert the string to bytes.</param>
 		/// <param name="value">The string to be written.</param>
@@ -929,7 +934,7 @@ namespace Yggdrasil.Util
 				}
 			}
 
-			if (fillerByteCount == 0 && (options & StringWriteOptions.Terminate) != 0)
+			if (fillerByteCount == 0 && (options & StringWriteOptions.NullTerminated) != 0)
 				_buffer[_ptr + writeLength - 1] = 0;
 
 			if (fillerByteCount > 0)
@@ -1019,6 +1024,6 @@ namespace Yggdrasil.Util
 		/// <summary>
 		/// Terminates the string with a null byte (0x00).
 		/// </summary>
-		Terminate = 1,
+		NullTerminated = 1,
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -32,6 +33,16 @@ namespace Yggdrasil.Collections
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => new ReadOnlySpan<T>(_rentedArray, 0, _count);
+		}
+
+		/// <summary>
+		/// Returns the number of items in the snapshot. The count is only
+		/// valid while the snapshot is in scope and undisposed.
+		/// </summary>
+		public int Count
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _count;
 		}
 
 		/// <summary>
@@ -149,5 +160,81 @@ namespace Yggdrasil.Collections
 			foreach (var item in this.Span)
 				destination.Add(item);
 		}
+
+		/// <summary>
+		/// Sorts the snapshot's elements in-place using the default
+		/// comparer.
+		/// </summary>
+		public void Sort()
+		{
+			if (_count > 1 && _rentedArray != null)
+			{
+#if NET
+				new Span<T>(_rentedArray, 0, _count).Sort();
+#else
+				Array.Sort(_rentedArray, 0, _count);
+#endif
+			}
+		}
+
+		/// <summary>
+		/// Sorts the snapshot's elements in-place using the specified
+		/// comparer.
+		/// </summary>
+		/// <param name="comparer"></param>
+		public void Sort(IComparer<T> comparer)
+		{
+			if (_count > 1 && _rentedArray != null)
+			{
+#if NET
+				new Span<T>(_rentedArray, 0, _count).Sort(comparer);
+#else
+				Array.Sort(_rentedArray, 0, _count, comparer);
+#endif
+			}
+		}
+
+		/// <summary>
+		/// Sorts the snapshot's elements in-place using the specified
+		/// comparison.
+		/// </summary>
+		/// <param name="comparison"></param>
+		public void Sort(Comparison<T> comparison)
+		{
+			if (_count > 1 && _rentedArray != null)
+			{
+#if NET
+				new Span<T>(_rentedArray, 0, _count).Sort(comparison);
+#else
+				Array.Sort(_rentedArray, 0, _count, Comparer<T>.Create(comparison));
+#endif
+			}
+		}
+
+#if NET
+		/// <summary>
+		/// Sorts the snapshot's elements in-place using the specified
+		/// key selector.
+		/// </summary>
+		/// <param name="keySelector"></param>
+		public void Sort<TKey>(Func<T, TKey> keySelector) where TKey : IComparable<TKey>
+		{
+			if (_count > 1 && _rentedArray != null)
+			{
+				var comparer = new SelectorComparer<TKey>(keySelector);
+				new Span<T>(_rentedArray, 0, _count).Sort(comparer);
+			}
+		}
+
+		private readonly struct SelectorComparer<TKey>(Func<T, TKey> selector) : IComparer<T> where TKey : IComparable<TKey>
+		{
+			private readonly Func<T, TKey> _selector = selector;
+
+			public int Compare(T x, T y)
+			{
+				return _selector(x).CompareTo(_selector(y));
+			}
+		}
+#endif
 	}
 }

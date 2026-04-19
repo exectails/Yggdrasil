@@ -115,5 +115,66 @@ namespace Yggdrasil.Test.Collections
 
 			snapshot.Dispose();
 		}
+
+		[Fact]
+		public void Sort_DefaultComparer()
+		{
+			var snapshot = new PooledListSnapshot<int>();
+			snapshot.Add(3);
+			snapshot.Add(1);
+			snapshot.Add(2);
+
+			snapshot.Sort();
+
+			Assert.Equal([1, 2, 3], snapshot.ToList());
+
+			snapshot.Dispose();
+		}
+
+		[Fact]
+		public void Sort_WithComparer()
+		{
+			var snapshot = new PooledListSnapshot<int>();
+			snapshot.Add(3);
+			snapshot.Add(1);
+			snapshot.Add(2);
+
+			snapshot.Sort(Comparer<int>.Create((a, b) => b.CompareTo(a)));
+
+			Assert.Equal([3, 2, 1], snapshot.ToList());
+
+			snapshot.Dispose();
+		}
+
+		[Fact]
+		public void Sort_WithComparison()
+		{
+			var snapshot = new PooledListSnapshot<int>();
+			snapshot.Add(3);
+			snapshot.Add(1);
+			snapshot.Add(2);
+
+			snapshot.Sort((a, b) => b.CompareTo(a));
+
+			Assert.Equal([3, 2, 1], snapshot.ToList());
+
+			snapshot.Dispose();
+		}
+
+		[Fact]
+		public void Sort_WithSelector()
+		{
+			var snapshot = new PooledListSnapshot<string>();
+			snapshot.Add("three");
+			snapshot.Add("one");
+			snapshot.Add("twoo");
+
+			snapshot.Sort(x => x.Length);
+
+			Assert.Equal(["one", "twoo", "three"], snapshot.ToList());
+
+			snapshot.Dispose();
+		}
+
 	}
 }

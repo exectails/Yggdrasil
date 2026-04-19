@@ -99,6 +99,26 @@ namespace Yggdrasil.Collections
 		}
 
 		/// <summary>
+		/// Returns the list of items that are currently being tracked.
+		/// </summary>
+		/// <remarks>
+		/// This list effectively represents the items that were found
+		/// "inside" during the last update. For example, in the context
+		/// of tracking visible actors, this list would represent the
+		/// actors that were, and currently are, visible.
+		/// </remarks>
+		public IReadOnlyList<TItem> Current
+		{
+			get
+			{
+				if (_updating)
+					throw new InvalidOperationException("Call End() before fetching current items");
+
+				return _prevItems;
+			}
+		}
+
+		/// <summary>
 		/// Starts the update, during which the tracker can be updated and
 		/// read.
 		/// </summary>

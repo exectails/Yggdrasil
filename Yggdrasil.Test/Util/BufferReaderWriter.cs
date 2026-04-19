@@ -473,6 +473,10 @@ namespace Yggdrasil.Test.Util
 		public void ReadAsSpan()
 		{
 			var buffer = new BufferReaderWriter(10);
+
+			buffer.Write(new byte[10]);
+			buffer.Seek(0, SeekOrigin.Begin);
+
 			buffer.WriteByte(1);
 			buffer.Seek(-1, SeekOrigin.End);
 			buffer.WriteByte(2);

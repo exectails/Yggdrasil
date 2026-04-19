@@ -71,7 +71,7 @@ namespace Yggdrasil.Util
 		/// buffer can be safely modified after creating this instance.
 		/// </remarks>
 		/// <param name="buffer">The buffer that is to be read from.</param>
-		public BufferReaderWriter(byte[] buffer)
+		public BufferReaderWriter(ReadOnlySpan<byte> buffer)
 		{
 			this.Reuse(buffer);
 		}
@@ -88,7 +88,7 @@ namespace Yggdrasil.Util
 		/// <param name="index">Index to start reading from.</param>
 		/// <param name="length">Effective length of the data in the buffer.</param>
 		/// <param name="fixedLength">Indicates whether the buffer length is fixed or can be grown.</param>
-		public BufferReaderWriter(byte[] buffer, int index, int length, bool fixedLength)
+		public BufferReaderWriter(ReadOnlySpan<byte> buffer, int index, int length, bool fixedLength)
 		{
 			this.Reuse(buffer, index, length, fixedLength);
 		}
@@ -122,7 +122,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="buffer"></param>
 		/// <exception cref="InvalidOperationException"></exception>
-		public void Reuse(byte[] buffer)
+		public void Reuse(ReadOnlySpan<byte> buffer)
 		{
 			this.Reuse(buffer, 0, buffer.Length, false);
 		}
@@ -138,7 +138,7 @@ namespace Yggdrasil.Util
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="InvalidOperationException"></exception>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public void Reuse(byte[] buffer, int index, int length, bool fixedLength)
+		public void Reuse(ReadOnlySpan<byte> buffer, int index, int length, bool fixedLength)
 		{
 			this.AssertNotDisposed();
 
@@ -163,7 +163,7 @@ namespace Yggdrasil.Util
 			_minBufferLength = buffer.Length;
 			_fixedLength = fixedLength;
 
-			Buffer.BlockCopy(buffer, 0, _buffer, 0, buffer.Length);
+			buffer.CopyTo(_buffer);
 		}
 
 		/// <summary>
@@ -264,7 +264,7 @@ namespace Yggdrasil.Util
 		/// </summary>
 		/// <param name="destination"></param>
 		/// <param name="offset"></param>
-		public void CopyTo(byte[] destination, int offset)
+		public void CopyTo(Span<byte> destination, int offset)
 			=> this.CopyTo(destination, offset, 0);
 
 		/// <summary>
@@ -273,7 +273,7 @@ namespace Yggdrasil.Util
 		/// <param name="destination">The array to copy to.</param>
 		/// <param name="destinationOffset">The offset in the array copied to.</param>
 		/// <param name="sourceOffset">The offset from which to read in the buffer.</param>
-		public void CopyTo(byte[] destination, int destinationOffset, int sourceOffset)
+		public void CopyTo(Span<byte> destination, int destinationOffset, int sourceOffset)
 		{
 			this.AssertNotDisposed();
 
@@ -283,7 +283,7 @@ namespace Yggdrasil.Util
 			if (destination.Length < _length + destinationOffset - sourceOffset)
 				throw new InvalidOperationException("Destination is not long enough.");
 
-			Buffer.BlockCopy(_buffer, sourceOffset, destination, destinationOffset, _length - sourceOffset);
+			_buffer.AsSpan(sourceOffset, _length - sourceOffset).CopyTo(destination.Slice(destinationOffset));
 		}
 
 		/// <summary>
@@ -601,7 +601,7 @@ namespace Yggdrasil.Util
 		/// <param name="buffer"></param>
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
-		public void ReadTo(byte[] buffer, int offset, int length)
+		public void ReadTo(Span<byte> buffer, int offset, int length)
 		{
 			this.AssertNotDisposed();
 
@@ -616,7 +616,7 @@ namespace Yggdrasil.Util
 
 			this.AssertEnoughBytes(length);
 
-			Buffer.BlockCopy(_buffer, _ptr, buffer, offset, length);
+			_buffer.AsSpan(_ptr, length).CopyTo(buffer.Slice(offset, length));
 			_ptr += length;
 		}
 
@@ -808,7 +808,7 @@ namespace Yggdrasil.Util
 		/// Writes value to buffer.
 		/// </summary>
 		/// <param name="value"></param>
-		public void Write(byte[] value) => this.Write(value, 0, value.Length);
+		public void Write(ReadOnlySpan<byte> value) => this.Write(value, 0, value.Length);
 
 		/// <summary>
 		/// Writes value to buffer, starting at index for the given length.
@@ -816,12 +816,21 @@ namespace Yggdrasil.Util
 		/// <param name="value"></param>
 		/// <param name="index"></param>
 		/// <param name="length"></param>
-		public void Write(byte[] value, int index, int length)
+		public void Write(ReadOnlySpan<byte> value, int index, int length)
 		{
 			this.AssertNotDisposed();
 			this.EnsureSpace(length);
 
-			Buffer.BlockCopy(value, index, _buffer, _ptr, length);
+			if (index < 0)
+				throw new ArgumentException("Index must be a positive number.", nameof(index));
+
+			if (length < 0)
+				throw new ArgumentException("Length must be a positive number.", nameof(length));
+
+			if (value.Length < index + length)
+				throw new ArgumentException("Value is not long enough.", nameof(value));
+
+			value.Slice(index, length).CopyTo(_buffer.AsSpan(_ptr, length));
 			this.UpdatePtrLength(length);
 		}
 

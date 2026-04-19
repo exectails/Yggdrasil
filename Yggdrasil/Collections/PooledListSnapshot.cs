@@ -46,7 +46,8 @@ namespace Yggdrasil.Collections
 			}
 			else if (_count >= _rentedArray.Length)
 			{
-				var newArray = ArrayPool<T>.Shared.Rent(_rentedArray.Length * 2);
+				var newSize = _rentedArray.Length * 2;
+				var newArray = ArrayPool<T>.Shared.Rent(newSize);
 				Array.Copy(_rentedArray, newArray, _count);
 
 				ArrayPool<T>.Shared.Return(_rentedArray, clearArray: true);
@@ -54,6 +55,34 @@ namespace Yggdrasil.Collections
 			}
 
 			_rentedArray[_count++] = item;
+		}
+
+		/// <summary>
+		/// Adds the items in the given collection to the snapshot.
+		/// </summary>
+		/// <param name="items"></param>
+		public void AddRange(ICollection<T> items)
+		{
+			if (items.Count == 0)
+				return;
+
+			if (_rentedArray == null)
+			{
+				_rentedArray = ArrayPool<T>.Shared.Rent(items.Count);
+			}
+			else if (_count + items.Count > _rentedArray.Length)
+			{
+				var newSize = Math.Max(_rentedArray.Length * 2, _count + items.Count);
+				var newArray = ArrayPool<T>.Shared.Rent(newSize);
+				Array.Copy(_rentedArray, newArray, _count);
+
+				ArrayPool<T>.Shared.Return(_rentedArray, clearArray: true);
+				_rentedArray = newArray;
+			}
+
+			items.CopyTo(_rentedArray, _count);
+
+			_count += items.Count;
 		}
 
 		/// <summary>

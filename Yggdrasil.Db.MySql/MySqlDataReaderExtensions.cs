@@ -9,6 +9,16 @@ namespace Yggdrasil.Db.MySql
 	public static class MySqlDataReaderExtensions
 	{
 		/// <summary>
+		/// Returns the value of the named field, defaulting to null if
+		/// the field is null.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <param name="field"></param>
+		/// <returns></returns>
+		public static string GetStringSafe(this MySqlDataReader reader, string field)
+			=> reader.GetStringSafe(field, null);
+
+		/// <summary>
 		/// Returns the value of the named field, defaulting to the given
 		/// value if the field is null.
 		/// </summary>

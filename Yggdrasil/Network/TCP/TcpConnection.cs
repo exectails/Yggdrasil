@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Yggdrasil.Network.TCP
 {
@@ -93,7 +94,7 @@ namespace Yggdrasil.Network.TCP
 				}
 
 				foreach (var item in unsentItems)
-					this.PostSend(item.Buffer, item.Length, PostSendType.Closed);
+					item.SendCallback?.Invoke(item.Buffer, item.Length, PostSendType.Closed);
 			}
 			catch
 			{
@@ -209,28 +210,68 @@ namespace Yggdrasil.Network.TCP
 		protected abstract void ReceiveData(byte[] buffer, int length);
 
 		/// <summary>
-		/// Sends full data via socket.
+		/// Sends the full byte array via socket.
 		/// </summary>
+		/// <remarks>
+		/// The data is sent asynchronously, putting it in a send queue if
+		/// another send operation is still in progress. This means the
+		/// data is not neccesarily sent right away, but the method does
+		/// return immediately. The data needs to remain valid until the
+		/// send operation is completed. If necessary, a callback can be
+		/// used to be notified when the data was handled and is no longer
+		/// needed.
+		/// </remarks>
 		/// <param name="data"></param>
 		public virtual void Send(byte[] data)
 			=> this.Send(data, data.Length);
 
 		/// <summary>
-		/// Sends the given amount of byte in data via socket.
+		/// Sends the given amount of bytes in data via socket.
 		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="length"></param>
+		/// <remarks>
+		/// The data is sent asynchronously, putting it in a send queue if
+		/// another send operation is still in progress. This means the
+		/// data is not neccesarily sent right away, but the method does
+		/// return immediately. The data needs to remain valid until the
+		/// send operation is completed. If necessary, a callback can be
+		/// used to be notified when the data was handled and is no longer
+		/// needed.
+		/// </remarks>
+		/// <param name="data">The data to send.</param>
+		/// <param name="length">The number of bytes to send from the array.</param>
 		public virtual void Send(byte[] data, int length)
+			=> this.Send(data, length, null);
+
+		/// <summary>
+		/// Sends the given amount of bytes in data via socket.
+		/// </summary>
+		/// <remarks>
+		/// The data is sent asynchronously, putting it in a send queue if
+		/// another send operation is still in progress. This means the
+		/// data is not neccesarily sent right away, but the method does
+		/// return immediately. The data needs to remain valid until the
+		/// send operation is completed. The callback can be used to be
+		/// notified when the data was handled and is no longer needed.
+		///
+		/// The callback is invoked after the data was sent or the
+		/// connection was closed while the data was still in the send
+		/// queue. It's intended to be used for cleaning up resources,
+		/// such as returning rented buffers to their pools.
+		/// </remarks>
+		/// <param name="data">The data to send.</param>
+		/// <param name="length">The number of bytes to send from the array.</param>
+		/// <param name="callback">The callback to invoke after the data is sent.</param>
+		public virtual void Send(byte[] data, int length, SendCallback callback)
 		{
 			if (this.Status != ConnectionStatus.Open)
 			{
-				this.PostSend(data, length, PostSendType.Closed);
+				callback?.Invoke(data, length, PostSendType.Closed);
 				return;
 			}
 
 			lock (_sendSyncLock)
 			{
-				_sendQueue.Enqueue(new SendItem(data, length));
+				_sendQueue.Enqueue(new SendItem(data, length, callback));
 
 				if (!_isSending)
 				{
@@ -285,7 +326,7 @@ namespace Yggdrasil.Network.TCP
 				lock (_sendSyncLock)
 					sendItem = _sendQueue.Dequeue();
 
-				this.PostSend(sendItem.Buffer, sendItem.Length, PostSendType.Sent);
+				sendItem.SendCallback?.Invoke(sendItem.Buffer, sendItem.Length, PostSendType.Sent);
 
 				// Try to send next packet in the queue
 				this.BeginSend();
@@ -304,31 +345,17 @@ namespace Yggdrasil.Network.TCP
 			}
 		}
 
-		/// <summary>
-		/// Called after the given data was sent.
-		/// </summary>
-		/// <remarks>
-		/// This callback can be used to handle any post-send logic,
-		/// such as logging or resource cleanup. Also called when
-		/// the connection closed while there are still packets in
-		/// the send queue.
-		/// </remarks>
-		/// <param name="data"></param>
-		/// <param name="length"></param>
-		/// <param name="type"></param>
-		protected virtual void PostSend(byte[] data, int length, PostSendType type)
-		{
-		}
-
 		private readonly struct SendItem
 		{
 			public readonly byte[] Buffer;
 			public readonly int Length;
+			public readonly SendCallback SendCallback;
 
-			public SendItem(byte[] buffer, int length)
+			public SendItem(byte[] buffer, int length, SendCallback sendCallback)
 			{
 				this.Buffer = buffer;
 				this.Length = length;
+				this.SendCallback = sendCallback;
 			}
 		}
 
@@ -348,6 +375,14 @@ namespace Yggdrasil.Network.TCP
 			/// </summary>
 			Closed,
 		}
+
+		/// <summary>
+		/// A function type for post-send callbacks.
+		/// </summary>
+		/// <param name="data">The array that helt the sent data.</param>
+		/// <param name="length">The length of the actual data in the array.</param>
+		/// <param name="type">The type for the callback situation.</param>
+		public delegate void SendCallback(byte[] data, int length, PostSendType type);
 	}
 
 	/// <summary>

@@ -20,6 +20,7 @@ Base classes for AI development.
 [![NuGet version (ExecTails.Yggdrasil.Ai)](https://img.shields.io/nuget/v/ExecTails.Yggdrasil.Ai.svg?style=flat-square)](https://www.nuget.org/packages/ExecTails.Yggdrasil.Ai/)
 
 ### Yggdrasil.Data
+
 Base classes for reading databases from text files.
 
 *Depends on: Yggdrasil*
@@ -45,7 +46,7 @@ at run-time.
 
 ### Yggdrasil.Structures
 
-Structures, such as `QuadTree`.
+Structures, such as `QuadTree` and `SpatialGrid`.
 
 [![NuGet version (ExecTails.Yggdrasil.Structures)](https://img.shields.io/nuget/v/ExecTails.Yggdrasil.Structures.svg?style=flat-square)](https://www.nuget.org/packages/ExecTails.Yggdrasil.Structures/)
 
@@ -57,6 +58,13 @@ to accept connections from WebSockets and related classes.
 *Depends on: Yggdrasil*
 
 [![NuGet version (ExecTails.Yggdrasil.Network.WebSocket)](https://img.shields.io/nuget/v/ExecTails.Yggdrasil.Network.WebSocket.svg?style=flat-square)](https://www.nuget.org/packages/ExecTails.Yggdrasil.Network.WebSocket/)
+
+### Yggdrasil.Versioning
+
+Classes for handling matters of versioning, such as enums loaded at
+runtime from text files with preprocessor directives.
+
+[![NuGet version (ExecTails.Yggdrasil.Versioning)](https://img.shields.io/nuget/v/ExecTails.Yggdrasil.Versioning.svg?style=flat-square)](https://www.nuget.org/packages/ExecTails.Yggdrasil.Versioning/)
 
 Links
 -----------------------------------------------------------------------------

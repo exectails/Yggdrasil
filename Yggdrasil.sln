@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36401.2 d17.14
+VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil", "Yggdrasil\Yggdrasil.csproj", "{4BB8DF19-7D20-429A-AF5F-5D1232538E08}"
 EndProject
@@ -19,6 +19,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yggdrasil.Scripting", "Yggdrasil.Scripting\Yggdrasil.Scripting.csproj", "{F7007FE7-566D-45F3-A69B-4620A0232EF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Db.MySql", "Yggdrasil.Db.MySql\Yggdrasil.Db.MySql.csproj", "{297079EF-FE61-F08A-22CB-7266BD05AC17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil.Versioning", "Yggdrasil.Versioning\Yggdrasil.Versioning.csproj", "{2BCE696D-5D23-C82F-C84A-1D109553A12A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{297079EF-FE61-F08A-22CB-7266BD05AC17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{297079EF-FE61-F08A-22CB-7266BD05AC17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{297079EF-FE61-F08A-22CB-7266BD05AC17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BCE696D-5D23-C82F-C84A-1D109553A12A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BCE696D-5D23-C82F-C84A-1D109553A12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BCE696D-5D23-C82F-C84A-1D109553A12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BCE696D-5D23-C82F-C84A-1D109553A12A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

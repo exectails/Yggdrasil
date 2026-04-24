@@ -416,6 +416,42 @@ namespace Yggdrasil.Test.Versioning.ManagedEnum
 		}
 
 		[Fact]
+		public void GetAllValues()
+		{
+			var menum = new MEnum<IdentityId>();
+
+			LoadVersion(menum, 300);
+
+			var values = menum.GetAllValues();
+
+			Assert.Equal(8, values.Length);
+
+			Assert.Equal(IdentityId.JT_KNIGHT, values[0].EnumKey);
+			Assert.Equal(10, values[0].Value);
+
+			Assert.Equal(IdentityId.JT_NOVICE, values[1].EnumKey);
+			Assert.Equal(1001, values[1].Value);
+
+			Assert.Equal(IdentityId.JT_SWORDMAN, values[2].EnumKey);
+			Assert.Equal(1002, values[2].Value);
+
+			Assert.Equal(IdentityId.JT_MAGICIAN, values[3].EnumKey);
+			Assert.Equal(1003, values[3].Value);
+
+			Assert.Equal(IdentityId.JT_ARCHER, values[4].EnumKey);
+			Assert.Equal(2001, values[4].Value);
+
+			Assert.Equal(IdentityId.JT_ACOLYTE, values[5].EnumKey);
+			Assert.Equal(2002, values[5].Value);
+
+			Assert.Equal(IdentityId.JT_MERCHANT, values[6].EnumKey);
+			Assert.Equal(2003, values[6].Value);
+
+			Assert.Equal(IdentityId.JT_THIEF, values[7].EnumKey);
+			Assert.Equal(2004, values[7].Value);
+		}
+
+		[Fact]
 		public void LoadFile()
 		{
 			var menum = new MEnum<IdentityId>();

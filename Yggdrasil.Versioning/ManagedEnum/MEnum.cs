@@ -277,6 +277,51 @@ namespace Yggdrasil.Versioning.ManagedEnum
 		}
 
 		/// <summary>
+		/// Returns a list of all current values, sorted by their
+		/// associated integer values.
+		/// </summary>
+		/// <returns></returns>
+		public MValue[] GetAllValues()
+		{
+			var result = new MValue[_lookupTable.Count];
+			var i = 0;
+
+			foreach (var kv in _lookupTable)
+				result[i++] = new MValue(kv.Key, kv.Value);
+
+			Array.Sort(result, (a, b) => a.Value.CompareTo(b.Value));
+
+			return result;
+		}
+
+		/// <summary>
+		/// Represents a mapped enum value.
+		/// </summary>
+		public struct MValue
+		{
+			/// <summary>
+			/// Returns the enum key associated with the value.
+			/// </summary>
+			public TEnum EnumKey { get; }
+
+			/// <summary>
+			/// Returns the integer value associated with the enum key.
+			/// </summary>
+			public int Value { get; }
+
+			/// <summary>
+			/// Creates new instance.
+			/// </summary>
+			/// <param name="enumKey"></param>
+			/// <param name="value"></param>
+			public MValue(TEnum enumKey, int value)
+			{
+				this.EnumKey = enumKey;
+				this.Value = value;
+			}
+		}
+
+		/// <summary>
 		/// Exception for errors that occur during file loading of enum
 		/// mappings.
 		/// </summary>

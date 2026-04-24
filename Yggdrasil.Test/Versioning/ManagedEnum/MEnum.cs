@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Xunit;
 using Yggdrasil.Versioning.ManagedEnum;
 
@@ -412,6 +413,86 @@ namespace Yggdrasil.Test.Versioning.ManagedEnum
 
 			Assert.Equal(46, menum.GetValue(IdentityId.JT_ACOLYTE));
 			Assert.Equal(IdentityId.JT_ACOLYTE, menum.GetKey(46));
+		}
+
+		[Fact]
+		public void LoadFile()
+		{
+			var menum = new MEnum<IdentityId>();
+			var tempFile = Path.GetTempFileName();
+
+			try
+			{
+				File.WriteAllText(tempFile, @"
+// Jobs, Jobs, Jobs!
+JT_NOVICE
+JT_SWORDMAN
+JT_MAGICIAN
+JT_ARCHER
+JT_ACOLYTE
+JT_MERCHANT
+JT_THIEF
+");
+
+				menum.LoadFile(tempFile);
+			}
+			finally
+			{
+				File.Delete(tempFile);
+			}
+
+			Assert.Equal(0, menum.GetValue(IdentityId.JT_NOVICE));
+			Assert.Equal(1, menum.GetValue(IdentityId.JT_SWORDMAN));
+			Assert.Equal(2, menum.GetValue(IdentityId.JT_MAGICIAN));
+			Assert.Equal(3, menum.GetValue(IdentityId.JT_ARCHER));
+			Assert.Equal(4, menum.GetValue(IdentityId.JT_ACOLYTE));
+			Assert.Equal(5, menum.GetValue(IdentityId.JT_MERCHANT));
+			Assert.Equal(6, menum.GetValue(IdentityId.JT_THIEF));
+		}
+
+		[Fact]
+		public void LoadVersionedFile()
+		{
+			var menum = new MEnum<IdentityId>();
+			var versionFile = Path.GetTempFileName();
+			var tempFile = Path.GetTempFileName();
+
+			try
+			{
+				File.WriteAllText(versionFile, @"
+#define VERSION 300
+");
+
+				File.WriteAllText(tempFile, @$"
+#include ""{versionFile}""
+
+// Jobs, Jobs, Jobs!
+JT_NOVICE = 10
+JT_SWORDMAN
+JT_MAGICIAN // 12
+#if VERSION >= 500
+	JT_ARCHER
+	JT_ACOLYTE
+#endif
+JT_MERCHANT
+JT_THIEF
+");
+
+				menum.LoadFile(tempFile);
+			}
+			finally
+			{
+				File.Delete(tempFile);
+				File.Delete(versionFile);
+			}
+
+			Assert.Equal(10, menum.GetValue(IdentityId.JT_NOVICE));
+			Assert.Equal(11, menum.GetValue(IdentityId.JT_SWORDMAN));
+			Assert.Equal(12, menum.GetValue(IdentityId.JT_MAGICIAN));
+			Assert.Equal(-1, menum.GetValue(IdentityId.JT_ARCHER, -1));
+			Assert.Equal(-1, menum.GetValue(IdentityId.JT_ACOLYTE, -1));
+			Assert.Equal(13, menum.GetValue(IdentityId.JT_MERCHANT));
+			Assert.Equal(14, menum.GetValue(IdentityId.JT_THIEF));
 		}
 
 		public enum IdentityId

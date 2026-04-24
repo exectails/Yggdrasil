@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Yggdrasil.Versioning.IO;
 
 namespace Yggdrasil.Versioning.ManagedEnum
 {
@@ -226,6 +228,67 @@ namespace Yggdrasil.Versioning.ManagedEnum
 			_keyTable.Clear();
 			_insertList.Clear();
 			_nextInsertValue = 0;
+		}
+
+		/// <summary>
+		/// Loads enum mappings from a file.
+		/// </summary>
+		/// <remarks>
+		/// Expects the file to have lines in the format "EnumKey" or
+		/// "EnumKey=Value", where EnumKey is the name of the enum member
+		/// and Value is the associated integer value.
+		///
+		/// Ignores empty lines and whitespaces. Supports comments
+		/// starting with '#' or '//'.
+		/// </remarks>
+		/// <param name="filePath"></param>
+		public void LoadFile(string filePath)
+		{
+			var preprocessor = new Preprocessor();
+
+			foreach (var line in preprocessor.ProcessLines(filePath))
+			{
+				var trimmedLine = line.Trim();
+
+				var emptyOrComment = string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith("#") || trimmedLine.StartsWith("//");
+				if (emptyOrComment)
+					continue;
+
+				var parts = line.Split('=');
+
+				if (parts.Length == 1)
+				{
+					var enumKey = (TEnum)Enum.Parse(typeof(TEnum), parts[0].Trim());
+
+					this.InsertValue(enumKey);
+				}
+				else if (parts.Length == 2)
+				{
+					var enumKey = (TEnum)Enum.Parse(typeof(TEnum), parts[0].Trim());
+					var value = int.Parse(parts[1].Trim());
+
+					this.InsertValue(enumKey, value);
+				}
+				else
+				{
+					throw new FileLoadException($"Invalid line format: '{line}'. Expected 'EnumKey=Value'.");
+				}
+			}
+		}
+
+		/// <summary>
+		/// Exception for errors that occur during file loading of enum
+		/// mappings.
+		/// </summary>
+		public class FileLoadException : Exception
+		{
+			/// <summary>
+			/// Creates new instance.
+			/// </summary>
+			/// <param name="message"></param>
+			public FileLoadException(string message) : base(message)
+			{
+			}
 		}
 	}
 }

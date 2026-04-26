@@ -136,10 +136,37 @@ namespace Yggdrasil.Data.JSON
 				return def;
 
 			var str = obj.ReadString(key);
-			if (str.Contains("|"))
-				str = str.Replace("|", ",");
 
-			return (TEnum)Enum.Parse(typeof(TEnum), str);
+			var flags = str.Contains("|");
+			var negate = str.Contains("!");
+
+			if (!flags)
+				return (TEnum)Enum.Parse(typeof(TEnum), str);
+
+			if (flags && !negate)
+				return (TEnum)Enum.Parse(typeof(TEnum), str.Replace("|", ","));
+
+			var result = 0L;
+
+			foreach (var part in str.Split('|'))
+			{
+				var trimmed = part.Trim();
+
+				if (trimmed.StartsWith("!"))
+				{
+					trimmed = trimmed.Substring(1);
+
+					var value = Convert.ToInt64((TEnum)Enum.Parse(typeof(TEnum), trimmed));
+					result &= ~value;
+				}
+				else
+				{
+					var value = Convert.ToInt64((TEnum)Enum.Parse(typeof(TEnum), trimmed));
+					result |= value;
+				}
+			}
+
+			return (TEnum)Enum.ToObject(typeof(TEnum), result);
 		}
 
 		/// <summary>

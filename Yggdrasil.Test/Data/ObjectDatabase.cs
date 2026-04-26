@@ -137,7 +137,7 @@ namespace Yggdrasil.Test.Data
 			var db1 = new ItemDb();
 			db1.Load("stream", new MemoryStream(Encoding.UTF8.GetBytes(TestFile5)));
 
-			Assert.Equal(3, db1.Objects.Count);
+			Assert.Equal(6, db1.Objects.Count);
 
 			Assert.Equal("Shield", db1.Objects.Get(2).Name);
 			Assert.Equal(ItemType.Equipment, db1.Objects.Get(1).Type);
@@ -152,7 +152,7 @@ namespace Yggdrasil.Test.Data
 			var db1 = new ItemDb();
 			db1.Load("stream", new MemoryStream(Encoding.UTF8.GetBytes(TestFile5)));
 
-			Assert.Equal(3, db1.Objects.Count);
+			Assert.Equal(6, db1.Objects.Count);
 
 			Assert.Equal("Sword", db1.Objects.Get(1).Name);
 			Assert.Equal(ItemUsableType.Knight, db1.Objects.Get(1).UsableType);
@@ -162,6 +162,15 @@ namespace Yggdrasil.Test.Data
 
 			Assert.Equal("Potion", db1.Objects.Get(3).Name);
 			Assert.Equal(ItemUsableType.All, db1.Objects.Get(3).UsableType);
+
+			Assert.Equal("Shield2", db1.Objects.Get(4).Name);
+			Assert.Equal(ItemUsableType.All, db1.Objects.Get(4).UsableType);
+
+			Assert.Equal("Shield3", db1.Objects.Get(5).Name);
+			Assert.Equal(ItemUsableType.All & ~ItemUsableType.Novice, db1.Objects.Get(5).UsableType);
+
+			Assert.Equal("Knife", db1.Objects.Get(6).Name);
+			Assert.Equal(ItemUsableType.Wizard | ItemUsableType.Archer, db1.Objects.Get(6).UsableType);
 		}
 
 		public enum ItemType
@@ -177,6 +186,9 @@ namespace Yggdrasil.Test.Data
 			Knight = 1,
 			Wizard = 2,
 			Archer = 4,
+			Novice = 8,
+
+			WizArcher = Wizard | Archer,
 		}
 
 		public class ItemData : StandardObjectData
@@ -237,7 +249,10 @@ namespace Yggdrasil.Test.Data
 		[
 			{ id: 1, name: 'Sword', weight: 1.5, type: 'Equipment', usableType: 'Knight' },
 			{ id: 2, name: 'Shield', weight: 2.5, type: 'Equipment', usableType: 'Knight|Archer' },
-			{ id: 3, name: 'Potion', weight: 0.5, type: 'Consumable', usableType: 'All' }
+			{ id: 3, name: 'Potion', weight: 0.5, type: 'Consumable', usableType: 'All' },
+			{ id: 4, name: 'Shield2', weight: 2.5, type: 'Equipment', usableType: 'All' },
+			{ id: 5, name: 'Shield3', weight: 2.5, type: 'Equipment', usableType: 'All|!Novice' },
+			{ id: 6, name: 'Knife', weight: 2.5, type: 'Equipment', usableType: 'WizArcher' },
 		]
 		";
 	}

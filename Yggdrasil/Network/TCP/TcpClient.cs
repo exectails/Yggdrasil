@@ -50,6 +50,20 @@ namespace Yggdrasil.Network.TCP
 		public Exception LastException { get; private set; }
 
 		/// <summary>
+		/// Called once the client's socket was created, before it connects,
+		/// to give the client a chance to modify the socket's options.
+		/// </summary>
+		/// <remarks>
+		/// The socket's default options are left untouched unless this method
+		/// is overridden. Latency sensitive applications will typically want
+		/// to disable Nagle's algorithm here by setting NoDelay.
+		/// </remarks>
+		/// <param name="socket"></param>
+		protected virtual void ConfigureSocket(Socket socket)
+		{
+		}
+
+		/// <summary>
 		/// Connects to host.
 		/// </summary>
 		/// <param name="host"></param>
@@ -67,6 +81,7 @@ namespace Yggdrasil.Network.TCP
 				this.Disconnect();
 
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			this.ConfigureSocket(_socket);
 			_socket.Connect(remoteEndPoint);
 
 			this.Status = ClientStatus.Connected;
@@ -96,6 +111,7 @@ namespace Yggdrasil.Network.TCP
 				this.Disconnect();
 
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			this.ConfigureSocket(_socket);
 			_socket.BeginConnect(remoteEndPoint, this.OnConnect, null);
 
 			this.Status = ClientStatus.Connecting;

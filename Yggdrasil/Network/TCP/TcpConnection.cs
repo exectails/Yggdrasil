@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Yggdrasil.Network.TCP
@@ -21,6 +22,9 @@ namespace Yggdrasil.Network.TCP
 		private readonly object _sendSyncLock = new object();
 		private readonly Queue<SendItem> _sendQueue = new Queue<SendItem>();
 		private bool _isSending;
+		private int _sendOffset;
+		private Timer _coalesceTimer;
+		private bool _coalescing;
 
 		private bool _raisedConnected;
 
@@ -33,6 +37,20 @@ namespace Yggdrasil.Network.TCP
 		/// Remote host address.
 		/// </summary>
 		public string Address { get; private set; }
+
+		/// <summary>
+		/// Gets or sets how long queued data may be held back to combine it
+		/// with data queued shortly after into a single send operation.
+		/// </summary>
+		/// <remarks>
+		/// Defaults to zero, which sends queued data as soon as possible.
+		/// Setting this trades a bounded amount of latency for fewer, larger
+		/// packets, which is useful for applications that emit bursts of small
+		/// messages. Unlike Nagle's algorithm, the delay never exceeds this
+		/// value, as it doesn't wait for the remote host to acknowledge
+		/// anything.
+		/// </remarks>
+		public TimeSpan SendCoalescingTime { get; set; } = TimeSpan.Zero;
 
 		/// <summary>
 		/// Raised when an exception occurs while receiving data.
@@ -60,6 +78,23 @@ namespace Yggdrasil.Network.TCP
 
 			this.Status = ConnectionStatus.Open;
 			this.Address = ((IPEndPoint)_socket.RemoteEndPoint).ToString();
+
+			this.ConfigureSocket(_socket);
+		}
+
+		/// <summary>
+		/// Called once the connection's socket was set, before any data is
+		/// sent or received, to give the connection a chance to modify the
+		/// socket's options.
+		/// </summary>
+		/// <remarks>
+		/// The socket's default options are left untouched unless this method
+		/// is overridden. Latency sensitive applications will typically want
+		/// to disable Nagle's algorithm here by setting NoDelay.
+		/// </remarks>
+		/// <param name="socket"></param>
+		protected virtual void ConfigureSocket(Socket socket)
+		{
 		}
 
 		/// <summary>
@@ -79,6 +114,7 @@ namespace Yggdrasil.Network.TCP
 
 			this.Status = ConnectionStatus.Closed;
 
+			try { _coalesceTimer?.Dispose(); } catch { }
 			try { _socket.Shutdown(SocketShutdown.Both); } catch { }
 			try { _socket.Close(); } catch { }
 			try { this.NotifyClosed(type); } catch { }
@@ -273,11 +309,42 @@ namespace Yggdrasil.Network.TCP
 			{
 				_sendQueue.Enqueue(new SendItem(data, length, callback));
 
-				if (!_isSending)
+				if (_isSending || _coalescing)
+					return;
+
+				var coalescingTime = this.SendCoalescingTime;
+
+				if (coalescingTime <= TimeSpan.Zero)
 				{
 					_isSending = true;
 					this.BeginSend();
+					return;
 				}
+
+				if (_coalesceTimer == null)
+					_coalesceTimer = new Timer(this.OnCoalesceElapsed, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+				_coalescing = true;
+				_coalesceTimer.Change(coalescingTime, Timeout.InfiniteTimeSpan);
+			}
+		}
+
+		/// <summary>
+		/// Called once the coalescing window elapsed, sending everything
+		/// that was queued up during it.
+		/// </summary>
+		/// <param name="state"></param>
+		private void OnCoalesceElapsed(object state)
+		{
+			lock (_sendSyncLock)
+			{
+				_coalescing = false;
+
+				if (_isSending || _sendQueue.Count == 0)
+					return;
+
+				_isSending = true;
+				this.BeginSend();
 			}
 		}
 
@@ -289,7 +356,7 @@ namespace Yggdrasil.Network.TCP
 		{
 			try
 			{
-				SendItem sendItem;
+				List<ArraySegment<byte>> buffers;
 
 				lock (_sendSyncLock)
 				{
@@ -299,11 +366,20 @@ namespace Yggdrasil.Network.TCP
 						return;
 					}
 
-					// Get data to send, dequeue after it was sent
-					sendItem = _sendQueue.Peek();
+					// Send everything that's queued up as one operation, so a burst
+					// of small messages doesn't become a burst of packets. The items
+					// are dequeued once they were fully sent.
+					buffers = new List<ArraySegment<byte>>(_sendQueue.Count);
+					var offset = _sendOffset;
+
+					foreach (var item in _sendQueue)
+					{
+						buffers.Add(new ArraySegment<byte>(item.Buffer, offset, item.Length - offset));
+						offset = 0;
+					}
 				}
 
-				_socket.BeginSend(sendItem.Buffer, 0, sendItem.Length, SocketFlags.None, this.OnSend, null);
+				_socket.BeginSend(buffers, SocketFlags.None, this.OnSend, null);
 			}
 			catch
 			{
@@ -319,16 +395,34 @@ namespace Yggdrasil.Network.TCP
 		{
 			try
 			{
-				_socket.EndSend(ar);
-
-				SendItem sendItem;
+				var bytesSent = _socket.EndSend(ar);
+				var sentItems = new List<SendItem>();
 
 				lock (_sendSyncLock)
-					sendItem = _sendQueue.Dequeue();
+				{
+					// A send doesn't necessarily cover every buffer it was given,
+					// so only the items that went out completely are dequeued and
+					// the rest is picked up again by the next send.
+					while (_sendQueue.Count > 0)
+					{
+						var remaining = _sendQueue.Peek().Length - _sendOffset;
 
-				sendItem.SendCallback?.Invoke(sendItem.Buffer, sendItem.Length, PostSendType.Sent);
+						if (bytesSent < remaining)
+						{
+							_sendOffset += bytesSent;
+							break;
+						}
 
-				// Try to send next packet in the queue
+						bytesSent -= remaining;
+						_sendOffset = 0;
+						sentItems.Add(_sendQueue.Dequeue());
+					}
+				}
+
+				foreach (var item in sentItems)
+					item.SendCallback?.Invoke(item.Buffer, item.Length, PostSendType.Sent);
+
+				// Try to send the next packets in the queue
 				this.BeginSend();
 			}
 			catch (ObjectDisposedException)

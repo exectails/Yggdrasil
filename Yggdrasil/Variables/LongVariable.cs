@@ -12,7 +12,7 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Returns underlying the type of this variable.
 			/// </summary>
-			public override VariableType Type => VariableType.Int;
+			public override VariableType Type => VariableType.Long;
 
 			/// <summary>
 			/// Creates a new variable.

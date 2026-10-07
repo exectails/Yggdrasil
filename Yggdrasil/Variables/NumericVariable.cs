@@ -14,6 +14,10 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Returns the variable's value as a double.
 			/// </summary>
+			/// <remarks>
+			/// Note that this is a lossy conversion as a backup solution.
+			/// Some values may not be accurately representable as a double.
+			/// </remarks>
 			double NumberValue { get; }
 		}
 
@@ -103,6 +107,10 @@ namespace Yggdrasil.Variables
 			/// <summary>
 			/// Returns the variable's value as a double.
 			/// </summary>
+			/// <remarks>
+			/// Note that this is a lossy conversion as a backup solution.
+			/// Some values may not be accurately representable as a double.
+			/// </remarks>
 			public double NumberValue => Convert.ToDouble(this.Value);
 
 			/// <summary>
@@ -122,6 +130,11 @@ namespace Yggdrasil.Variables
 
 				if (_maxValue.CompareTo(_minValue) < 0)
 					_maxValue = _minValue;
+
+				if (_value.CompareTo(_minValue) < 0)
+					_value = _minValue;
+				else if (_value.CompareTo(_maxValue) > 0)
+					_value = _maxValue;
 			}
 
 			/// <summary>

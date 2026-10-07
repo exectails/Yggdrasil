@@ -68,6 +68,9 @@ namespace Yggdrasil.Test.Variables
 			Assert.Equal(double.MinValue, d1.MinValue);
 			Assert.Equal(double.MaxValue, d1.MaxValue);
 
+            var bool1 = container.Create(new BoolVariable("bool1"));
+			Assert.Equal(false, bool1.Value);
+
 			var str1 = container.Create(new StringVariable("str1"));
 			Assert.Equal(null, str1.Value);
 		}
@@ -149,6 +152,12 @@ namespace Yggdrasil.Test.Variables
 			var i3 = container.Int("i3", i1 * i2);
 			Assert.Equal(84, i3.Value);
 
+           var b1 = container.Bool("b1");
+			Assert.Equal(false, b1.Value);
+
+			var b2 = container.Bool("b2", true);
+			Assert.Equal(true, b2.Value);
+
 			container.AutoCreate = false;
 			Assert.Throws<NullReferenceException>(() => container.Int("i4").Value = 21);
 
@@ -156,6 +165,33 @@ namespace Yggdrasil.Test.Variables
 			Assert.Equal(true, container.Has("i2"));
 			Assert.Equal(true, container.Has("i3"));
 			Assert.Equal(false, container.Has("i4"));
+		}
+
+		[Fact]
+		public void BoolVariableOperations()
+		{
+			var variable = new BoolVariable("b1");
+			var changeCount = 0;
+			variable.ValueChanged += ident =>
+			{
+				Assert.Equal("b1", ident);
+				changeCount++;
+			};
+
+			Assert.Equal(true, variable.Toggle());
+			Assert.Equal(true, variable.Value);
+			Assert.Equal(false, variable.Toggle());
+			Assert.Equal(false, variable.Value);
+
+			Assert.Equal(true, variable.EnableOnce());
+			Assert.Equal(false, variable.EnableOnce());
+			Assert.Equal(true, variable.Value);
+			Assert.Equal(3, changeCount);
+
+			Assert.Equal("True", variable.Serialize());
+			variable.Deserialize("false");
+			Assert.Equal(false, variable.Value);
+			Assert.Equal(4, changeCount);
 		}
 
 		[Fact]

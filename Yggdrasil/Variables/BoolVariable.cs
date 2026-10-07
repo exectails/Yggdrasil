@@ -96,6 +96,12 @@ namespace Yggdrasil.Variables
 			/// </summary>
 			/// <returns></returns>
 			public override string ToString() => this.Value.ToString();
+
+			/// <summary>
+			/// Implicitly converts the variable to a boolean value.
+			/// </summary>
+			/// <param name="variable"></param>
+			public static implicit operator bool(BoolVariable variable) => variable.Value;
 		}
 	}
 }
